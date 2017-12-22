@@ -15,6 +15,7 @@ RUN apt-get update && \
     docker-php-ext-install intl && \
     docker-php-ext-configure opcache && \
     docker-php-ext-install opcache && \
+    apt-get install zip -y && \
     apt-get install git -y
 
 # APACHE MODULES

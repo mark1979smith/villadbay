@@ -8,9 +8,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Contact;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class PagesController extends Controller
 {
@@ -66,10 +69,16 @@ class PagesController extends Controller
      */
     public function contact()
     {
-        $number = mt_rand(0, 1000);
+        $contact = new Contact();
+        $form = $this->createFormBuilder($contact)
+            ->add('name', TextType::class)
+            ->add('email', TextType::class)
+            ->add('subject', TextType::class)
+            ->add('message', TextareaType::class)
+            ->add('send', SubmitType::class, ['label' => 'Send']);
 
         return $this->render('pages/contact.html.twig', array(
-            'number' => $number,
+            'form' => $form->createView(),
             'selectedNav' => 'contact'
         ));
     }
