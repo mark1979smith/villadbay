@@ -4,10 +4,42 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title>{% block title %}Welcome!{% endblock %}</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
+        <div class="container-fluid">
+            <div class="row justify-content-center">
+                <div class="col text-center col-md-1">
+                    <a href="{{ path('home') }}">Home</a>
+                </div>
+                <div class="col text-center col-md-1">
+                    <a href="{{ path('rooms') }}">Rooms</a>
+                </div>
+                <div class="col text-center col-md-1">
+                    About
+                </div>
+                <div class="col text-center col-md-1">
+                    Contact
+                </div>
+            </div>
+            <div class="row">
+                <div class="col" style="background-color: #5a5a5a; height: 335px;">
+
+                </div>
+            </div>
+        </div>
+
         {% block body %}{% endblock %}
+
+        <div class="container">
+            <div class="row">
+                <div class="col text-center">
+                    &copy; <?= date('Y') ?> by THE VILLA AT THE BAY.
+                </div>
+            </div>
+        </div>
         {% block javascripts %}{% endblock %}
     </body>
 </html>
