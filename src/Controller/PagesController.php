@@ -68,7 +68,7 @@ class PagesController extends Controller
     {
         $number = mt_rand(0, 1000);
 
-        return $this->render('pages/about.html.twig', array(
+        return $this->render('pages/contact.html.twig', array(
             'number' => $number,
             'selectedNav' => 'contact'
         ));
