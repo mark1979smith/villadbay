@@ -9,13 +9,17 @@
 namespace App\Controller;
 
 use App\Entity\Contact;
+use App\Entity\Search;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\DataTransformer\NumberToLocalizedStringTransformer;
 
 class PagesController extends Controller
 {
@@ -39,12 +43,59 @@ class PagesController extends Controller
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function rooms()
+    public function rooms(Request $request)
     {
-        $number = mt_rand(0, 1000);
 
+        $search = new Search();
+
+        $form = $this->createFormBuilder($search)
+            ->add('date_start', DateType::class, [
+                'widget' => 'single_text',
+                'input' => 'datetime',
+                'placeholder' => 'Please select a date',
+                'attr' => [
+                    'min' => (new \DateTime())->format('Y-m-d'),
+                    'max' => (new \DatetIme('+6 months'))->format('Y-m-d')
+                ]
+            ])
+            ->add('date_end', DateType::class, [
+                'widget' => 'single_text',
+                'input' => 'datetime',
+                'placeholder' => 'Please select a date',
+                'attr' => [
+                    'min' => (new \DateTime('+1 day'))->format('Y-m-d'),
+                    'max' => (new \DatetIme('+1 year'))->format('Y-m-d')
+                ]
+            ])
+            ->add('adult_count', IntegerType::class, [
+                'grouping' => true,
+                'scale' => 0,
+                'rounding_mode' => NumberToLocalizedStringTransformer::ROUND_UP,
+                'attr' => [
+                    'min' => '0',
+                    'max' => '10'
+                ]
+            ])
+            ->add('child_count', IntegerType::class, [
+                'grouping' => true,
+                'scale' => 0,
+                'rounding_mode' => NumberToLocalizedStringTransformer::ROUND_UP,
+                'attr' => [
+                    'min' => '0',
+                    'max' => '10'
+                ]
+            ])
+            ->add('search', SubmitType::class, ['label' => 'Search'])
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $search = $form->getData();
+
+        }
         return $this->render('pages/rooms.html.twig', array(
-            'number' => $number,
+            'form' => $form->createView(),
             'selectedNav' => 'rooms'
         ));
     }
@@ -77,7 +128,9 @@ class PagesController extends Controller
         $form = $this->createFormBuilder($contact)
             ->add('name', TextType::class)
             ->add('email', TextType::class)
-            ->add('subject', TextType::class)
+            ->add('subject', TextType::class, [
+                'required' => false
+            ])
             ->add('message', TextareaType::class)
             ->add('send', SubmitType::class, ['label' => 'Send'])
             ->getForm();

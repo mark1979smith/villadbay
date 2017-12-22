@@ -1,9 +1,15 @@
 {% extends 'base.html.twig' %}
+{% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
 {% block body %}
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <h1>Your lucky number is {{ number }}</h1>
+                <h1>Our Rooms</h1>
+                <p>With it's spacious feel and luxurious Queen bed, our Executive room is perfect if you like to stretch out and relax.
+                    There is a comfortable seating area, along with luxurious bedding that will guarantee you a great night’s sleep.</p>
+                {{ form_start(form) }}
+                {{ form_widget(form) }}
+                {{ form_end(form) }}
             </div>
         </div>
     </div>
