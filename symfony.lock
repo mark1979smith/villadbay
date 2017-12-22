@@ -134,6 +134,12 @@
             "ref": "cda8b550123383d25827705d05a42acf6819fe4e"
         }
     },
+    "symfony/security-core": {
+        "version": "v4.0.2"
+    },
+    "symfony/security-csrf": {
+        "version": "4.0.x-dev"
+    },
     "symfony/twig-bridge": {
         "version": "v4.0.2"
     },

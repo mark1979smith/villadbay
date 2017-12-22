@@ -9,11 +9,13 @@
 namespace App\Controller;
 
 use App\Entity\Contact;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class PagesController extends Controller
 {
@@ -65,9 +67,11 @@ class PagesController extends Controller
     /**
      * @Route("/contact", name="contact")
      *
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function contact()
+    public function contact(Request $request)
     {
         $contact = new Contact();
         $form = $this->createFormBuilder($contact)
@@ -75,7 +79,15 @@ class PagesController extends Controller
             ->add('email', TextType::class)
             ->add('subject', TextType::class)
             ->add('message', TextareaType::class)
-            ->add('send', SubmitType::class, ['label' => 'Send']);
+            ->add('send', SubmitType::class, ['label' => 'Send'])
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $contact = $form->getData();
+
+        }
 
         return $this->render('pages/contact.html.twig', array(
             'form' => $form->createView(),

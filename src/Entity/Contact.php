@@ -25,7 +25,7 @@ class Contact
     /**
      * @return string
      */
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -45,7 +45,7 @@ class Contact
     /**
      * @return string
      */
-    public function getEmail(): string
+    public function getEmail(): ?string
     {
         return $this->email;
     }
@@ -65,7 +65,7 @@ class Contact
     /**
      * @return string
      */
-    public function getSubject(): string
+    public function getSubject(): ?string
     {
         return $this->subject;
     }
@@ -85,7 +85,7 @@ class Contact
     /**
      * @return string
      */
-    public function getMessage(): string
+    public function getMessage(): ?string
     {
         return $this->message;
     }
