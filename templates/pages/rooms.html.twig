@@ -15,3 +15,11 @@
     </div>
 
 {% endblock %}
+
+{% block stylesheets %}
+<style type="text/css">
+    label.required:after {
+        content: '*';
+    }
+</style>
+{% endblock %}
