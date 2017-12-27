@@ -1,11 +1,29 @@
 {% extends 'base.html.twig' %}
+{% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
 {% block body %}
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <h1>Your lucky number is {{ number }}</h1>
-            </div>
+<div class="container">
+    <div class="row">
+        <div class="col">
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    {{ form_end(form) }}
         </div>
     </div>
+</div>
+{% endblock %}
 
+{% block stylesheets %}
+<style type="text/css">
+    body {
+        background: url('https://d3orc742w48r4f.cloudfront.net/images/accessories-beach-blue-feminine-65900.jpeg') no-repeat center center fixed;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        background-size: cover;
+        -o-background-size: cover;
+    }
+    label.required:after {
+        content: '*';
+    }
+
+</style>
 {% endblock %}

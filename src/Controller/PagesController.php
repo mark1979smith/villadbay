@@ -10,6 +10,7 @@ namespace App\Controller;
 
 use App\Entity\Contact;
 use App\Entity\Search;
+use App\Form\Search as SearchForm;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -30,10 +31,56 @@ class PagesController extends Controller
      */
     public function home()
     {
-        $number = mt_rand(0, 1000);
+        $search = new Search();
+        $form = $this->createFormBuilder($search)
+            ->add('date_start', DateType::class, [
+                'widget' => 'single_text',
+                'input' => 'datetime',
+                'placeholder' => 'Please select a date',
+                'label' => 'Check-In',
+                'attr' => [
+                    'min' => (new \DateTime())->format('Y-m-d'),
+                    'max' => (new \DatetIme('+15 years 6 months'))->format('Y-m-d')
+                ]
+            ])
+            ->add('date_end', DateType::class, [
+                'widget' => 'single_text',
+                'input' => 'datetime',
+                'placeholder' => 'Please select a date',
+                'label' => 'Check-Out',
+                'attr' => [
+                    'min' => (new \DateTime('+1 day'))->format('Y-m-d'),
+                    'max' => (new \DatetIme('+16 years'))->format('Y-m-d')
+                ]
+            ])
+            ->add('adult_count', IntegerType::class, [
+                'grouping' => true,
+                'scale' => 0,
+                'rounding_mode' => NumberToLocalizedStringTransformer::ROUND_UP,
+                'label' => 'How many Adults?',
+                'attr' => [
+                    'min' => '0',
+                    'max' => '10'
+                ],
+                'data' => '0'
+            ])
+            ->add('child_count', IntegerType::class, [
+                'grouping' => true,
+                'scale' => 0,
+                'rounding_mode' => NumberToLocalizedStringTransformer::ROUND_UP,
+                'label' => 'How many Children?',
+                'attr' => [
+                    'min' => '0',
+                    'max' => '10'
+                ],
+                'data' => '0'
+            ])
+            ->add('search', SubmitType::class, ['label' => 'Search'])
+            ->getForm();
 
         return $this->render('pages/home.html.twig', array(
-            'number' => $number,
+            'disablePanoramicView' => true,
+            'form' => $form->createView(),
             'selectedNav' => 'home'
         ));
     }
@@ -98,7 +145,6 @@ class PagesController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
             $search = $form->getData();
-            var_dump($search); exit;
         }
         return $this->render('pages/rooms.html.twig', array(
             'form' => $form->createView(),
