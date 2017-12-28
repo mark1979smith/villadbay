@@ -4,10 +4,15 @@
 <div class="container">
     <div class="row">
         <div class="col">
-    {{ form_start(form) }}
-    {{ form_widget(form) }}
-    {{ form_end(form) }}
+            <h1 class="display-3 text-center text-info">The Villa at The Bay</h1>
+            <h3 class="display-5 text-center text-white">LIFE AS IT SHOULD BE</h3>
         </div>
+    </div>
+    <div class="jumbotron">
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        {{ form_end(form) }}
+
     </div>
 </div>
 {% endblock %}
