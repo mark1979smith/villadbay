@@ -35,7 +35,7 @@ if ($_SERVER['APP_DEBUG'] ?? ('prod' !== ($_SERVER['APP_ENV'] ?? 'dev'))) {
     $auth_validated = (in_array($auth_user, $valid_users)) && ($auth_pass == $valid_passwords[$auth_user]);
 
     if (!$auth_validated) {
-        header('WWW-Authenticate: Basic realm="Bathstore staging website"');
+        header('WWW-Authenticate: Basic realm="Dev Environment"');
         header('HTTP/1.0 401 Unauthorized');
         die("Not authorized");
     }
