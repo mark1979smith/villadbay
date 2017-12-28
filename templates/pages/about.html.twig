@@ -187,7 +187,7 @@
                             <picture>
                                 <source media="(min-width: 1200px)" srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--kitchen-3-xl.jpg">
                                 <source media="(min-width: 992px)" srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--kitchen-3-lg.jpg">
-                                <source media="(min-width: 768px)" srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--kitchen3-md.jpg">
+                                <source media="(min-width: 768px)" srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--kitchen-3-md.jpg">
                                 <img class="d-block w-100" src="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--kitchen-3-sm.jpg" alt="First slide">
                             </picture>
                             <div class="carousel-caption d-none d-md-block">
@@ -268,10 +268,13 @@
 
 {% endblock %}
 
-{%  block javascripts %}
-<script type="text/javascript">
-    <!--
-
-        //-->
-</script>
+{% block stylesheets %}
+<style type="text/css">
+    @media (max-width: 576px) {
+        .display-1, .display-2, .display-3, .display-4, .display-5 {
+            font-size: x-large;
+            font-weight: bold;
+        }
+    }
+</style>
 {% endblock %}
