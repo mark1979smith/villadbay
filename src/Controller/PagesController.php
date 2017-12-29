@@ -62,6 +62,7 @@ class PagesController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $search = $form->getData();
             $returnedData['results'] = (mt_rand(0, 1) == 1);
+            $returnedData['searchData'] = $form->getData();
         }
         $returnedData['form'] = $form->createView();
 
