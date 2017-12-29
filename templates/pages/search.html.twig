@@ -1,4 +1,6 @@
+
 {% extends 'base.html.twig' %}
+{% set search_link_text = 'Search different dates' %}
 {% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
 {% block body %}
     <div class="container">
@@ -19,7 +21,7 @@
                             Great! The Villa at The Bay is available for your selected dates.
                         </div>
                         <span class="float-right">
-                            <a href="#" id="open_search">Search different dates</a>
+                            <a href="#" id="open_search">{{ search_link_text }}</a>
                         </span>
                         <div class="clearfix"></div>
                     {% endif %}
@@ -90,7 +92,7 @@
             $(this).text('Hide search form');
         } else {
             $('#search_form').addClass('d-none');
-            $(this).text('Search different dates');
+            $(this).text('{{ search_link_text }}');
         }
     })
 </script>
