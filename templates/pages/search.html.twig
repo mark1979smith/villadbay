@@ -9,21 +9,34 @@
                     like to stretch out and relax. There is a comfortable seating area, along with luxurious bedding
                     that will guarantee you a great night’s sleep.</p>
 
-                {% if results is defined and results == false %}
-                <div class="alert alert-danger" role="alert">
-                    Unfortunately The Villa at The Bay is not available for your selected dates.
-                </div>
+                {% if results is defined %}
+                    {% if results == false %}
+                        <div class="alert alert-danger" role="alert">
+                            Unfortunately The Villa at The Bay is not available for your selected dates.
+                        </div>
+                    {% else %}
+                        <div class="alert alert-success" role="alert">
+                            Great! The Villa at The Bay is available for your selected dates.
+                        </div>
+                        <span class="float-right">
+                            <a href="#" id="open_search">Search different dates</a>
+                        </span>
+                        <div class="clearfix"></div>
+                    {% endif %}
                 {% endif %}
 
-                {{ form_start(form) }}
+                <div id="search_form" class="jumbotron{% if results is defined and results != false %} d-none{% endif  %}">
+                    {{ form_start(form) }}
 
-                {{ form_row(form.date_start) }}
-                {{ form_row(form.date_end) }}
-                {{ form_row(form.adult_count) }}
-                {{ form_row(form.child_count) }}
-                {{ form_row(form.search) }}
+                    {{ form_row(form.date_start) }}
+                    {{ form_row(form.date_end) }}
+                    {{ form_row(form.adult_count) }}
+                    {{ form_row(form.child_count) }}
+                    {{ form_row(form.search) }}
 
-                {{ form_end(form) }}
+                    {{ form_end(form) }}
+
+                </div>
             </div>
         </div>
     </div>
@@ -65,4 +78,20 @@
 
 
     </style>
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript">
+    $('#open_search').click(function(e) {
+        e.preventDefault();
+
+        if ($('#search_form').hasClass('d-none')) {
+            $('#search_form').removeClass('d-none');
+            $(this).text('Hide search form');
+        } else {
+            $('#search_form').addClass('d-none');
+            $(this).text('Search different dates');
+        }
+    })
+</script>
 {% endblock %}
