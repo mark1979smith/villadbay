@@ -34,7 +34,7 @@ class PagesController extends Controller
     {
         $search = new Search();
 
-        $form = $this->createForm(SearchType::class, $search, ['action' => $this->generateUrl('rooms')]);
+        $form = $this->createForm(SearchType::class, $search, ['action' => $this->generateUrl('search')]);
         return $this->render('pages/home.html.twig', array(
             'disablePanoramicView' => true,
             'form' => $form->createView(),
@@ -43,11 +43,11 @@ class PagesController extends Controller
     }
 
     /**
-     * @Route("/rooms", name="rooms")
+     * @Route("/search-availability", name="search")
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function rooms(Request $request)
+    public function search(Request $request)
     {
 
         $search = new Search();
@@ -56,13 +56,16 @@ class PagesController extends Controller
 
         $form->handleRequest($request);
 
+        $returnedData = [
+            'selectedNav' => 'rooms'
+        ];
         if ($form->isSubmitted() && $form->isValid()) {
             $search = $form->getData();
+            $returnedData['results'] = false;
         }
-        return $this->render('pages/rooms.html.twig', array(
-            'form' => $form->createView(),
-            'selectedNav' => 'rooms'
-        ));
+        $returnedData['form'] = $form->createView();
+
+        return $this->render('pages/search.html.twig', $returnedData);
     }
 
     /**

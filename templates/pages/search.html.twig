@@ -3,11 +3,18 @@
 {% block body %}
     <div class="container">
         <div class="row">
-            <div class="col-12">
-                <h1 class="display-3">Our Rooms</h1>
+            <div class="col">
+                <h1 class="display-3">Search Availability</h1>
                 <p class="lead">With it's spacious feel and luxurious Queen bed, our Executive room is perfect if you
                     like to stretch out and relax. There is a comfortable seating area, along with luxurious bedding
                     that will guarantee you a great night’s sleep.</p>
+
+                {% if results is defined and results == false %}
+                <div class="alert alert-danger" role="alert">
+                    Unfortunately The Villa at The Bay is not available for your selected dates.
+                </div>
+                {% endif %}
+
                 {{ form_start(form) }}
 
                 {{ form_row(form.date_start) }}
