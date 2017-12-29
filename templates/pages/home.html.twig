@@ -20,37 +20,40 @@
 {% block stylesheets %}
 <style type="text/css">
     body {
-        background: url('https://d3orc742w48r4f.cloudfront.net/images/accessories-beach-blue-feminine-sm.jpg') no-repeat center 75% fixed;
+        background-image: url('https://d3orc742w48r4f.cloudfront.net/images/accessories-beach-blue-feminine.jpg');
+        background-repeat: no-repeat;
+        background-position: center 75%;
+        background-attachment: fixed;
         -webkit-background-size: cover;
         -moz-background-size: cover;
         background-size: cover;
         -o-background-size: cover;
     }
 
+    @media (max-width: 991px) {
+        body {
+            background-image: url('https://d3orc742w48r4f.cloudfront.net/images/accessories-beach-blue-feminine-lg.jpg');
+        }
+    }
+
+    @media (max-width: 767px) {
+        body {
+            background-image: url('https://d3orc742w48r4f.cloudfront.net/images/accessories-beach-blue-feminine-md.jpg');
+        }
+    }
+
     @media (max-width: 576px) {
+        body {
+            background-image: url('https://d3orc742w48r4f.cloudfront.net/images/accessories-beach-blue-feminine-sm.jpg');
+        }
+
         .display-1, .display-2, .display-3, .display-4, .display-5 {
             font-size: x-large;
             font-weight: bold;
         }
     }
 
-    @media (min-width: 768px) {
-        body {
-            background-image: url('https://d3orc742w48r4f.cloudfront.net/images/accessories-beach-blue-feminine-md.jpg');
-        }
-    }
 
-    @media (min-width: 992px) {
-        body {
-            background-image: url('https://d3orc742w48r4f.cloudfront.net/images/accessories-beach-blue-feminine-lg.jpg');
-        }
-    }
-
-    @media (min-width: 1200px) {
-        body {
-            background-image: url('https://d3orc742w48r4f.cloudfront.net/images/accessories-beach-blue-feminine.jpg');
-        }
-    }
 
 </style>
 {% endblock %}
