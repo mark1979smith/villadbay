@@ -46,10 +46,10 @@ class SearchType extends AbstractType
                 'rounding_mode' => NumberToLocalizedStringTransformer::ROUND_UP,
                 'label' => 'How many Adults?',
                 'attr' => [
-                    'min' => '0',
+                    'min' => '1',
                     'max' => '10'
                 ],
-                'data' => '0'
+                'data' => '2'
             ])
             ->add('child_count', IntegerType::class, [
                 'grouping' => true,
