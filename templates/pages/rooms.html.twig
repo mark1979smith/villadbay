@@ -9,7 +9,13 @@
                     like to stretch out and relax. There is a comfortable seating area, along with luxurious bedding
                     that will guarantee you a great night’s sleep.</p>
                 {{ form_start(form) }}
-                {{ form_widget(form) }}
+
+                {{ form_row(form.date_start) }}
+                {{ form_row(form.date_end) }}
+                {{ form_row(form.adult_count) }}
+                {{ form_row(form.child_count) }}
+                {{ form_row(form.search) }}
+
                 {{ form_end(form) }}
             </div>
         </div>
