@@ -33,6 +33,7 @@ class PagesController extends Controller
     {
         $search = new Search();
         $form = $this->createFormBuilder($search)
+            ->setAction($this->generateUrl('rooms'))
             ->add('date_start', DateType::class, [
                 'widget' => 'single_text',
                 'input' => 'datetime',
