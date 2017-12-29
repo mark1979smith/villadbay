@@ -5,7 +5,9 @@
         <div class="row">
             <div class="col-12">
                 <h1 class="display-3">Our Rooms</h1>
-                <p class="lead">With it's spacious feel and luxurious Queen bed, our Executive room is perfect if you like to stretch out and relax. There is a comfortable seating area, along with luxurious bedding that will guarantee you a great night’s sleep.</p>
+                <p class="lead">With it's spacious feel and luxurious Queen bed, our Executive room is perfect if you
+                    like to stretch out and relax. There is a comfortable seating area, along with luxurious bedding
+                    that will guarantee you a great night’s sleep.</p>
                 {{ form_start(form) }}
                 {{ form_widget(form) }}
                 {{ form_end(form) }}
@@ -17,11 +19,37 @@
 
 {% block stylesheets %}
     <style type="text/css">
+        #pano {
+            background-image: url('https://d3orc742w48r4f.cloudfront.net/images/pano/bribie-island-brisbane-australia.jpg');
+            height: 320px !important;
+        }
+
+        @media (max-width: 991px) {
+            #pano {
+                background-image: url('https://d3orc742w48r4f.cloudfront.net/images/pano/bribie-island-brisbane-australia-md.jpg');
+                height: 381px !important;
+            }
+        }
+
+        @media (max-width: 767px) {
+            #pano {
+                background-image: url('https://d3orc742w48r4f.cloudfront.net/images/pano/bribie-island-brisbane-australia-sm.jpg');
+                height: 307px !important;
+            }
+        }
+
         @media (max-width: 576px) {
+            #pano {
+                background-image: url('https://d3orc742w48r4f.cloudfront.net/images/pano/bribie-island-brisbane-australia-xs.jpg');
+                height: 230px !important;
+            }
+
             .display-1, .display-2, .display-3, .display-4, .display-5 {
                 font-size: x-large;
                 font-weight: bold;
             }
         }
+
+
     </style>
 {% endblock %}
