@@ -70,7 +70,10 @@
                             <dt>Your selected dates:</dt>
                             <dd>Check-In: {{ searchData.getDateStart().format('jS F Y') }}</dd>
                             <dd>Check-Out: {{ searchData.getDateEnd().format('jS F Y') }}</dd>
-
+                                                    </dl>
+                        <dl class="list-inline">
+                            <dt>Total price for your stay:</dt>
+                            <dd class="display-4">{{ searchData.getPrice() }}</dd>
                         </dl>
                     </div>
                     <div class="card-footer text-center">
