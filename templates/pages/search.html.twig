@@ -10,8 +10,8 @@
                     like to stretch out and relax. There is a comfortable seating area, along with luxurious bedding
                     that will guarantee you a great night’s sleep.</p>
 
-                {% if results is defined %}
-                    {% if results == false %}
+                {% if searchData is defined %}
+                    {% if searchData.isAvailable() == false %}
                         <div class="alert alert-danger" role="alert">
                             Unfortunately The Villa at The Bay is not available for your selected dates.
                         </div>
@@ -27,7 +27,7 @@
                 {% endif %}
 
                 <div id="search_form"
-                     class="jumbotron{% if results is defined and results != false %} d-none{% endif %}">
+                     class="jumbotron{% if searchData is defined and searchData.isAvailable() != false %} d-none{% endif %}">
                     {{ form_start(form) }}
 
                     {{ form_row(form.date_start) }}
@@ -43,7 +43,7 @@
         </div>
     </div>
 
-    {% if results is defined and results == true %}
+    {% if searchData is defined and searchData.isAvailable() == true %}
         <div class="container-fluid">
             <div class="row justify-content-center">
                 <div class="card">

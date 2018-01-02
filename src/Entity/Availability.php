@@ -12,6 +12,10 @@ use Symfony\Component\Intl\Intl;
 
 class Availability
 {
+
+    /** @var bool */
+    protected $available;
+
     /** @var \DateTime */
     protected $dateStart;
 
@@ -104,6 +108,25 @@ class Availability
         return $this;
     }
 
+    /**
+     * @return bool
+     */
+    public function isAvailable(): bool
+    {
+        return $this->available;
+    }
+
+    /**
+     * @param bool $available
+     *
+     * @return Availability
+     */
+    public function setAvailable(bool $available): Availability
+    {
+        $this->available = $available;
+
+        return $this;
+    }
 
 
     public static function search(Search $search)
@@ -112,19 +135,32 @@ class Availability
         $availability = new self;
         $availability->dateStart = $search->getDateStart();
         $availability->dateEnd = $search->getDateEnd();
+        $availability->available = self::calcIsAvailable($availability);
 
-        $availability->days = $availability->dateStart->diff($availability->dateEnd)->format('%R%a');
+        if ($availability->available) {
+            $availability->days = $availability->dateStart->diff($availability->dateEnd)->format('%R%a');
 
-        $villaPrice = ($availability->days * 89);
-        $childPrice = ($search->getChildCount() > 0 ? ($availability->days * 10) : 0);
-        $cleaningFee = 30;
+            $villaPrice = ($availability->days * 89);
+            $childPrice = ($search->getChildCount() > 0 ? ($availability->days * 10) : 0);
+            $cleaningFee = 30;
 
-        $symbol = Intl::getCurrencyBundle()->getCurrencySymbol('AUD');
-        $fractionDigits = Intl::getCurrencyBundle()->getFractionDigits('INR');
+            $symbol = Intl::getCurrencyBundle()->getCurrencySymbol('AUD');
+            $fractionDigits = Intl::getCurrencyBundle()->getFractionDigits('AUD');
 
 
-        $availability->price = $symbol . number_format(($villaPrice + $childPrice) + $cleaningFee, $fractionDigits);
+            $availability->price = $symbol . number_format(($villaPrice + $childPrice) + $cleaningFee, $fractionDigits);
+        }
 
         return $availability;
+    }
+
+    /**
+     * @param \App\Entity\Availability $dates
+     *
+     * @return bool
+     */
+    protected static function calcIsAvailable(self $dates): bool
+    {
+        return (mt_rand(0, 1) == 1);
     }
 }
