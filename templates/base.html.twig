@@ -27,16 +27,16 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
-            <li class="nav-item{% if selectedNav == 'home' %} active{% endif %}">
+            <li class="nav-item{% if selectedNav is defined and selectedNav == 'home' %} active{% endif %}">
                 <a href="{{ path('home') }}" class="nav-link">Home</a>
             </li>
-            <li class="nav-item{% if selectedNav == 'rooms' %} active{% endif %}">
+            <li class="nav-item{% if selectedNav is defined and selectedNav == 'rooms' %} active{% endif %}">
                 <a href="{{ path('search') }}" class="nav-link">Search</a>
             </li>
-            <li class="nav-item{% if selectedNav == 'about' %} active{% endif %}">
+            <li class="nav-item{% if selectedNav is defined and selectedNav == 'about' %} active{% endif %}">
                 <a href="{{ path('about') }}" class="nav-link">About</a>
             </li>
-            <li class="nav-item{% if selectedNav == 'contact' %} active{% endif %}">
+            <li class="nav-item{% if selectedNav is defined and selectedNav == 'contact' %} active{% endif %}">
                 <a href="{{ path('contact') }}" class="nav-link">Contact</a>
             </li>
         </ul>

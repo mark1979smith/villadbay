@@ -85,7 +85,7 @@ class PagesController extends Controller
     }
 
     /**
-     * @Route("/contact", name="contact")
+     * @Route("/contact-us", name="contact")
      *
      * @param \Symfony\Component\HttpFoundation\Request $request
      *

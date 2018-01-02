@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+{% block body %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-9">
+                <h1 class="display-3">Make your booking</h1>
+                <p class="lead">Should you have any questions please don't hesitate to <a href="{{ path('contact') }}">contact us</a>.</p>
+
+                {{ form_start(form) }}
+
+                {{ form_row(form.time_of_arrival) }}
+                {{ form_row(form.contact_name) }}
+                {{ form_row(form.contact_address) }}
+                {{ form_row(form.contact_number) }}
+                {{ form_row(form.alternative_contact_number) }}
+                {{ form_row(form.fax_number) }}
+                {{ form_row(form.email_address) }}
+                {{ form_row(form.submit) }}
+
+                {{ form_end(form) }}
+
+            </div>
+            <div class="col-3">
+                <div class="card">
+                    <picture>
+                        <source media="(min-width: 768px)"
+                                srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--bedroom-5-md.jpg">
+                        <img class="card-img-top" src="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--bedroom-5-sm.jpg">
+                    </picture>
+                    <div class="card-body">
+                        <h5>Executive Queen Room</h5>
+
+                        <dl class="list-inline">
+                            <dt>Amenities include:</dt>
+                            <dd class="list-inline-item">Free WI-FI access</dd>
+                            <dd class="list-inline-item">Flat screen TV</dd>
+                            <dd class="list-inline-item">DVD player</dd>
+                            <dd class="list-inline-item">Tea &amp; coffee making facilities</dd>
+                        </dl>
+                        <dl class="list-inline">
+                            <dt>Your selected dates:</dt>
+                            {#<dd>Check-In: {{ searchData.getDateStart().format('jS F Y') }}</dd>#}
+                            {#<dd>Check-Out: {{ searchData.getDateEnd().format('jS F Y') }}</dd>#}
+                        </dl>
+                        <dl class="list-inline">
+                            <dt>Total price for your stay:</dt>
+                            {#<dd class="display-4">{{ searchData.getPrice() }}</dd>#}
+                        </dl>
+                    </div>
+                    <div class="card-footer text-center">
+                        <button type="button" class="btn btn-success">Proceed</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block stylesheets %}
+    <style type="text/css">
+        label.required:after {
+            content: '*';
+        }
+    </style>
+{% endblock %}
