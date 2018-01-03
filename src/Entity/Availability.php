@@ -71,7 +71,7 @@ class Availability
     /**
      * @return string
      */
-    public function getDays(): string
+    public function getDays(): ?string
     {
         return $this->days;
     }
@@ -91,7 +91,7 @@ class Availability
     /**
      * @return float
      */
-    public function getPrice(): string
+    public function getPrice(): ?string
     {
         return $this->price;
     }

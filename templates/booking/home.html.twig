@@ -4,7 +4,7 @@
 
     <div class="container">
         <div class="row">
-            <div class="col-9">
+            <div class="col-md-9 col-sm-12">
                 <h1 class="display-3">Make your booking</h1>
                 <p class="lead">Should you have any questions please don't hesitate to <a href="{{ path('contact') }}">contact us</a>.</p>
 
@@ -22,7 +22,7 @@
                 {{ form_end(form) }}
 
             </div>
-            <div class="col-3">
+            <div class="col-sm-12 col-md-3">
                 <div class="card">
                     <picture>
                         <source media="(min-width: 768px)"
@@ -40,17 +40,22 @@
                             <dd class="list-inline-item">Tea &amp; coffee making facilities</dd>
                         </dl>
                         <dl class="list-inline">
-                            <dt>Your selected dates:</dt>
-                            {#<dd>Check-In: {{ searchData.getDateStart().format('jS F Y') }}</dd>#}
-                            {#<dd>Check-Out: {{ searchData.getDateEnd().format('jS F Y') }}</dd>#}
+                            <dt>Your guests:</dt>
+                            <dd class="list-inline-item">{{ searchData.getAdultCount() }} adult{% if searchData.getAdultCount() > 1 %}s{% endif %}</dd>
+                            {% if searchData.getChildCount > 0 %}
+                                <dd class="list-inline-item">{{ searchData.getChildCount() }} {% if searchData.getChildCount() == 1 %}child{% else %}children{% endif %}</dd>
+                            {% endif %}
                         </dl>
                         <dl class="list-inline">
-                            <dt>Total price for your stay:</dt>
-                            {#<dd class="display-4">{{ searchData.getPrice() }}</dd>#}
+                            <dt>Your selected dates:</dt>
+                            <dd>Check-In: {{ searchData.getDateStart().format('jS F Y') }}</dd>
+                            <dd>Check-Out: {{ searchData.getDateEnd().format('jS F Y') }}</dd>
                         </dl>
                     </div>
                     <div class="card-footer text-center">
-                        <button type="button" class="btn btn-success">Proceed</button>
+
+                        Total price for your stay:
+                        <strong>{{ availableData.getPrice() }}</strong>
                     </div>
                 </div>
             </div>

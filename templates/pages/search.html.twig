@@ -10,6 +10,12 @@
                     like to stretch out and relax. There is a comfortable seating area, along with luxurious bedding
                     that will guarantee you a great night’s sleep.</p>
 
+                {% for message in app.flashes('notice') %}
+                    <div class="alert alert-info" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+
                 {% if searchData is defined %}
                     {% if searchData.isAvailable() == false %}
                         <div class="alert alert-danger" role="alert">
@@ -77,7 +83,7 @@
                         </dl>
                     </div>
                     <div class="card-footer text-center">
-                        <button type="button" class="btn btn-success">Proceed</button>
+                        <button type="button" class="btn btn-success"><a href="{{ path('booking', {'_search': searchDataSerialised}) }}" class="text-light">Proceed</a></button>
                     </div>
                 </div>
             </div>
