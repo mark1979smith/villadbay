@@ -26,6 +26,9 @@ class Availability
     protected $days;
 
     /** @var string */
+    protected $currencySymbol;
+
+    /** @var float */
     protected $price;
 
     /**
@@ -128,6 +131,27 @@ class Availability
         return $this;
     }
 
+    /**
+     * @return string
+     */
+    public function getCurrencySymbol(): string
+    {
+        return $this->currencySymbol;
+    }
+
+    /**
+     * @param string $currencySymbol
+     *
+     * @return Availability
+     */
+    public function setCurrencySymbol(string $currencySymbol): Availability
+    {
+        $this->currencySymbol = $currencySymbol;
+
+        return $this;
+    }
+
+
 
     public static function search(Search $search)
     {
@@ -147,8 +171,8 @@ class Availability
             $symbol = Intl::getCurrencyBundle()->getCurrencySymbol('AUD');
             $fractionDigits = Intl::getCurrencyBundle()->getFractionDigits('AUD');
 
-
-            $availability->price = $symbol . number_format(($villaPrice + $childPrice) + $cleaningFee, $fractionDigits);
+            $availability->currencySymbol = $symbol;
+            $availability->price = number_format(($villaPrice + $childPrice) + $cleaningFee, $fractionDigits);
         }
 
         return $availability;
