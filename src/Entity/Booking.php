@@ -1,50 +1,104 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: mark.smith
- * Date: 02/01/2018
- * Time: 20:15
- */
 
 namespace App\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity(repositoryClass="App\Repository\BookingRepository")
+ */
 class Booking
 {
-    /** @var string */
-    protected $contactName;
-
-    /** @var string */
-    protected $contactAddress;
-
-    /** @var string */
-    protected $contactNumber;
-
-    /** @var string */
-    protected $alternativeContactNumber;
-
-    /** @var string */
-    protected $faxNumber;
-
-    /** @var string */
-    protected $emailAddress;
-
-    /** @var string */
-    protected $timeOfArrival;
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    private $id;
 
     /**
-     * @return string
+     * @ORM\Column(type="string", length=100)
      */
-    public function getContactName(): ?string
+    private $contactName;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $contactAddress;
+
+    /**
+     * @ORM\Column(type="string", length=30)
+     */
+    private $contactNumber;
+
+    /**
+     * @ORM\Column(type="string", length=30, nullable=true)
+     */
+    private $alternativeContactNumber;
+
+    /**
+     * @ORM\Column(type="string", length=30, nullable=true)
+     */
+    private $faxNumber;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $emailAddress;
+
+    /**
+     * @ORM\Column(type="datetimetz", nullable=true, options={"default" : null})
+     */
+    private $checkIn;
+
+    /**
+     * @ORM\Column(type="datetimetz", nullable=true, options={"default" : null})
+     */
+    private $checkOut;
+
+    /**
+     * @ORM\Column(type="time")
+     */
+    private $timeOfArrival;
+
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    private $adults;
+
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    private $children;
+
+    /**
+     * @ORM\Column(type="float")
+     */
+    private $totalPrice;
+
+    /**
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getContactName()
     {
         return $this->contactName;
     }
 
     /**
-     * @param string $contactName
+     * @param mixed $contactName
      *
      * @return Booking
      */
-    public function setContactName(string $contactName): Booking
+    public function setContactName($contactName)
     {
         $this->contactName = $contactName;
 
@@ -52,19 +106,19 @@ class Booking
     }
 
     /**
-     * @return string
+     * @return mixed
      */
-    public function getContactAddress(): ?string
+    public function getContactAddress()
     {
         return $this->contactAddress;
     }
 
     /**
-     * @param string $contactAddress
+     * @param mixed $contactAddress
      *
      * @return Booking
      */
-    public function setContactAddress(string $contactAddress): Booking
+    public function setContactAddress($contactAddress)
     {
         $this->contactAddress = $contactAddress;
 
@@ -72,19 +126,19 @@ class Booking
     }
 
     /**
-     * @return string
+     * @return mixed
      */
-    public function getContactNumber(): ?string
+    public function getContactNumber()
     {
         return $this->contactNumber;
     }
 
     /**
-     * @param string $contactNumber
+     * @param mixed $contactNumber
      *
      * @return Booking
      */
-    public function setContactNumber(string $contactNumber): Booking
+    public function setContactNumber($contactNumber)
     {
         $this->contactNumber = $contactNumber;
 
@@ -92,19 +146,19 @@ class Booking
     }
 
     /**
-     * @return string
+     * @return mixed
      */
-    public function getAlternativeContactNumber(): ?string
+    public function getAlternativeContactNumber()
     {
         return $this->alternativeContactNumber;
     }
 
     /**
-     * @param string $alternativeContactNumber
+     * @param mixed $alternativeContactNumber
      *
      * @return Booking
      */
-    public function setAlternativeContactNumber(string $alternativeContactNumber): Booking
+    public function setAlternativeContactNumber($alternativeContactNumber)
     {
         $this->alternativeContactNumber = $alternativeContactNumber;
 
@@ -112,19 +166,19 @@ class Booking
     }
 
     /**
-     * @return string
+     * @return mixed
      */
-    public function getFaxNumber(): ?string
+    public function getFaxNumber()
     {
         return $this->faxNumber;
     }
 
     /**
-     * @param string $faxNumber
+     * @param mixed $faxNumber
      *
      * @return Booking
      */
-    public function setFaxNumber(string $faxNumber): Booking
+    public function setFaxNumber($faxNumber)
     {
         $this->faxNumber = $faxNumber;
 
@@ -132,19 +186,19 @@ class Booking
     }
 
     /**
-     * @return string
+     * @return mixed
      */
-    public function getEmailAddress(): ?string
+    public function getEmailAddress()
     {
         return $this->emailAddress;
     }
 
     /**
-     * @param string $emailAddress
+     * @param mixed $emailAddress
      *
      * @return Booking
      */
-    public function setEmailAddress(string $emailAddress): Booking
+    public function setEmailAddress($emailAddress)
     {
         $this->emailAddress = $emailAddress;
 
@@ -152,24 +206,125 @@ class Booking
     }
 
     /**
-     * @return string
+     * @return mixed
      */
-    public function getTimeOfArrival(): ?string
+    public function getTimeOfArrival()
     {
         return $this->timeOfArrival;
     }
 
     /**
-     * @param string $timeOfArrival
+     * @param mixed $timeOfArrival
      *
      * @return Booking
      */
-    public function setTimeOfArrival($timeOfArrival): Booking
+    public function setTimeOfArrival($timeOfArrival)
     {
         $this->timeOfArrival = $timeOfArrival;
 
         return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getCheckIn()
+    {
+        return $this->checkIn;
+    }
+
+    /**
+     * @param mixed $checkIn
+     *
+     * @return Booking
+     */
+    public function setCheckIn($checkIn)
+    {
+        $this->checkIn = $checkIn;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCheckOut()
+    {
+        return $this->checkOut;
+    }
+
+    /**
+     * @param mixed $checkOut
+     *
+     * @return Booking
+     */
+    public function setCheckOut($checkOut)
+    {
+        $this->checkOut = $checkOut;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAdults()
+    {
+        return $this->adults;
+    }
+
+    /**
+     * @param mixed $adults
+     *
+     * @return Booking
+     */
+    public function setAdults($adults)
+    {
+        $this->adults = $adults;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getChildren()
+    {
+        return $this->children;
+    }
+
+    /**
+     * @param mixed $children
+     *
+     * @return Booking
+     */
+    public function setChildren($children)
+    {
+        $this->children = $children;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTotalPrice()
+    {
+        return $this->totalPrice;
+    }
+
+    /**
+     * @param mixed $totalPrice
+     *
+     * @return Booking
+     */
+    public function setTotalPrice($totalPrice)
+    {
+        $this->totalPrice = $totalPrice;
+
+        return $this;
+    }
+
 
 
 }
