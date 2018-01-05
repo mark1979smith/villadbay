@@ -22,7 +22,12 @@ class Search
     /**
      * @Assert\Date()
      * @Assert\GreaterThanOrEqual(
-     *     propertyPath="dateStart"
+     *     propertyPath="dateStart",
+     *     message="We would all like an infinite holiday, but could you ensure your Check-Out date is after your Check-In date."
+     * )
+     * @Assert\NotEqualTo(
+     *     propertyPath="dateStart",
+     *     message="A minimum 1 night stay is required."
      * )
      * @var \DateTime
      */
