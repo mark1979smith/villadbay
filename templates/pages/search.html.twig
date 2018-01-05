@@ -36,6 +36,8 @@
                      class="jumbotron{% if searchData is defined and searchData.isAvailable() != false %} d-none{% endif %}">
                     {{ form_start(form) }}
 
+                    {{ form_errors(form) }}
+
                     {{ form_row(form.date_start) }}
                     {{ form_row(form.date_end) }}
                     {{ form_row(form.adult_count) }}

@@ -8,15 +8,22 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
 
 class Search
 {
     /**
+     * @Assert\Date()
+     * @Assert\GreaterThanOrEqual("today")
      * @var \DateTime
      */
     protected $dateStart;
 
     /**
+     * @Assert\Date()
+     * @Assert\GreaterThanOrEqual(
+     *     propertyPath="dateStart"
+     * )
      * @var \DateTime
      */
     protected $dateEnd;
