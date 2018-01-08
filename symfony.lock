@@ -59,6 +59,9 @@
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
     },
+    "ocramius/package-versions": {
+        "version": "1.2.0"
+    },
     "ocramius/proxy-manager": {
         "version": "2.1.1"
     },
@@ -155,6 +158,15 @@
     "symfony/lts": {
         "version": "4-dev"
     },
+    "symfony/maker-bundle": {
+        "version": "1.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "1.0",
+            "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
+        }
+    },
     "symfony/options-resolver": {
         "version": "v4.0.2"
     },
@@ -179,11 +191,20 @@
             "ref": "cda8b550123383d25827705d05a42acf6819fe4e"
         }
     },
-    "symfony/security-core": {
-        "version": "v4.0.2"
+    "symfony/security": {
+        "version": "v4.0.3"
     },
-    "symfony/security-csrf": {
-        "version": "4.0.x-dev"
+    "symfony/security-bundle": {
+        "version": "3.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "3.3",
+            "ref": "85834af1496735f28d831489d12ab1921a875e0d"
+        }
+    },
+    "symfony/thanks": {
+        "version": "v1.0.1"
     },
     "symfony/translation": {
         "version": "3.3",
@@ -217,5 +238,11 @@
     },
     "twig/twig": {
         "version": "v2.4.4"
+    },
+    "zendframework/zend-code": {
+        "version": "3.3.0"
+    },
+    "zendframework/zend-eventmanager": {
+        "version": "3.2.0"
     }
 }
