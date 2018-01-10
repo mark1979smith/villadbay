@@ -18,27 +18,6 @@ if (!isset($_SERVER['APP_ENV'])) {
 if ($_SERVER['APP_DEBUG'] ?? ('prod' !== ($_SERVER['APP_ENV'] ?? 'dev'))) {
     umask(0000);
 
-    $valid_passwords = array("admin" => "Password");
-    $valid_users = array_keys($valid_passwords);
-
-    if (isset($_SERVER['PHP_AUTH_USER'])) {
-        $auth_user = $_SERVER['PHP_AUTH_USER'];
-    } else {
-        $auth_user = '';
-    }
-    if (isset($_SERVER['PHP_AUTH_PW'])) {
-        $auth_pass = $_SERVER['PHP_AUTH_PW'];
-    } else {
-        $auth_pass = '';
-    }
-
-    $auth_validated = (in_array($auth_user, $valid_users)) && ($auth_pass == $valid_passwords[$auth_user]);
-
-    if (!$auth_validated) {
-        header('WWW-Authenticate: Basic realm="Dev Environment"');
-        header('HTTP/1.0 401 Unauthorized');
-        die("Not authorized");
-    }
     Debug::enable();
 }
 
