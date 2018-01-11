@@ -46,7 +46,7 @@ RUN github_token="OWVmNjI4NzYyYmQyOTVjYWUxZWFmMmJmNGQ3ZmNkYjc0MzhlMjczYQ==" | ba
         sed s/,//g \
     ) && \
     mkdir -p ~/.ssh && \
-    ssh-keygen -t rsa -N "" -b 4096 -C "mark1979smith@googlemail.com" && \
+    ssh-keygen -t rsa -N "" -b 4096 -C "mark1979smith@googlemail.com" -f ~/.ssh/id_rsa && \
     eval $(ssh-agent -s) && \
     ssh-add ~/.ssh/id_rsa && \
     # Create New Deployment Key
