@@ -43,7 +43,7 @@ RUN github_token="OWVmNjI4NzYyYmQyOTVjYWUxZWFmMmJmNGQ3ZmNkYjc0MzhlMjczYQ==" | ba
     curl -i -H 'Authorization: token $github_token' https://api.github.com/repos/mark1979smith/villadbay/keys | \
         grep id |  \
         awk '{print $2}' |  \
-        sed s/,//g
+        sed s/,//g \
     ) && \
     mkdir -p ~/.ssh && \
     ssh-keygen -t rsa -N "" -b 4096 -C "mark1979smith@googlemail.com" && \
