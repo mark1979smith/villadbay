@@ -38,9 +38,13 @@ RUN groupadd deploygroup && \
 # Change owner to avoid running as root
 USER deployuser
 
-RUN GITHUB_TOKEN="OWVmNjI4NzYyYmQyOTVjYWUxZWFmMmJmNGQ3ZmNkYjc0MzhlMjczYQ==" | base64 --decode && \
+ARG GITHUB_TOKEN="OWVmNjI4NzYyYmQyOTVjYWUxZWFmMmJmNGQ3ZmNkYjc0MzhlMjczYQ=="
+
+RUN TOKEN_DECODED=$GITHUB_TOKEN | base64 --decode  && \
+    echo $GITHUB_TOKEN && \
+    echo $TOKEN_DECODED && \
     CURRENT_DEPLOYMENT_KEY_ID=$( \
-        curl -i -H 'Authorization: token $GITHUB_TOKEN' https://api.github.com/repos/mark1979smith/villadbay/keys | \
+        curl -i -H 'Authorization: token $TOKEN_DECODED' https://api.github.com/repos/mark1979smith/villadbay/keys | \
             grep id |  \
             awk '{print $2}' |  \
             sed s/,//g \
@@ -55,7 +59,7 @@ RUN GITHUB_TOKEN="OWVmNjI4NzYyYmQyOTVjYWUxZWFmMmJmNGQ3ZmNkYjc0MzhlMjczYQ==" | ba
     printf "%s"  '", "read_only": false}' >> test.json && \
     curl -i -X POST -H 'Authorization: token $GITHUB_TOKEN' -d @test.json https://api.github.com/repos/mark1979smith/villadbay/keys && \
     # Remove Old Deployment Key
-    echo "Removing Deplooyment Key Id: $CURRENT_DEPLOYMENT_KEY_ID" && \
+    echo "Removing Deployment Key Id: $CURRENT_DEPLOYMENT_KEY_ID" && \
     curl -i -X DELETE -H 'Authorization: token $GITHUB_TOKEN' https://api.github.com/repos/mark1979smith/villadbay/keys/$CURRENT_DEPLOYMENT_KEY_ID && \
     rm -f test.json && \
     git clone git@github.com:mark1979smith/villadbay.git . && \
