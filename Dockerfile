@@ -59,7 +59,8 @@ RUN
     curl -i -X POST -H 'Authorization: token $github_token' -d @test.json https://api.github.com/repos/mark1979smith/villadbay/keys && \
 
     # Remove Old Deployment Key
-    curl -i -X DELETE -H 'Authorization: token $github_token' -d @test.json https://api.github.com/repos/mark1979smith/villadbay/keys/$current_deployment_key_id && \
+    curl -i -X DELETE -H 'Authorization: token $github_token' https://api.github.com/repos/mark1979smith/villadbay/keys/$current_deployment_key_id && \
+    rm -f test.json && \
 
     git clone git@github.com:mark1979smith/villadbay.git . && \
     git config user.email "mark1979smith@googlemail.com" && \
