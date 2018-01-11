@@ -38,12 +38,12 @@ RUN groupadd deploygroup && \
 # Change owner to avoid running as root
 USER deployuser
 
-RUN github_token="OWVmNjI4NzYyYmQyOTVjYWUxZWFmMmJmNGQ3ZmNkYjc0MzhlMjczYQ==" | base64 --decode && \
-    current_deployment_key_id=$( \
-    curl -i -H 'Authorization: token $github_token' https://api.github.com/repos/mark1979smith/villadbay/keys | \
-        grep id |  \
-        awk '{print $2}' |  \
-        sed s/,//g \
+RUN GITHUB_TOKEN="OWVmNjI4NzYyYmQyOTVjYWUxZWFmMmJmNGQ3ZmNkYjc0MzhlMjczYQ==" | base64 --decode && \
+    CURRENT_DEPLOYMENT_KEY_ID=$( \
+        curl -i -H 'Authorization: token $GITHUB_TOKEN' https://api.github.com/repos/mark1979smith/villadbay/keys | \
+            grep id |  \
+            awk '{print $2}' |  \
+            sed s/,//g \
     ) && \
     mkdir -p ~/.ssh && \
     ssh-keygen -t rsa -N "" -b 4096 -C "mark1979smith@googlemail.com" -f ~/.ssh/id_rsa && \
@@ -53,14 +53,11 @@ RUN github_token="OWVmNjI4NzYyYmQyOTVjYWUxZWFmMmJmNGQ3ZmNkYjc0MzhlMjczYQ==" | ba
     printf "%s" '{"title": "Villa DBay Deploy Key (Write) `date`", "key":"' >> test.json && \
     cat ~/.ssh/id_rsa.pub | tee >> test.json && \
     printf "%s"  '", "read_only": false}' >> test.json && \
-
-
-    curl -i -X POST -H 'Authorization: token $github_token' -d @test.json https://api.github.com/repos/mark1979smith/villadbay/keys && \
-
+    curl -i -X POST -H 'Authorization: token $GITHUB_TOKEN' -d @test.json https://api.github.com/repos/mark1979smith/villadbay/keys && \
     # Remove Old Deployment Key
-    curl -i -X DELETE -H 'Authorization: token $github_token' https://api.github.com/repos/mark1979smith/villadbay/keys/$current_deployment_key_id && \
+    echo "Removing Deplooyment Key Id: $CURRENT_DEPLOYMENT_KEY_ID" && \
+    curl -i -X DELETE -H 'Authorization: token $GITHUB_TOKEN' https://api.github.com/repos/mark1979smith/villadbay/keys/$CURRENT_DEPLOYMENT_KEY_ID && \
     rm -f test.json && \
-
     git clone git@github.com:mark1979smith/villadbay.git . && \
     git config user.email "mark1979smith@googlemail.com" && \
     git config user.name "Mark Smith"
