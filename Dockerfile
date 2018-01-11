@@ -38,21 +38,28 @@ RUN groupadd deploygroup && \
 # Change owner to avoid running as root
 USER deployuser
 
-# SET UP DEPLOYMENT KEY TO ALLOW GIT PULL
-RUN  mkdir -p ~/.ssh && \
+RUN
+    github_token="OWVmNjI4NzYyYmQyOTVjYWUxZWFmMmJmNGQ3ZmNkYjc0MzhlMjczYQ==" | base64 --decode && \
+    current_deployment_key_id=$( \
+    curl -i -H 'Authorization: token $github_token' https://api.github.com/repos/mark1979smith/villadbay/keys | \
+        grep id |  \
+        awk '{print $2}' |  \
+        sed s/,//g
+    ) && \
+    mkdir -p ~/.ssh && \
     ssh-keygen -t rsa -N "" -b 4096 -C "mark1979smith@googlemail.com" && \
     eval $(ssh-agent -s) && \
     ssh-add ~/.ssh/id_rsa && \
     # Create New Deployment Key
-    printf "%s" '{"title": "Villa DBay Deploy Key (Write) `date`", "key":"' >> test.json
-    cat ~/.ssh/id_rsa.pub | tee >> test.json
-    printf "%s"  '", "read_only": false}' >> test.json
+    printf "%s" '{"title": "Villa DBay Deploy Key (Write) `date`", "key":"' >> test.json && \
+    cat ~/.ssh/id_rsa.pub | tee >> test.json && \
+    printf "%s"  '", "read_only": false}' >> test.json && \
 
-    ARG current_deployment_key_id=curl -i -H 'Authorization: token 907c408fc2da7855f0bbec08ddc01d25c4612e44' https://api.github.com/repos/mark1979smith/villadbay/keys | grep id |  awk '{print $2}' |  sed s/,//g
-    curl -i -X POST -H 'Authorization: token 907c408fc2da7855f0bbec08ddc01d25c4612e44' -d @test.json https://api.github.com/repos/mark1979smith/villadbay/keys
+
+    curl -i -X POST -H 'Authorization: token $github_token' -d @test.json https://api.github.com/repos/mark1979smith/villadbay/keys && \
 
     # Remove Old Deployment Key
-    curl -i -X DELETE -H 'Authorization: token 907c408fc2da7855f0bbec08ddc01d25c4612e44' -d @test.json https://api.github.com/repos/mark1979smith/villadbay/keys/${current_deployment_key_id}
+    curl -i -X DELETE -H 'Authorization: token $github_token' -d @test.json https://api.github.com/repos/mark1979smith/villadbay/keys/$current_deployment_key_id && \
 
     git clone git@github.com:mark1979smith/villadbay.git . && \
     git config user.email "mark1979smith@googlemail.com" && \
