@@ -38,8 +38,7 @@ RUN groupadd deploygroup && \
 # Change owner to avoid running as root
 USER deployuser
 
-RUN
-    github_token="OWVmNjI4NzYyYmQyOTVjYWUxZWFmMmJmNGQ3ZmNkYjc0MzhlMjczYQ==" | base64 --decode && \
+RUN github_token="OWVmNjI4NzYyYmQyOTVjYWUxZWFmMmJmNGQ3ZmNkYjc0MzhlMjczYQ==" | base64 --decode && \
     current_deployment_key_id=$( \
     curl -i -H 'Authorization: token $github_token' https://api.github.com/repos/mark1979smith/villadbay/keys | \
         grep id |  \
