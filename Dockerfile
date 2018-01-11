@@ -63,7 +63,7 @@ RUN github_token="OWVmNjI4NzYyYmQyOTVjYWUxZWFmMmJmNGQ3ZmNkYjc0MzhlMjczYQ==" | ba
 
     git clone git@github.com:mark1979smith/villadbay.git . && \
     git config user.email "mark1979smith@googlemail.com" && \
-    git config user.name "Mark Smith
+    git config user.name "Mark Smith"
 
 # RUN COMPOSER to generate parameters.yml file
 RUN /usr/local/bin/php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
