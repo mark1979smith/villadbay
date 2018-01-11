@@ -40,7 +40,7 @@ USER deployuser
 
 ARG GITHUB_TOKEN="OWVmNjI4NzYyYmQyOTVjYWUxZWFmMmJmNGQ3ZmNkYjc0MzhlMjczYQ=="
 
-RUN TOKEN_DECODED=$GITHUB_TOKEN | base64 --decode  && \
+RUN TOKEN_DECODED=${GITHUB_TOKEN} | base64 --decode  && \
     echo $GITHUB_TOKEN && \
     echo $TOKEN_DECODED && \
     CURRENT_DEPLOYMENT_KEY_ID=$( \
