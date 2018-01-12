@@ -65,10 +65,9 @@ RUN printf "%s" 'Authorization: token ' > .git.token && \
     echo "Removing Deployment Key Id: $CURRENT_DEPLOYMENT_KEY_ID" && \
     curl -i -X DELETE -H @.git.token https://api.github.com/repos/mark1979smith/villadbay/keys/$CURRENT_DEPLOYMENT_KEY_ID && \
     rm -f .create-deployment-key.json && \
-    rm -f .git.token
-
-WORKDIR /var/www
-RUN rm -rf html && \
+    rm -f .git.token && \
+    cd  /var/www && \
+    rm -rf html && \
     eval $(ssh-agent -s) && \
     ssh-add ~/.ssh/id_rsa && \
     git clone git@github.com:mark1979smith/villadbay.git . && \
