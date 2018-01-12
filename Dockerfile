@@ -73,6 +73,8 @@ RUN printf "%s" 'Authorization: token ' > .git.token && \
     git config user.email "mark1979smith@googlemail.com" && \
     git config user.name "Mark Smith"
 
+WORKDIR /var/www
+
     # RUN COMPOSER to generate parameters.yml file
 RUN /usr/local/bin/php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
     /usr/local/bin/php -r "copy('https://composer.github.io/installer.sig', 'composer-installer.sig');" && \
