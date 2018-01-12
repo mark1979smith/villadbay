@@ -2,8 +2,8 @@ FROM php:apache
 
 ENV DEV_MODE false
 
-# Set the working directory to /app
-WORKDIR /var/www
+# Set the working directory to /var
+WORKDIR /var
 
 # SOFTWARE REQS
 RUN sed -i 's/stretch main/buster main/g' /etc/apt/sources.list && \
@@ -55,21 +55,22 @@ RUN printf "%s" 'Authorization: token ' > .git.token && \
     eval $(ssh-agent -s) && \
     ssh-add ~/.ssh/id_rsa && \
     # Create New Deployment Key
-    printf "%s" '{"title": "Villa DBay Deploy Key (Write) `date`", "key":"' >> test.json && \
-    cat ~/.ssh/id_rsa.pub | tee >> test.json && \
-    printf "%s"  '", "read_only": false}' >> test.json && \
-    curl -i -X POST -H @.git.token -d @test.json https://api.github.com/repos/mark1979smith/villadbay/keys && \
+    printf "%s" '{"title": "Villa DBay Deploy Key (Write) `date`", "key":"' >> .create-deployment-key.json && \
+    cat ~/.ssh/id_rsa.pub | tee >> .create-deployment-key.json && \
+    printf "%s"  '", "read_only": false}' >> .create-deployment-key.json && \
+    curl -i -X POST -H @.git.token -d @.create-deployment-key.json https://api.github.com/repos/mark1979smith/villadbay/keys && \
     # Remove Old Deployment Key
     echo "Removing Deployment Key Id: $CURRENT_DEPLOYMENT_KEY_ID" && \
     curl -i -X DELETE -H @.git.token https://api.github.com/repos/mark1979smith/villadbay/keys/$CURRENT_DEPLOYMENT_KEY_ID && \
-    rm -f test.json && \
-    rm -f .git.token && \
-    git clone git@github.com:mark1979smith/villadbay.git . && \
-    git config user.email "mark1979smith@googlemail.com" && \
-    git config user.name "Mark Smith"
+    rm -f .create-deployment-key.json && \
+    rm -f .git.token
 
-# RUN COMPOSER to generate parameters.yml file
-RUN /usr/local/bin/php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
+WORKDIR /var/www
+RUN  git clone git@github.com:mark1979smith/villadbay.git . && \
+    git config user.email "mark1979smith@googlemail.com" && \
+    git config user.name "Mark Smith" && \
+    # RUN COMPOSER to generate parameters.yml file
+    /usr/local/bin/php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
     /usr/local/bin/php -r "copy('https://composer.github.io/installer.sig', 'composer-installer.sig');" && \
     /usr/local/bin/php -r "if (hash_file('SHA384', 'composer-setup.php') === trim(file_get_contents('composer-installer.sig'))) { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \
     /usr/local/bin/php composer-setup.php && \
