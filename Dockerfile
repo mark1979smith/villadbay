@@ -46,7 +46,7 @@ RUN printf "%s" 'Authorization: token ' > .git.token && \
     printf "%s" $GITHUB_TOKEN | base64 --decode >> .git.token && \
     CURRENT_DEPLOYMENT_KEY_ID=$( \
         curl -i -H @.git.token https://api.github.com/repos/mark1979smith/villadbay/keys | \
-            grep id |  \
+            grep "\"id\":" |  \
             awk '{print $2}' |  \
             sed s/,//g \
     ) && \
