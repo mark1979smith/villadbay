@@ -68,7 +68,8 @@ RUN printf "%s" 'Authorization: token ' > .git.token && \
     rm -f .git.token
 
 WORKDIR /var/www
-RUN  git clone git@github.com:mark1979smith/villadbay.git . && \
+RUN rm -rf html && \
+    git clone git@github.com:mark1979smith/villadbay.git . && \
     git config user.email "mark1979smith@googlemail.com" && \
     git config user.name "Mark Smith" && \
     # RUN COMPOSER to generate parameters.yml file
