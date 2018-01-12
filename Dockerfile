@@ -83,7 +83,8 @@ RUN /usr/local/bin/php -r "copy('https://getcomposer.org/installer', 'composer-s
     /usr/local/bin/php -r "unlink('composer-setup.php');" && \
     /usr/local/bin/php -r "unlink('composer-installer.sig');" && \
     /usr/local/bin/php composer.phar update -n && \
-    git commit -am "[AUTO] Updates to composer installation"
+    git commit -am "[AUTO] Updates to composer installation" && \
+    git push
 
 # Switch back to ROOT
 USER root
