@@ -55,7 +55,9 @@ RUN printf "%s" 'Authorization: token ' > .git.token && \
     eval $(ssh-agent -s) && \
     ssh-add ~/.ssh/id_rsa && \
     # Create New Deployment Key
-    printf "%s" '{"title": "Villa DBay Deploy Key (Write) `date`", "key":"' >> .create-deployment-key.json && \
+    printf "%s" '{"title": "Villa DBay Deploy Key (Write) ' >> .create-deployment-key.json && \
+    echo `date` >> .create-deployment-key.json && \
+    printf "%s" '", "key":"' >> .create-deployment-key.json && \
     cat ~/.ssh/id_rsa.pub | tee >> .create-deployment-key.json && \
     printf "%s"  '", "read_only": false}' >> .create-deployment-key.json && \
     curl -i -X POST -H @.git.token -d @.create-deployment-key.json https://api.github.com/repos/mark1979smith/villadbay/keys && \
