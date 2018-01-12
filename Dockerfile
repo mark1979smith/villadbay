@@ -2,7 +2,7 @@ FROM php:apache
 
 ENV DEV_MODE false
 
-# Set the working directory to /var
+# Set the working directory to /tmp
 WORKDIR /tmp
 
 # SOFTWARE REQS
@@ -69,6 +69,8 @@ RUN printf "%s" 'Authorization: token ' > .git.token && \
 
 WORKDIR /var/www
 RUN rm -rf html && \
+    eval $(ssh-agent -s) && \
+    ssh-add ~/.ssh/id_rsa && \
     git clone git@github.com:mark1979smith/villadbay.git . && \
     git config user.email "mark1979smith@googlemail.com" && \
     git config user.name "Mark Smith" && \
