@@ -3,7 +3,7 @@ FROM php:apache
 ENV DEV_MODE false
 
 # Set the working directory to /var
-WORKDIR /var
+WORKDIR /tmp
 
 # SOFTWARE REQS
 RUN sed -i 's/stretch main/buster main/g' /etc/apt/sources.list && \
