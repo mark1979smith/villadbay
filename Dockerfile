@@ -40,11 +40,9 @@ USER deployuser
 
 ARG GITHUB_TOKEN="OWVmNjI4NzYyYmQyOTVjYWUxZWFmMmJmNGQ3ZmNkYjc0MzhlMjczYQ=="
 
-RUN TOKEN_DECODED=${GITHUB_TOKEN} | base64 --decode  && \
-    echo $GITHUB_TOKEN && \
-    echo $TOKEN_DECODED && \
+RUN echo $GITHUB_TOKEN  | base64 --decode > ~/.github.token && \
     CURRENT_DEPLOYMENT_KEY_ID=$( \
-        curl -i -H 'Authorization: token $TOKEN_DECODED' https://api.github.com/repos/mark1979smith/villadbay/keys | \
+        curl -i -H 'Authorization: token $(~/.github.token)' https://api.github.com/repos/mark1979smith/villadbay/keys | \
             grep id |  \
             awk '{print $2}' |  \
             sed s/,//g \
