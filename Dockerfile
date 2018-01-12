@@ -68,6 +68,7 @@ RUN printf "%s" 'Authorization: token ' > .git.token && \
     rm -f .git.token && \
     cd  /var/www && \
     rm -rf html && \
+    ssh-keyscan github.com >> ~/.ssh/known_hosts && \
     git clone git@github.com:mark1979smith/villadbay.git . && \
     git config user.email "mark1979smith@googlemail.com" && \
     git config user.name "Mark Smith"
