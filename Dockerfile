@@ -6,7 +6,7 @@ ENV DEV_MODE false
 WORKDIR /var/www
 
 # SOFTWARE REQS
-RUN sed -i 's/stretch main/buster main/g' /etc/apt/sources.list &&
+RUN sed -i 's/stretch main/buster main/g' /etc/apt/sources.list && \
     apt-get dist-upgrade && \
     apt-get update && \
     apt-get upgrade -y && \
