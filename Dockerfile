@@ -6,7 +6,9 @@ ENV DEV_MODE false
 WORKDIR /var/www
 
 # SOFTWARE REQS
-RUN apt-get update && \
+RUN sed -i 's/stretch main/buster main/g' /etc/apt/sources.list &&
+    apt-get dist-upgrade && \
+    apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y libicu-dev && \
     docker-php-ext-configure intl && \
@@ -40,9 +42,10 @@ USER deployuser
 
 ARG GITHUB_TOKEN="OWVmNjI4NzYyYmQyOTVjYWUxZWFmMmJmNGQ3ZmNkYjc0MzhlMjczYQ=="
 
-RUN echo $GITHUB_TOKEN  | base64 --decode > ~/.github.token && \
+RUN printf "%s" 'Authorization: token ' > .git.token && \
+    printf "%s" $GITHUB_TOKEN | base64 --decode >> .git.token && \
     CURRENT_DEPLOYMENT_KEY_ID=$( \
-        curl -i -H 'Authorization: token $(~/.github.token)' https://api.github.com/repos/mark1979smith/villadbay/keys | \
+        curl -i -H @.git.token https://api.github.com/repos/mark1979smith/villadbay/keys | \
             grep id |  \
             awk '{print $2}' |  \
             sed s/,//g \
@@ -55,11 +58,12 @@ RUN echo $GITHUB_TOKEN  | base64 --decode > ~/.github.token && \
     printf "%s" '{"title": "Villa DBay Deploy Key (Write) `date`", "key":"' >> test.json && \
     cat ~/.ssh/id_rsa.pub | tee >> test.json && \
     printf "%s"  '", "read_only": false}' >> test.json && \
-    curl -i -X POST -H 'Authorization: token $GITHUB_TOKEN' -d @test.json https://api.github.com/repos/mark1979smith/villadbay/keys && \
+    curl -i -X POST -H @.git.token -d @test.json https://api.github.com/repos/mark1979smith/villadbay/keys && \
     # Remove Old Deployment Key
     echo "Removing Deployment Key Id: $CURRENT_DEPLOYMENT_KEY_ID" && \
-    curl -i -X DELETE -H 'Authorization: token $GITHUB_TOKEN' https://api.github.com/repos/mark1979smith/villadbay/keys/$CURRENT_DEPLOYMENT_KEY_ID && \
+    curl -i -X DELETE -H @.git.token https://api.github.com/repos/mark1979smith/villadbay/keys/$CURRENT_DEPLOYMENT_KEY_ID && \
     rm -f test.json && \
+    rm -f .git.token && \
     git clone git@github.com:mark1979smith/villadbay.git . && \
     git config user.email "mark1979smith@googlemail.com" && \
     git config user.name "Mark Smith"
