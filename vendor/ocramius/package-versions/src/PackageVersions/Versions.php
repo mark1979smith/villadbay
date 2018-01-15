@@ -74,7 +74,7 @@ final class Versions
   'symfony/thanks' => 'v1.0.1@b637913a92664571afd1067fc645ecb30c9cf5b2',
   'symfony/var-dumper' => 'v4.0.3@883f6109a2069773e088c08626b87a3d3d61c566',
   'symfony/web-profiler-bundle' => 'v4.0.3@20a04d0672d7f538d1c06ded7bf5990f23c089aa',
-  '__root__' => 'dev-master@742a23458859d0a42429efd19f41752504af9df4',
+  '__root__' => 'dev-master@fb7730fa43d66db4e1b7a8f493e2add33f6afafb',
 );
 
     private function __construct()
