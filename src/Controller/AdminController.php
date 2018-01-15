@@ -25,7 +25,18 @@ class AdminController extends Controller
     public function home()
     {
         return $this->render('admin/home.html.twig', array(
+            'selectedNav' => 'admin-home'
+        ));
+    }
 
+    /**
+     * @Route("/page-manager", name="admin-pages")
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function pages()
+    {
+        return $this->render('admin/pages.html.twig', array(
+            'selectedNav' => 'admin-pages'
         ));
     }
 }
