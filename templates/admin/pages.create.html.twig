@@ -1,0 +1,68 @@
+{% extends 'admin.html.twig' %}
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="display-3">Create a new page</h1>
+                <div class="jumbotron">
+                    {{ form_start(form) }}
+
+                    {{ form_errors(form) }}
+
+
+                    {%-  block PageType_widget -%}
+                        <div class="form-group">
+                            {{ form_label(form.page_type) }}
+                            {{ form_widget(form.page_type) }}
+                            <small id="page_type_helper" class="form-text text-muted">
+                                Landing Page: Large background image with required form only<br>
+                                Content Page: Optional Panoramic image with a wide range of content options
+                            </small>
+                        </div>
+
+                    {%- endblock -%}
+
+                    {%- block textheadintype_widget -%}
+                        <div style="display:none;" class="text_heading_type">
+                            <div class="form-row">
+                            {{ form_widget(form.text_heading_type) }}
+                            {{ form_widget(form.text_heading_css_class) }}
+                            {{ form_widget(form.text_heading_text_value) }}
+                            </div>
+                            <div class="invisible card card-body" id="js--text_heading_preview">
+
+                            </div>
+                        </div>
+                    {%- endblock -%}
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+           $('#page_page_type').on('change', function(e) {
+
+           });
+
+           $('.text_heading_type').on('change', 'input,select', function(e) {
+                var container = $(this).closest('.text_heading_type');
+                var htmlBuild = '<' +
+                    $(container).find('select[id^="page_text_heading_type"]').val() + ' class="' +
+                    $(container).find('select[id^="page_text_heading_css_class"]').val() + '">' +
+                    $(container).find('input[id^="page_text_heading_text_value"]').val() +
+                   '</' + $(container).find('select[id^="page_text_heading_type"]').val() + '>';
+                $('#js--text_heading_preview').removeClass('invisible');
+                $('#js--text_heading_preview').html(htmlBuild);
+           })
+        });
+    </script>
+{% endblock %}

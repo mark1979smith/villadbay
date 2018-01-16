@@ -6,7 +6,8 @@
     <title>{% block title %}Welcome!{% endblock %}</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
     <link rel="stylesheet" href="/bundles/css/open-iconic-bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="/bundles/js/jquery-3.2.1.min.js"></script>
+    <script src="/bundles/js/jquery.collection.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
     <script>
@@ -34,7 +35,7 @@
             <li class="nav-item dropdown{% if selectedNav is defined and selectedNav == 'admin-pages' %} active{% endif %}">
                 <a href="#" class="nav-link dropdown-toggle" id="navbarPagesDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pages</a>
                 <div class="dropdown-menu" aria-labelledby="navbarPagesDropdownMenuLink">
-                    <a class="dropdown-item"><span class="oi oi-plus" title="icon name" aria-hidden="true"></span> Create New Page</a>
+                    <a class="dropdown-item" href="{{ path('admin-pages-create') }}"><span class="oi oi-plus" title="icon name" aria-hidden="true"></span> Create New Page</a>
                     <a class="dropdown-item"><span class="oi oi-cog" title="icon name" aria-hidden="true"></span> Settings</a>
                 </div>
             </li>

@@ -14,11 +14,11 @@ class TextHeading
     /** @var string  */
     private $template = '<%s class="%s">%s</%s>';
 
-    /** @var string  */
-    private $type = 'h1';
+    /** @var null|string  */
+    private $type;
 
-    /** @var string  */
-    private $cssClass = 'display-h3';
+    /** @var null|string  */
+    private $cssClass;
 
     /** @var string */
     private $textValue;
@@ -57,7 +57,7 @@ class TextHeading
     /**
      * @return string
      */
-    public function getCssClass(): string
+    public function getCssClass(): ?string
     {
         return $this->cssClass;
     }
@@ -77,7 +77,7 @@ class TextHeading
     /**
      * @return string
      */
-    public function getTextValue(): string
+    public function getTextValue(): ?string
     {
         return $this->textValue;
     }
@@ -97,7 +97,7 @@ class TextHeading
     /**
      * @return string
      */
-    public function getType(): string
+    public function getType(): ?string
     {
         return $this->type;
     }
