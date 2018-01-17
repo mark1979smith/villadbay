@@ -34,7 +34,7 @@ class PageType implements DataTransformerInterface
     /**
      * @param string $value
      *
-     * @return \App\Entity\Page\PageType|mixed
+     * @return \App\Entity\Page\PageType
      */
     public function reverseTransform($value)
     {

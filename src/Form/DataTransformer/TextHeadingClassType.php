@@ -14,7 +14,7 @@ use Symfony\Component\Form\DataTransformerInterface;
 class TextHeadingClassType implements DataTransformerInterface
 {
     /**
-     * @param \App\Entity\Page\TextHeading\CssClass|null $value
+     * @param TextHeading\CssClass|null $value
      *
      * @return string
      */
@@ -30,7 +30,7 @@ class TextHeadingClassType implements DataTransformerInterface
     /**
      * @param string $value
      *
-     * @return \App\Entity\Page\TextHeading\CssClass|mixed
+     * @return TextHeading\CssClass
      */
     public function reverseTransform($value)
     {
