@@ -8,6 +8,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Page\PageRoute;
 use App\Entity\Page\TextHeading\CssClass;
 use App\Entity\Page\TextHeading\TextValue;
 use App\Entity\Page\TextHeading\Type;
@@ -42,6 +43,7 @@ class PagesController extends Controller
     public function create(Request $request)
     {
         $form = $this->createForm(PageType::class, [
+            'page_route' => new PageRoute(),
             'text_heading_type' => [new Type()],
             'text_heading_css_class' => [new CssClass()],
             'text_heading_text_value' => [new TextValue()]
