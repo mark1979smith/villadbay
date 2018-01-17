@@ -6,6 +6,9 @@ security:
                 users:
                     admin: #htaccess user
                         password: $2y$12$7a/FFgwjQPrK5hq9LrJKSeR5cc62LkxQMXDh/ZM7GopAo2ukfwDgu
+                        roles: 'ROLE_GUEST'
+                    sales@villadbay.com:
+                        password: $2y$12$OMQ1JArciGsJ97V0DwTydeNi84rBI2/GQlRzocC5IO7bOoC0LPLFG
                         roles: 'ROLE_ADMIN'
     firewalls:
         dev:
