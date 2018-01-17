@@ -8,10 +8,14 @@
 
 namespace App\Entity\Page;
 
+use Symfony\Component\Validator\Constraints as Assert;
 
 class PageType
 {
-    /** @var string "landing"|"content" */
+    /**
+     * @Assert\NotBlank()
+     * @var string "landing"|"content"
+     */
     private $pageType;
 
     /**
