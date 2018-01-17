@@ -23,14 +23,19 @@ class TextValue
     }
 
     /**
-     * @param string $value
+     * @param null|string $value
      *
      * @return TextValue
      */
-    public function setValue(string $value): TextValue
+    public function setValue(?string $value): TextValue
     {
         $this->value = $value;
 
         return $this;
+    }
+
+    public function __toString()
+    {
+        return (string) $this->value;
     }
 }

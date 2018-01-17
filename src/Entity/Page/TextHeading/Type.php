@@ -15,7 +15,7 @@ class Type
     private $value;
 
     /**
-     * @return string
+     * @return null|string
      */
     public function getValue(): ?string
     {
@@ -23,11 +23,11 @@ class Type
     }
 
     /**
-     * @param string $value
+     * @param null|string $value
      *
      * @return Type
      */
-    public function setValue(string $value): Type
+    public function setValue(?string $value): Type
     {
         $this->value = $value;
 

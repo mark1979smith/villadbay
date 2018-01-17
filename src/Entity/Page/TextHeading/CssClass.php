@@ -23,11 +23,11 @@ class CssClass
     }
 
     /**
-     * @param string $value
+     * @param null|string $value
      *
      * @return CssClass
      */
-    public function setValue(string $value): CssClass
+    public function setValue(?string $value): CssClass
     {
         $this->value = $value;
 
