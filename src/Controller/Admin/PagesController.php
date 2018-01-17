@@ -8,6 +8,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Page\DisplayOrder;
 use App\Entity\Page\PageRoute;
 use App\Entity\Page\TextHeading\CssClass;
 use App\Entity\Page\TextHeading\TextValue;
@@ -32,7 +33,7 @@ class PagesController extends Controller
     public function index()
     {
         return $this->render('admin/pages.html.twig', array(
-            'selectedNav' => 'admin-pages'
+            'selectedNav' => 'admin-pages',
         ));
     }
 
@@ -43,16 +44,15 @@ class PagesController extends Controller
     public function create(Request $request)
     {
         $form = $this->createForm(PageType::class, [
-            'page_route' => new PageRoute(),
-            'text_heading_type' => [new Type()],
-            'text_heading_css_class' => [new CssClass()],
-            'text_heading_text_value' => [new TextValue()]
+            'page_route'              => new PageRoute(),
+            'text_heading_type'       => [new Type()],
+            'text_heading_css_class'  => [new CssClass()],
+            'text_heading_text_value' => [new TextValue()],
+            'display_order'           => [new DisplayOrder()],
         ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-//            $form->get('page_type')->setData($request->get('page_type'));
-//            $form->get('text_heading_type')->setData($request->get('text_heading_type'));
             if ($form->isValid()) {
 //                return $this->redirectToRoute('search');
             }
@@ -61,7 +61,7 @@ class PagesController extends Controller
 
         return $this->render('admin/pages.create.html.twig', array(
             'selectedNav' => 'admin-pages',
-            'form' => $form->createView()
+            'form'        => $form->createView(),
         ));
 
     }

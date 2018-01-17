@@ -101,6 +101,10 @@ class PageType extends AbstractType
                     'class' => 'js--text_heading_type col',
                 ),
             ])
+            ->add('display_order', CollectionType::class, [
+                'entry_type'    => \App\Form\Admin\Types\DisplayOrder::class,
+                'allow_add'     => true,
+            ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Next',
                 'attr'  => [

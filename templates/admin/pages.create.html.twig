@@ -69,6 +69,10 @@
                         </div>
                     {%- endblock -%}
 
+                    {%- block DisplayOrderType_widget -%}
+                        {{ form_widget(form.display_order) }}
+                    {%- endblock -%}
+
                     {{ form_end(form) }}
                 </div>
             </div>
@@ -127,6 +131,11 @@
 
                     var newElem = jQuery(fields.data('template').replace('#FORMELEMENTS#', htmlStr).replace('#NEWCOUNTER#', counter));
                     newElem.appendTo(fields);
+
+                    $('#page_display_order').append('<input type="hidden" ' +
+                        'id="page_display_order_' + counter + '" ' +
+                        'name="page[display_order][' + counter + ']" ' +
+                        'value="' + (parseInt($('#page_display_order').children().length)+parseInt(1)) +'" />')
                 }
 
             });
