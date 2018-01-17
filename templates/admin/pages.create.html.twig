@@ -16,9 +16,11 @@
                         <a class="nav-link active" href="#">Core Options</a>
                     </li>
                     <li class="nav-item dropdown" id="subnav--opts">
-                        <a class="nav-link disabled dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" href="#">Content Options</a>
+                        <a class="nav-link disabled dropdown-toggle" data-toggle="dropdown" role="button"
+                           aria-haspopup="true" aria-expanded="false" href="#">Content Options</a>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item js--add-text_heading_type" href="#" data-target=".text_heading_type_container">Add Header</a>
+                            <a class="dropdown-item js--add-text_heading_type" href="#"
+                               data-target=".text_heading_type_container">Add Header</a>
                             <a class="dropdown-item" href="#">Another action</a>
                             <a class="dropdown-item" href="#">Something else here</a>
                             <div class="dropdown-divider"></div>
@@ -53,7 +55,9 @@
                     </div>
 
                     {%- block TextHeadingType_widget -%}
-                        <div style="display:none;" class="text_heading_type_container" data-counter="0" data-element-wrapper="{{ '<div class="col"></div>'|e }}" data-template="{{ '<div class="text_heading_type" data-counter="#NEWCOUNTER#"><div class="form-row">#FORMELEMENTS#</div><div class="invisible card card-body" id="js--text_heading_preview"></div>'|e }}">
+                        <div style="display:none;" class="text_heading_type_container" data-counter="0"
+                             data-element-wrapper="{{ '<div class="col"></div>'|e }}"
+                             data-template="{{ '<div class="text_heading_type" data-counter="#NEWCOUNTER#"><div class="form-row">#FORMELEMENTS#</div><div class="invisible card card-body" id="js--text_heading_preview"></div>'|e }}">
                             <div class="form-row">
                                 {{ form_widget(form.text_heading_type) }}
                                 {{ form_widget(form.text_heading_css_class) }}
@@ -88,42 +92,42 @@
                     $('#subnav--opts>a').removeClass('disabled').addClass('active');
 
                     $('#page_submit').data('role', 'opt');
+                } else {
+                    $(ele).closest('form').find('*:disabled').removeAttr('disabled');
+                    $(ele).closest('form').submit();
                 }
 
             });
 
-            $('#subnav--opts').on('click', '.dropdown-item', function(e) {
+            $('#subnav--opts').on('click', '.dropdown-item', function (e) {
                 e.preventDefault();
 
                 var ele = $(this);
 
-                        classN = $(ele).data('target') + ':last';
-                        if ($(classN).css('display') === 'none') {
-                            $(classN).show();
-                        } else {
-                            var fields = jQuery(jQuery(this).data('target'));
-                            // Try to find the counter of the list
-                            var counter = fields.data('counter');
-                            counter++;
+                classN = $(ele).data('target') + ':last';
+                if ($(classN).css('display') === 'none') {
+                    $(classN).show();
+                } else {
+                    var fields = jQuery(jQuery(this).data('target'));
+                    // Try to find the counter of the list
+                    var counter = fields.data('counter');
+                    counter++;
 
 
-                            var newWidget = fields.find('*[data-prototype]');
-                            var htmlStr = '';
-                            $.each(newWidget, function(a, b) {
-                                var h = $('<body>');
-                                if (fields.data('element-wrapper')) {
-                                    $(h).append($(fields.data('element-wrapper')).append($(b).data('prototype').toString().replace(/__name__/g, counter))).html();
-                                }
-                                // console.log($(h).html(), $(b).data('prototype').toString().replace(/__name__/g, counter), $(h).html($(b).data('prototype').toString().replace(/__name__/g, counter)).html());
-
-                                console.log($(h).html());
-                                htmlStr += $(h).html();
-                            });
-                            fields.data('counter', counter);
-
-                            var newElem = jQuery(fields.data('template').replace('#FORMELEMENTS#', htmlStr).replace('#NEWCOUNTER#', counter));
-                            newElem.appendTo(fields);
+                    var newWidget = fields.find('*[data-prototype]');
+                    var htmlStr = '';
+                    $.each(newWidget, function (a, b) {
+                        var h = $('<body>');
+                        if (fields.data('element-wrapper')) {
+                            $(h).append($(fields.data('element-wrapper')).append($(b).data('prototype').toString().replace(/__name__/g, counter))).html();
                         }
+                        htmlStr += $(h).html();
+                    });
+                    fields.data('counter', counter);
+
+                    var newElem = jQuery(fields.data('template').replace('#FORMELEMENTS#', htmlStr).replace('#NEWCOUNTER#', counter));
+                    newElem.appendTo(fields);
+                }
 
             });
 
