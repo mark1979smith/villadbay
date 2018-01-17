@@ -16,7 +16,7 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class PageType  extends AbstractType
+class PageType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
