@@ -19,12 +19,15 @@
                         <a class="nav-link disabled dropdown-toggle" data-toggle="dropdown" role="button"
                            aria-haspopup="true" aria-expanded="false" href="#">Content Options</a>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item js--add-text_heading_type" href="#"
+                            <a class="dropdown-item" href="#"
                                data-target="#text_heading_type_container">Add Header</a>
-                            <a class="dropdown-item js--add-text_leading" href="#"
+                            <a class="dropdown-item" href="#"
                                data-target="#text_leading_container">Add Leading Paragraph</a>
-                            <a class="dropdown-item js--add-text_leading" href="#"
+                            <a class="dropdown-item" href="#"
                                data-target="#paragraph_text_container">Add Paragraph</a>
+                            <a class="dropdown-item" href="#"
+                               data-target="#list_group_container">Add List</a>
+
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="#">Separated link</a>
                         </div>
@@ -85,6 +88,16 @@
                             {{ form_widget(form.paragraph_text) }}
                         </div>
                     {%- endblock -%}
+                    {%- block ListGroup_widget -%}
+                        <div style="display: none" id="list_group_container" data-counter="0"
+                             data-template="{{ '<div class="list_group" data-counter="#NEWCOUNTER#">#FORMELEMENTS#<small id="list_group_helper" class="form-text text-muted">Separate items with a comma (,). Wrap items in double-quotes (&quot;) if you require an items to include a comma.</small><div class="invisible card card-body" id="js--text_leading_preview"></div>'|e }}">
+                            {{ form_widget(form.list_group) }}
+                            <small id="list_group_helper" class="form-text text-muted">
+                                Separate items with a comma (,). Wrap items in double-quotes (&quot;) if you require an items to include a comma.
+                            </small>
+
+                        </div>
+                    {%- endblock -%}
                     {{ form_widget(form.display_order) }}
                 </div>
             </div>
@@ -121,29 +134,33 @@
                 var ele = $(this);
 
                 var fields = jQuery(jQuery(this).data('target'));
-                // Try to find the counter of the list
-                var counter = fields.data('counter');
+                if (fields.length > 0) {
+                    // Try to find the counter of the list
+                    var counter = fields.data('counter');
+                    var newWidget = fields.find('*[data-prototype]');
+                    var htmlStr = '';
 
-                var newWidget = fields.find('*[data-prototype]');
-                var htmlStr = '';
-                $.each(newWidget, function (a, b) {
-                    var h = $('<body>');
-                    if (fields.data('element-wrapper')) {
-                        $(h).append($(fields.data('element-wrapper')).append($(b).data('prototype').toString().replace(/__name__/g, counter))).html();
-                    } else {
-                        $(h).append($(b).data('prototype').toString().replace(/__name__/g, counter)).html();
-                    }
-                    htmlStr += $(h).html();
-                });
+                    $.each(newWidget, function (a, b) {
+                        var h = $('<body>');
+                        if (fields.data('element-wrapper')) {
+                            $(h).append($(fields.data('element-wrapper')).append($(b).data('prototype').toString().replace(/__name__/g, counter))).html();
+                        } else {
+                            $(h).append($(b).data('prototype').toString().replace(/__name__/g, counter)).html();
+                        }
+                        htmlStr += $(h).html();
+                    });
 
-                var newElem = jQuery(fields.data('template').replace('#FORMELEMENTS#', htmlStr).replace('#NEWCOUNTER#', counter));
-                $('#form-opt-options').append(newElem.css('display', 'block'));
-                $.each(newWidget, function (a, b) {
-                    $('#form-opt-options').after(jQuery('#page_display_order').data('prototype').toString().replace(/__name__/g, $(b).prop('id').replace(/^page_/, '') + '--' + counter).replace('#NEWCOUNTER#', $('#form-opt-options>div').length));
-                });
+                    var newElem = jQuery(fields.data('template').replace('#FORMELEMENTS#', htmlStr).replace('#NEWCOUNTER#', counter));
+                    $('#form-opt-options').append(newElem.css('display', 'block'));
+                    $.each(newWidget, function (a, b) {
+                        $('#form-opt-options').after(jQuery('#page_display_order').data('prototype').toString().replace(/__name__/g, $(b).prop('id').replace(/^page_/, '') + '--' + counter).replace('#NEWCOUNTER#', $('#form-opt-options>div').length));
+                    });
 
-                counter++;
-                fields.data('counter', counter);
+                    counter++;
+                    fields.data('counter', counter);
+                } else {
+                    console.log('** No Matching Element **')
+                }
             });
 
         });

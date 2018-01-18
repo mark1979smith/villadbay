@@ -123,6 +123,21 @@ class PageType extends AbstractType
                 ],
 
             ])
+            ->add('list_group', CollectionType::class, [
+                'entry_type'    => \App\Form\Admin\Types\ListGroup::class,
+                'allow_add'     => true,
+                'allow_delete'  => true,
+                'prototype'     => true,
+                'entry_options' => [
+                    'label'    => 'Add List',
+                    'required' => false,
+                    'data_class' => null
+                ],
+                'attr'    => [
+                    'aria-describedby' => 'list_group_helper',
+                ],
+
+            ])
             ->add('display_order', CollectionType::class, [
                 'entry_type'     => \App\Form\Admin\Types\DisplayOrder::class,
                 'allow_add'      => true,
