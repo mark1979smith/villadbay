@@ -13,6 +13,7 @@ use App\Entity\Page\PageRoute;
 use App\Entity\Page\TextHeading\CssClass;
 use App\Entity\Page\TextHeading\TextValue;
 use App\Entity\Page\TextHeading\Type;
+use App\Entity\Page\TextLead;
 use App\Form\Admin\PageType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -48,6 +49,7 @@ class PagesController extends Controller
             'text_heading_type'       => [new Type()],
             'text_heading_css_class'  => [new CssClass()],
             'text_heading_text_value' => [new TextValue()],
+            'text_leading'            => [new TextLead()],
             'display_order'           => [new DisplayOrder()],
         ]);
         $form->handleRequest($request);

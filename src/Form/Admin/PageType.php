@@ -101,6 +101,17 @@ class PageType extends AbstractType
                     'class' => 'js--text_heading_type col',
                 ),
             ])
+            ->add('text_leading', CollectionType::class, [
+                'entry_type'    => \App\Form\Admin\Types\TextLeading::class,
+                'allow_add'     => true,
+                'allow_delete'  => true,
+                'prototype'     => true,
+                'entry_options' => [
+                    'label'    => 'Enter leading text',
+                    'required' => false,
+                ],
+
+            ])
             ->add('display_order', CollectionType::class, [
                 'entry_type'    => \App\Form\Admin\Types\DisplayOrder::class,
                 'allow_add'     => true,

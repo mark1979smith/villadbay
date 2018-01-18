@@ -46,9 +46,9 @@ class TextLead
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getTextValue(): string
+    public function getTextValue(): ?string
     {
         return $this->textValue;
     }
