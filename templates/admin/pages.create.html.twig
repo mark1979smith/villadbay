@@ -23,6 +23,8 @@
                                data-target="#text_heading_type_container">Add Header</a>
                             <a class="dropdown-item js--add-text_leading" href="#"
                                data-target="#text_leading_container">Add Leading Paragraph</a>
+                            <a class="dropdown-item js--add-text_leading" href="#"
+                               data-target="#paragraph_text_container">Add Paragraph</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="#">Separated link</a>
                         </div>
@@ -75,6 +77,12 @@
                         <div style="display: none" id="text_leading_container" data-counter="0"
                              data-template="{{ '<div class="text_leading" data-counter="#NEWCOUNTER#">#FORMELEMENTS#<div class="invisible card card-body" id="js--text_leading_preview"></div>'|e }}">
                             {{ form_widget(form.text_leading) }}
+                        </div>
+                    {%- endblock -%}
+                    {%- block ParagraphText_widget -%}
+                        <div style="display: none" id="paragraph_text_container" data-counter="0"
+                             data-template="{{ '<div class="paragraph_text" data-counter="#NEWCOUNTER#">#FORMELEMENTS#<div class="invisible card card-body" id="js--text_leading_preview"></div>'|e }}">
+                            {{ form_widget(form.paragraph_text) }}
                         </div>
                     {%- endblock -%}
                     {{ form_widget(form.display_order) }}

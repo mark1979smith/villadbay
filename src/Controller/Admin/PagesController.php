@@ -10,6 +10,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Page\DisplayOrder;
 use App\Entity\Page\PageRoute;
+use App\Entity\Page\ParagraphText;
 use App\Entity\Page\TextHeading\CssClass;
 use App\Entity\Page\TextHeading\TextValue;
 use App\Entity\Page\TextHeading\Type;
@@ -50,6 +51,7 @@ class PagesController extends Controller
             'text_heading_css_class'  => [new CssClass()],
             'text_heading_text_value' => [new TextValue()],
             'text_leading'            => [new TextLead()],
+            'paragraph_text'          => [new ParagraphText()],
             'display_order'           => [new DisplayOrder()],
         ]);
         $form->handleRequest($request);
