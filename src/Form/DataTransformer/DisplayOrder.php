@@ -14,26 +14,28 @@ use Symfony\Component\Form\DataTransformerInterface;
 class DisplayOrder implements DataTransformerInterface
 {
     /**
-     * @param \App\Entity\Page\DisplayOrder|string|null $value
+     * @param \App\Entity\Page\DisplayOrder $value
      *
      * @return string
      */
     public function transform($value)
     {
-        if (null === $value || "" === $value) {
-            return '';
-        }
+        return (new \App\Entity\Page\DisplayOrder())->setDisplayOrder($value);
 
-        return $value->getDisplayOrder();
     }
 
     /**
-     * @param string $value
+     * @param int|string|null $value
      *
-     * @return \App\Entity\Page\DisplayOrder
+     * @return string
      */
     public function reverseTransform($value)
     {
-        return (new \App\Entity\Page\DisplayOrder())->setDisplayOrder($value);
+        if (null === $value || is_string($value)) {
+            return (string) $value;
+        }
+
+        return $value->getDisplayOrder();
+
     }
 }

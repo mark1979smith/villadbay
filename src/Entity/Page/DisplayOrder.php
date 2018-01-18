@@ -29,10 +29,17 @@ class DisplayOrder
      *
      * @return DisplayOrder
      */
-    public function setDisplayOrder(?int $displayOrder): DisplayOrder
+    public function setDisplayOrder($displayOrder): DisplayOrder
     {
         $this->displayOrder = $displayOrder;
 
         return $this;
+    }
+
+
+
+    public function __toString()
+    {
+        return (string) $this->displayOrder;
     }
 }

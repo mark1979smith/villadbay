@@ -104,6 +104,11 @@ class PageType extends AbstractType
             ->add('display_order', CollectionType::class, [
                 'entry_type'    => \App\Form\Admin\Types\DisplayOrder::class,
                 'allow_add'     => true,
+                'prototype' => true,
+                'prototype_data' => '#NEWCOUNTER#',
+                'entry_options' => [
+                    'data' => 0
+                ]
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Next',

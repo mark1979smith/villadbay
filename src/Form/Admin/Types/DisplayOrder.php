@@ -19,7 +19,7 @@ class DisplayOrder extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addModelTransformer(new \App\Form\DataTransformer\DisplayOrder());
+        $builder->addViewTransformer(new \App\Form\DataTransformer\DisplayOrder());
     }
 
     public function configureOptions(OptionsResolver $resolver)
