@@ -115,8 +115,6 @@
                 var fields = jQuery(jQuery(this).data('target'));
                 // Try to find the counter of the list
                 var counter = fields.data('counter');
-                counter++;
-
 
                 var newWidget = fields.find('*[data-prototype]');
                 var htmlStr = '';
@@ -129,12 +127,15 @@
                     }
                     htmlStr += $(h).html();
                 });
-                fields.data('counter', counter);
 
                 var newElem = jQuery(fields.data('template').replace('#FORMELEMENTS#', htmlStr).replace('#NEWCOUNTER#', counter));
                 $('#form-opt-options').append(newElem.css('display', 'block'));
-                $('#form-opt-options').after(jQuery('#page_display_order').data('prototype').toString().replace(/__name__/g, counter).replace('#NEWCOUNTER#', $('#form-opt-options>div').length));
+                $.each(newWidget, function (a, b) {
+                    $('#form-opt-options').after(jQuery('#page_display_order').data('prototype').toString().replace(/__name__/g, $(b).prop('id').replace(/^page_/, '') + '--' + counter).replace('#NEWCOUNTER#', $('#form-opt-options>div').length));
+                });
 
+                counter++;
+                fields.data('counter', counter);
             });
 
         });
