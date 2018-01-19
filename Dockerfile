@@ -42,24 +42,7 @@ USER deployuser
 
 ARG GITHUB_TOKEN="OWVmNjI4NzYyYmQyOTVjYWUxZWFmMmJmNGQ3ZmNkYjc0MzhlMjczYQ=="
 
-RUN cd  /var/www && \
-    rm -rf html && \
-    ssh-keyscan github.com >> ~/.ssh/known_hosts && \
-    git clone git@github.com:mark1979smith/villadbay.git . && \
-    git config user.email "mark1979smith@googlemail.com" && \
-    git config user.name "Mark Smith"
-
-WORKDIR /var/www
-
-    # RUN COMPOSER to generate parameters.yml file
-RUN /usr/local/bin/php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
-    /usr/local/bin/php -r "copy('https://composer.github.io/installer.sig', 'composer-installer.sig');" && \
-    /usr/local/bin/php -r "if (hash_file('SHA384', 'composer-setup.php') === trim(file_get_contents('composer-installer.sig'))) { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \
-    /usr/local/bin/php composer-setup.php && \
-    /usr/local/bin/php -r "unlink('composer-setup.php');" && \
-    /usr/local/bin/php -r "unlink('composer-installer.sig');" && \
-    /usr/local/bin/php composer.phar update -n && \
-    printf "%s" 'Authorization: token ' > .git.token && \
+RUN printf "%s" 'Authorization: token ' > .git.token && \
     printf "%s" $GITHUB_TOKEN | base64 --decode >> .git.token && \
     CURRENT_DEPLOYMENT_KEY_ID=$( \
         curl -i -H @.git.token https://api.github.com/repos/mark1979smith/villadbay/keys | \
@@ -83,6 +66,23 @@ RUN /usr/local/bin/php -r "copy('https://getcomposer.org/installer', 'composer-s
     curl -i -X DELETE -H @.git.token https://api.github.com/repos/mark1979smith/villadbay/keys/$CURRENT_DEPLOYMENT_KEY_ID && \
     rm -f .create-deployment-key.json && \
     rm -f .git.token && \
+    cd  /var/www && \
+    rm -rf html && \
+    ssh-keyscan github.com >> ~/.ssh/known_hosts && \
+    git clone git@github.com:mark1979smith/villadbay.git . && \
+    git config user.email "mark1979smith@googlemail.com" && \
+    git config user.name "Mark Smith"
+
+WORKDIR /var/www
+
+    # RUN COMPOSER to generate parameters.yml file
+RUN /usr/local/bin/php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
+    /usr/local/bin/php -r "copy('https://composer.github.io/installer.sig', 'composer-installer.sig');" && \
+    /usr/local/bin/php -r "if (hash_file('SHA384', 'composer-setup.php') === trim(file_get_contents('composer-installer.sig'))) { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \
+    /usr/local/bin/php composer-setup.php && \
+    /usr/local/bin/php -r "unlink('composer-setup.php');" && \
+    /usr/local/bin/php -r "unlink('composer-installer.sig');" && \
+    /usr/local/bin/php composer.phar update -n && \
     git commit -am "[AUTO] Updates to composer installation" && \
     git push
 
