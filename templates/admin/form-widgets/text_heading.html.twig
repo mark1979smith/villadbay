@@ -3,16 +3,19 @@
         <div class="col">
             {{ form_label(form.text_heading_type[counter]) }}
             {{ form_widget(form.text_heading_type[counter]) }}
+            {{ form_errors(form.text_heading_type[counter]) }}
         </div>
 
         <div class="col">
             {{ form_label(form.text_heading_css_class[counter]) }}
             {{ form_widget(form.text_heading_css_class[counter]) }}
+            {{ form_errors(form.text_heading_css_class[counter]) }}
         </div>
 
         <div class="col">
             {{ form_label(form.text_heading_text_value[counter]) }}
             {{ form_widget(form.text_heading_text_value[counter]) }}
+            {{ form_errors(form.text_heading_text_value[counter]) }}
         </div>
 
     </div>

@@ -8,7 +8,6 @@
 
 namespace App\Entity\Page;
 
-
 class TextHeading
 {
     /** @var string  */

@@ -8,6 +8,7 @@
 
 namespace App\Entity\Page\TextHeading;
 
+use Symfony\Component\Validator\Constraints as Assert;
 
 class CssClass
 {
@@ -15,6 +16,8 @@ class CssClass
     private $value;
 
     /**
+     * @Assert\NotBlank()
+     *
      * @return null|string
      */
     public function getValue(): ?string

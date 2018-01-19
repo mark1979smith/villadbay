@@ -8,10 +8,15 @@
 
 namespace App\Entity\Page\TextHeading;
 
+use Symfony\Component\Validator\Constraints as Assert;
 
 class Type
 {
-    /** @var null|string */
+    /**
+     * @Assert\NotBlank()
+     *
+     * @var null|string
+     */
     private $value;
 
     /**

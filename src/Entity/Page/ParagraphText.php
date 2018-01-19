@@ -8,13 +8,18 @@
 
 namespace App\Entity\Page;
 
+use Symfony\Component\Validator\Constraints as Assert;
 
 class ParagraphText
 {
     /** @var string  */
     private $template = '<p>%s</p>';
 
-    /** @var null|string */
+    /**
+     * @Assert\NotBlank()
+     *
+     * @var null|string
+     */
     private $textValue;
 
     public function __toString()
