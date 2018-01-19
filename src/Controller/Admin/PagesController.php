@@ -46,8 +46,10 @@ class PagesController extends Controller
      */
     public function create(Request $request)
     {
+
         $form = $this->createForm(PageType::class, [
             'page_route'              => new PageRoute(),
+            'page_stage'              => '',
             'text_heading_type'       => [new Type()],
             'text_heading_css_class'  => [new CssClass()],
             'text_heading_text_value' => [new TextValue()],
@@ -56,6 +58,16 @@ class PagesController extends Controller
             'list_group'              => [new ListGroup()],
             'display_order'           => [new DisplayOrder()],
         ]);
+
+        $templates = [
+            'text_heading_type' => $form->get('text_heading_type')->createView(),
+            'text_heading_css_class' => $form->get('text_heading_css_class')->createView(),
+            'text_heading_text_value' => $form->get('text_heading_text_value')->createView(),
+            'paragraph_text' => $form->get('paragraph_text')->createView(),
+            'text_leading' => $form->get('text_leading')->createView(),
+            'list_group' => $form->get('list_group')->createView(),
+        ];
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
@@ -68,6 +80,8 @@ class PagesController extends Controller
         return $this->render('admin/pages.create.html.twig', array(
             'selectedNav' => 'admin-pages',
             'form'        => $form->createView(),
+            'template' => $templates,
+            'current_index' => end($form->getData()['display_order'])+1
         ));
 
     }

@@ -8,16 +8,22 @@
 
 namespace App\Entity\Page;
 
+use Symfony\Component\Validator\Constraints as Assert;
 
 class ListGroup
 {
     /** @var string  */
     private $template = '<ul class="%s">%s</ul>>';
 
-    /** @var string  */
+    /**
+     * @var string
+     */
     private $cssClass = 'list-group-flush';
 
-    /** @var array */
+    /**
+     * @Assert\NotBlank()
+     * @var array
+     */
     private $listItems = [];
 
     public function __toString()

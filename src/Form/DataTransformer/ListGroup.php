@@ -34,10 +34,14 @@ class ListGroup implements DataTransformerInterface
      */
     public function reverseTransform($value)
     {
-        $stream = fopen('php://memory', 'r+');
-        fwrite($stream, $value);
-        rewind($stream);
+        if (strlen($value)) {
+            $stream = fopen('php://memory', 'r+');
+            fwrite($stream, $value);
+            rewind($stream);
+            return (new \App\Entity\Page\ListGroup())->setListItems(array_map('trim', fgetcsv($stream)));
+        }
 
-        return (new \App\Entity\Page\ListGroup())->setListItems(array_map('trim', fgetcsv($stream)));
+        return (new \App\Entity\Page\ListGroup())->setListItems([]);
+
     }
 }

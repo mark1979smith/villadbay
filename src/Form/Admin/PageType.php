@@ -14,6 +14,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -36,6 +37,9 @@ class PageType extends AbstractType
                 'attr'    => [
                     'aria-describedby' => 'page_route_helper',
                 ],
+            ])
+            ->add('page_stage', HiddenType::class, [
+                'data' => 'core'
             ])
             ->add('page_type', \App\Form\Admin\Types\PageType::class, [
                 'label'   => 'Please select the type of page required',

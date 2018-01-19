@@ -54,22 +54,38 @@
                             </small>
                         </div>
                     </div>
+                    {{ form_widget(form.display_order) }}
                     <div id="form-opt-options">
-
+                        {%- for key, field in form.display_order -%}
+                            {% set el = key|split('--') %}
+                            {%  set counter = field.vars.value %}
+                            {% if el|length == 2 %}
+                                {% if el[0] starts with 'text_heading_' %}
+                                    {# This is a special group of elements #}
+                                    {% if (el[0] == 'text_heading_type') %}
+                                        {% embed "admin/form-widgets/text_heading.html.twig" with {'index': counter, 'counter' : el[1]} %}{% endembed %}
+                                    {% endif %}
+                                {% else %}
+                                    {% embed "admin/form-widgets/#{el[0]}.html.twig" with {'index': counter, 'counter' : el[1]} %}{% endembed %}
+                                {% endif %}
+                            {% endif %}
+                        {%- endfor -%}
                     </div>
                     {{ form_row(form.submit) }}
+                    {{ form_widget(form.page_stage) }}
+                    {{ form_widget(form._token) }}
                     {# render_rest is set to false as we do not want to submit all non-needed fields #}
                     {{ form_end(form, {'render_rest': false}) }}
 
                     {# The following are placeholders when adding elements are added dynamically #}
                     {%- block TextHeadingType_widget -%}
-                        <div style="display:none;" id="text_heading_type_container" data-counter="0"
+                        <div style="display:none;" id="text_heading_type_container" data-counter="{{ current_index }}"
                              data-element-wrapper="{{ '<div class="col"></div>'|e }}"
                              data-template="{{ '<div class="text_heading_type" data-counter="#NEWCOUNTER#"><div class="form-row">#FORMELEMENTS#</div><div class="invisible card card-body" id="js--text_heading_preview"></div>'|e }}">
                             <div class="form-row">
-                                {{ form_widget(form.text_heading_type) }}
-                                {{ form_widget(form.text_heading_css_class) }}
-                                {{ form_widget(form.text_heading_text_value) }}
+                                {{ form_widget(template.text_heading_type) }}
+                                {{ form_widget(template.text_heading_css_class) }}
+                                {{ form_widget(template.text_heading_text_value) }}
                             </div>
                             <div class="invisible card card-body" id="js--text_heading_preview">
 
@@ -77,28 +93,28 @@
                         </div>
                     {%- endblock -%}
                     {%- block TextLeading_widget -%}
-                        <div style="display: none" id="text_leading_container" data-counter="0"
+                        <div style="display: none" id="text_leading_container" data-counter="{{ current_index }}"
                              data-template="{{ '<div class="text_leading" data-counter="#NEWCOUNTER#">#FORMELEMENTS#<div class="invisible card card-body" id="js--text_leading_preview"></div>'|e }}">
-                            {{ form_widget(form.text_leading) }}
+                            {{ form_widget(template.text_leading) }}
                         </div>
                     {%- endblock -%}
                     {%- block ParagraphText_widget -%}
-                        <div style="display: none" id="paragraph_text_container" data-counter="0"
-                             data-template="{{ '<div class="paragraph_text" data-counter="#NEWCOUNTER#">#FORMELEMENTS#<div class="invisible card card-body" id="js--text_leading_preview"></div>'|e }}">
-                            {{ form_widget(form.paragraph_text) }}
+                        <div style="display: none" id="paragraph_text_container" data-counter="{{ current_index }}"
+                             data-template="{{ '<div class="paragraph_text" data-counter="#NEWCOUNTER#">#FORMELEMENTS#<div class="invisible card card-body" id="js--text_paragraph_preview"></div>'|e }}">
+                            {{ form_widget(template.paragraph_text) }}
                         </div>
                     {%- endblock -%}
                     {%- block ListGroup_widget -%}
-                        <div style="display: none" id="list_group_container" data-counter="0"
+                        <div style="display: none" id="list_group_container" data-counter="{{ current_index }}"
                              data-template="{{ '<div class="list_group" data-counter="#NEWCOUNTER#">#FORMELEMENTS#<small id="list_group_helper" class="form-text text-muted">Separate items with a comma (,). Wrap items in double-quotes (&quot;) if you require an items to include a comma.</small><div class="invisible card card-body" id="js--text_leading_preview"></div>'|e }}">
-                            {{ form_widget(form.list_group) }}
+                            {{ form_widget(template.list_group) }}
                             <small id="list_group_helper" class="form-text text-muted">
-                                Separate items with a comma (,). Wrap items in double-quotes (&quot;) if you require an items to include a comma.
+                                Separate items with a comma (,). Wrap items in double-quotes (&quot;) if you require an
+                                items to include a comma.
                             </small>
 
                         </div>
                     {%- endblock -%}
-                    {{ form_widget(form.display_order) }}
                 </div>
             </div>
         </div>
@@ -109,22 +125,24 @@
 {% block javascripts %}
     <script type="text/javascript">
         $(document).ready(function () {
+            if ($('#page_page_route').val() && !$('#page_page_route').hasClass('is-invalid')
+                && $('#page_page_type').val() && !$('#page_page_type').hasClass('is-invalid')) {
+                $('#page_page_route').attr('disabled', true);
+                $('#page_page_type').attr('disabled', true);
+
+                $('#form-core-options').find('input,select').attr('disabled', true);
+                $('#subnav--core>a').removeClass('active').addClass('disabled');
+                $('#subnav--opts>a').removeClass('disabled').addClass('active');
+
+            }
+
             $('#page_submit').on('click', function (e) {
                 e.preventDefault();
 
                 var ele = $(this);
 
-                if (ele.data('role') === 'core') {
-
-                    $('#form-core-options').find('input,select').attr('disabled', true);
-                    $('#subnav--core>a').removeClass('active').addClass('disabled');
-                    $('#subnav--opts>a').removeClass('disabled').addClass('active');
-
-                    $('#page_submit').data('role', 'opt');
-                } else {
-                    $(ele).closest('form').find('*:disabled').removeAttr('disabled');
-                    $(ele).closest('form').submit();
-                }
+                $(ele).closest('form').find('*:disabled').removeAttr('disabled');
+                $(ele).closest('form').submit();
 
             });
 
@@ -153,11 +171,11 @@
                     var newElem = jQuery(fields.data('template').replace('#FORMELEMENTS#', htmlStr).replace('#NEWCOUNTER#', counter));
                     $('#form-opt-options').append(newElem.css('display', 'block'));
                     $.each(newWidget, function (a, b) {
-                        $('#form-opt-options').after(jQuery('#page_display_order').data('prototype').toString().replace(/__name__/g, $(b).prop('id').replace(/^page_/, '') + '--' + counter).replace('#NEWCOUNTER#', $('#form-opt-options>div').length));
+                        $('#form-opt-options').before(jQuery('#page_display_order').data('prototype').toString().replace(/__name__/g, $(b).prop('id').replace(/^page_/, '') + '--' + counter).replace('#NEWCOUNTER#', $('#form-opt-options>div').length));
                     });
 
                     counter++;
-                    fields.data('counter', counter);
+                    $('div.jumbotron>div[data-counter]').data('counter', counter);
                 } else {
                     console.log('** No Matching Element **')
                 }
