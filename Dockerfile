@@ -82,8 +82,9 @@ RUN /usr/local/bin/php -r "copy('https://getcomposer.org/installer', 'composer-s
     /usr/local/bin/php composer-setup.php && \
     /usr/local/bin/php -r "unlink('composer-setup.php');" && \
     /usr/local/bin/php -r "unlink('composer-installer.sig');" && \
-    /usr/local/bin/php composer.phar install -d ./vendor-new && \
-    rm -rf ./vendor && mv ./vendor-new ./vendor && \
+    mkdir /var/www/vendor-new && \
+    /usr/local/bin/php composer.phar install -n -d /var/www/vendor-new && \
+    rm -rf /var/www/vendor && mv /var/www/vendor-new /var/www/vendor && \
     git add -A && \
     git commit -m "[AUTO] Updates to composer installation" && \
     git push
