@@ -44,7 +44,6 @@ ARG GITHUB_TOKEN="OWVmNjI4NzYyYmQyOTVjYWUxZWFmMmJmNGQ3ZmNkYjc0MzhlMjczYQ=="
 
 RUN cd  /var/www && \
     rm -rf html && \
-    mkdir -p ~/.ssh && \
     ssh-keyscan github.com >> ~/.ssh/known_hosts && \
     git clone git@github.com:mark1979smith/villadbay.git . && \
     git config user.email "mark1979smith@googlemail.com" && \
@@ -68,6 +67,7 @@ RUN /usr/local/bin/php -r "copy('https://getcomposer.org/installer', 'composer-s
             awk '{print $2}' |  \
             sed s/,//g \
     ) && \
+    mkdir -p ~/.ssh && \
     ssh-keygen -t rsa -N "" -b 4096 -C "mark1979smith@googlemail.com" -f ~/.ssh/id_rsa && \
     eval $(ssh-agent -s) && \
     ssh-add ~/.ssh/id_rsa && \
