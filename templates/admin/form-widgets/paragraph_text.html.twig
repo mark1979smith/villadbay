@@ -1,0 +1,8 @@
+<div class="paragraph_text" data-counter="{{ index }}">
+    <div class="form-group">
+        {{ form_label(form.paragraph_text[counter]) }}
+        {{ form_widget(form.paragraph_text[counter]) }}
+        {{ form_errors(form.paragraph_text[counter]) }}
+    </div>
+    <div class="invisible card card-body" id="js--text_paragraph_preview"></div>
+</div>

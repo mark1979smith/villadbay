@@ -37,4 +37,13 @@ class Page
      */
     private $data;
 
+    public static function mapToDataColumn(array $data)
+    {
+        return [
+            'page_type' => $data['page_type'],
+            'content' => [
+
+            ]
+        ];
+    }
 }

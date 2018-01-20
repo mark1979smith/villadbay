@@ -8,13 +8,18 @@
 
 namespace App\Entity\Page;
 
+use Symfony\Component\Validator\Constraints as Assert;
 
-class Text
+class ParagraphText
 {
     /** @var string  */
     private $template = '<p>%s</p>';
 
-    /** @var string */
+    /**
+     * @Assert\NotBlank()
+     *
+     * @var null|string
+     */
     private $textValue;
 
     public function __toString()
@@ -36,9 +41,9 @@ class Text
     /**
      * @param string $template
      *
-     * @return Text
+     * @return ParagraphText
      */
-    public function setTemplate(string $template): Text
+    public function setTemplate(string $template): ParagraphText
     {
         $this->template = $template;
 
@@ -46,9 +51,9 @@ class Text
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getTextValue(): string
+    public function getTextValue(): ?string
     {
         return $this->textValue;
     }
@@ -56,9 +61,9 @@ class Text
     /**
      * @param mixed $textValue
      *
-     * @return Text
+     * @return ParagraphText
      */
-    public function setTextValue($textValue): Text
+    public function setTextValue($textValue): ParagraphText
     {
         $this->textValue = $textValue;
 

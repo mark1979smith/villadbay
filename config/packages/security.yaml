@@ -6,7 +6,10 @@ security:
                 users:
                     admin: #htaccess user
                         password: $2y$12$7a/FFgwjQPrK5hq9LrJKSeR5cc62LkxQMXDh/ZM7GopAo2ukfwDgu
-                        roles: 'ROLE_USER'
+                        roles: 'ROLE_GUEST'
+                    sales@villadbay.com:
+                        password: $2y$12$OMQ1JArciGsJ97V0DwTydeNi84rBI2/GQlRzocC5IO7bOoC0LPLFG
+                        roles: 'ROLE_ADMIN'
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -25,7 +28,12 @@ security:
             # form_login: ~
             # https://symfony.com/doc/current/cookbook/security/form_login_setup.html
 
+            pattern: ^/admin/
+            http_basic: ~
     encoders:
         Symfony\Component\Security\Core\User\User:
             algorithm: bcrypt
             cost: 12
+    access_control:
+        # require ROLE_ADMIN for /admin*
+        - { path: ^/admin, roles: ROLE_ADMIN }

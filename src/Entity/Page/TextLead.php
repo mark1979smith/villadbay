@@ -8,13 +8,18 @@
 
 namespace App\Entity\Page;
 
+use Symfony\Component\Validator\Constraints as Assert;
 
 class TextLead
 {
     /** @var string  */
     private $template = '<p class="lead">%s</p>';
 
-    /** @var string */
+    /**
+     * @Assert\NotBlank()
+     *
+     * @var string
+     */
     private $textValue;
 
     public function __toString()
@@ -46,9 +51,9 @@ class TextLead
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getTextValue(): string
+    public function getTextValue(): ?string
     {
         return $this->textValue;
     }

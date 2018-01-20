@@ -8,19 +8,20 @@
 
 namespace App\Entity\Page;
 
+use Symfony\Component\Validator\Constraints as Assert;
 
 class PageType
 {
-    /** @var string "landing"|"content" */
+    /**
+     * @Assert\NotBlank()
+     * @var string "landing"|"content"
+     */
     private $pageType;
 
-    /** @var string */
-    private $image;
-
     /**
-     * @return string
+     * @return null|string
      */
-    public function getPageType(): string
+    public function getPageType(): ?string
     {
         return $this->pageType;
     }
@@ -33,26 +34,6 @@ class PageType
     public function setPageType(string $pageType): PageType
     {
         $this->pageType = $pageType;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getImage(): string
-    {
-        return $this->image;
-    }
-
-    /**
-     * @param string $image
-     *
-     * @return PageType
-     */
-    public function setImage(string $image): PageType
-    {
-        $this->image = $image;
 
         return $this;
     }
