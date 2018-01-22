@@ -1,4 +1,4 @@
-FROM php:apache
+FROM zfce/base-application:latest
 
 ENV DEV_MODE false
 
