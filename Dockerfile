@@ -13,6 +13,8 @@ RUN echo "ZGF0ZS50aW1lem9uZSA9IEF1c3RyYWxpYS9CcmlzYmFuZQ==" | base64 --decode >>
 # Change owner to avoid running as root
 USER deployuser
 
+WORKDIR /tmp
+
 RUN CURRENT_DEPLOYMENT_KEY_ID=$( \
         curl -i -H @.git.token https://api.github.com/repos/mark1979smith/villadbay/keys | \
             grep "\"id\":" |  \
@@ -34,15 +36,15 @@ RUN CURRENT_DEPLOYMENT_KEY_ID=$( \
     echo "Removing Deployment Key Id: $CURRENT_DEPLOYMENT_KEY_ID" && \
     curl -i -X DELETE -H @.git.token https://api.github.com/repos/mark1979smith/villadbay/keys/$CURRENT_DEPLOYMENT_KEY_ID && \
     rm -f .create-deployment-key.json && \
-    rm -f .git.token && \
-    cd  /var/www && \
-    rm -rf html && \
+    rm -f .git.token
+    
+WORKDIR /var/www
+
+RUN rm -rf html && \
     ssh-keyscan github.com >> ~/.ssh/known_hosts && \
     git clone git@github.com:mark1979smith/villadbay.git . && \
     git config user.email "mark1979smith@googlemail.com" && \
     git config user.name "Mark Smith"
-
-WORKDIR /var/www
 
 # RUN COMPOSER to generate parameters.yml file
 RUN /usr/local/bin/php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
