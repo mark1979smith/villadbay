@@ -148,7 +148,6 @@ class PageType extends AbstractType
                 'prototype'      => true,
                 'prototype_data' => '#NEWCOUNTER#',
                 'entry_options'  => [
-                    'data' => 0,
                 ],
             ])
             ->add('submit', SubmitType::class, [

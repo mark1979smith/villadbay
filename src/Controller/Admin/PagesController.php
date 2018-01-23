@@ -76,12 +76,16 @@ class PagesController extends Controller
             }
         }
 
+        $index = end($form->getData()['display_order']);
+        if ($index instanceof DisplayOrder) {
+            $index = $index->__toString();
+        }
 
         return $this->render('admin/pages.create.html.twig', array(
             'selectedNav' => 'admin-pages',
             'form'        => $form->createView(),
             'template' => $templates,
-            'current_index' => end($form->getData()['display_order'])+1
+            'current_index' => $index+1
         ));
 
     }
