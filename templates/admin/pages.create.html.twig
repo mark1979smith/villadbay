@@ -29,7 +29,7 @@
                                data-target="#list_group_container">Add List</a>
 
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Separated link</a>
+                            <a class="dropdown-item" href="#" data-target="#panoramic_image_container">Add Panoramic Image</a>
                         </div>
                     </li>
                     <li class="nav-item" id="subnav--prev">
@@ -111,6 +111,16 @@
                             <small id="list_group_helper" class="form-text text-muted">
                                 Separate items with a comma (,). Wrap items in double-quotes (&quot;) if you require an
                                 items to include a comma.
+                            </small>
+
+                        </div>
+                    {%- endblock -%}
+                    {%- block PanoramicImage_widget -%}
+                        <div style="display: none" id="panoramic_image_container" data-counter="{{ current_index }}"
+                             data-template="{{ '<div class="panoramic_image" data-counter="#NEWCOUNTER#">#FORMELEMENTS#<small id="panoramic_image_helper" class="form-text text-muted">Best placed at the top of the page before any content.</small>'|e }}">
+                            {{ form_widget(template.panoramic_image) }}
+                            <small id="panoramic_image_helper" class="form-text text-muted">
+                                Best placed at the top of the page before any content.
                             </small>
 
                         </div>

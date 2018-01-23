@@ -11,6 +11,7 @@ namespace App\Controller\Admin;
 use App\Entity\Page\DisplayOrder;
 use App\Entity\Page\ListGroup;
 use App\Entity\Page\PageRoute;
+use App\Entity\Page\PanoramicImage;
 use App\Entity\Page\ParagraphText;
 use App\Entity\Page\TextHeading\CssClass;
 use App\Entity\Page\TextHeading\TextValue;
@@ -56,6 +57,7 @@ class PagesController extends Controller
             'text_leading'            => [new TextLead()],
             'paragraph_text'          => [new ParagraphText()],
             'list_group'              => [new ListGroup()],
+            'panoramic_image'         => [new PanoramicImage()],
             'display_order'           => [new DisplayOrder()],
         ]);
 
@@ -66,6 +68,7 @@ class PagesController extends Controller
             'paragraph_text' => $form->get('paragraph_text')->createView(),
             'text_leading' => $form->get('text_leading')->createView(),
             'list_group' => $form->get('list_group')->createView(),
+            'panoramic_image' => $form->get('panoramic_image')->createView(),
         ];
 
         $form->handleRequest($request);
