@@ -1,0 +1,23 @@
+<div class="text_heading_type" data-counter="{{ index }}">
+    <div class="form-row">
+        <div class="col">
+            {{ form_label(form.text_heading_type[counter]) }}
+            {{ form_widget(form.text_heading_type[counter]) }}
+            {{ form_errors(form.text_heading_type[counter]) }}
+        </div>
+
+        <div class="col">
+            {{ form_label(form.text_heading_css_class[counter]) }}
+            {{ form_widget(form.text_heading_css_class[counter]) }}
+            {{ form_errors(form.text_heading_css_class[counter]) }}
+        </div>
+
+        <div class="col">
+            {{ form_label(form.text_heading_text_value[counter]) }}
+            {{ form_widget(form.text_heading_text_value[counter]) }}
+            {{ form_errors(form.text_heading_text_value[counter]) }}
+        </div>
+
+    </div>
+    <div class="invisible card card-body" id="js--text_heading_preview"></div>
+</div>
