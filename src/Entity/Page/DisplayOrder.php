@@ -14,12 +14,12 @@ class DisplayOrder
     /**
      * @var int
      */
-    private $displayOrder;
+    private $displayOrder = 0;
 
     /**
      * @return null|int
      */
-    public function getDisplayOrder(): ?int
+    public function getDisplayOrder(): int
     {
         return $this->displayOrder;
     }

@@ -142,13 +142,28 @@ class PageType extends AbstractType
                 ],
 
             ])
+            ->add('panoramic_image', CollectionType::class, [
+                'entry_type'    => \App\Form\Admin\Types\PanoramicImage::class,
+                'allow_add'     => true,
+                'allow_delete'  => true,
+                'prototype'     => true,
+                'entry_options' => [
+                    'label'    => 'Add Panoramic Image',
+                    'required' => false,
+                    'data_class' => null
+                ],
+                'attr'    => [
+                    'aria-describedby' => 'panoramic_image_helper',
+                ],
+
+            ])
+
             ->add('display_order', CollectionType::class, [
                 'entry_type'     => \App\Form\Admin\Types\DisplayOrder::class,
                 'allow_add'      => true,
                 'prototype'      => true,
                 'prototype_data' => '#NEWCOUNTER#',
                 'entry_options'  => [
-                    'data' => 0,
                 ],
             ])
             ->add('submit', SubmitType::class, [

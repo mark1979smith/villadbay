@@ -11,6 +11,7 @@ namespace App\Controller\Admin;
 use App\Entity\Page\DisplayOrder;
 use App\Entity\Page\ListGroup;
 use App\Entity\Page\PageRoute;
+use App\Entity\Page\PanoramicImage;
 use App\Entity\Page\ParagraphText;
 use App\Entity\Page\TextHeading\CssClass;
 use App\Entity\Page\TextHeading\TextValue;
@@ -56,6 +57,7 @@ class PagesController extends Controller
             'text_leading'            => [new TextLead()],
             'paragraph_text'          => [new ParagraphText()],
             'list_group'              => [new ListGroup()],
+            'panoramic_image'         => [new PanoramicImage()],
             'display_order'           => [new DisplayOrder()],
         ]);
 
@@ -66,6 +68,7 @@ class PagesController extends Controller
             'paragraph_text' => $form->get('paragraph_text')->createView(),
             'text_leading' => $form->get('text_leading')->createView(),
             'list_group' => $form->get('list_group')->createView(),
+            'panoramic_image' => $form->get('panoramic_image')->createView(),
         ];
 
         $form->handleRequest($request);
@@ -76,12 +79,16 @@ class PagesController extends Controller
             }
         }
 
+        $index = end($form->getData()['display_order']);
+        if ($index instanceof DisplayOrder) {
+            $index = $index->__toString();
+        }
 
         return $this->render('admin/pages.create.html.twig', array(
             'selectedNav' => 'admin-pages',
             'form'        => $form->createView(),
             'template' => $templates,
-            'current_index' => end($form->getData()['display_order'])+1
+            'current_index' => $index+1
         ));
 
     }
