@@ -18,6 +18,14 @@ services:
         resource: '../src/*'
         exclude: '../src/{Entity,Migrations,Tests}'
 
+    app.aws.s3:
+        class: App\Utils\AwsS3Client
+        public: true
+        arguments:
+            $version: '%env(AWS_S3_VERSION)%'
+            $region: '%env(AWS_S3_REGION)%'
+            $bucket: '%env(AWS_S3_BUCKET)%'
+
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
     App\Controller\:
