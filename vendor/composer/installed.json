@@ -2463,17 +2463,17 @@
     },
     {
         "name": "symfony/flex",
-        "version": "v1.0.61",
-        "version_normalized": "1.0.61.0",
+        "version": "v1.0.63",
+        "version_normalized": "1.0.63.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/flex.git",
-            "reference": "f872f8faccf5ff95678e1e428f460a333ba1e5d0"
+            "reference": "c409fe47e94c3c3c255e94356718ff15417afb0e"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/flex/zipball/f872f8faccf5ff95678e1e428f460a333ba1e5d0",
-            "reference": "f872f8faccf5ff95678e1e428f460a333ba1e5d0",
+            "url": "https://api.github.com/repos/symfony/flex/zipball/c409fe47e94c3c3c255e94356718ff15417afb0e",
+            "reference": "c409fe47e94c3c3c255e94356718ff15417afb0e",
             "shasum": ""
         },
         "require": {
@@ -2484,7 +2484,7 @@
             "composer/composer": "^1.4",
             "symfony/phpunit-bridge": "^3.2.8"
         },
-        "time": "2018-01-12T13:09:44+00:00",
+        "time": "2018-01-17T19:45:47+00:00",
         "type": "composer-plugin",
         "extra": {
             "branch-alias": {
@@ -3795,24 +3795,24 @@
     },
     {
         "name": "symfony/thanks",
-        "version": "v1.0.1",
-        "version_normalized": "1.0.1.0",
+        "version": "v1.0.2",
+        "version_normalized": "1.0.2.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/thanks.git",
-            "reference": "b637913a92664571afd1067fc645ecb30c9cf5b2"
+            "reference": "0621e9e403cbae531165c98c99f05221bf3b9dba"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/thanks/zipball/b637913a92664571afd1067fc645ecb30c9cf5b2",
-            "reference": "b637913a92664571afd1067fc645ecb30c9cf5b2",
+            "url": "https://api.github.com/repos/symfony/thanks/zipball/0621e9e403cbae531165c98c99f05221bf3b9dba",
+            "reference": "0621e9e403cbae531165c98c99f05221bf3b9dba",
             "shasum": ""
         },
         "require": {
             "composer-plugin-api": "^1.1",
-            "php": "^5.5.9|^7.0.8"
+            "php": "^5.5.9|^7.0.0"
         },
-        "time": "2018-01-03T09:30:52+00:00",
+        "time": "2018-01-10T15:41:47+00:00",
         "type": "composer-plugin",
         "extra": {
             "branch-alias": {
