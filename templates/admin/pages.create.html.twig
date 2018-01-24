@@ -170,11 +170,29 @@
 
                     $.each(newWidget, function (a, b) {
                         var h = $('<body>');
-                        if (fields.data('element-wrapper')) {
-                            $(h).append($(fields.data('element-wrapper')).append($(b).data('prototype').toString().replace(/__name__/g, counter))).html();
-                        } else {
-                            $(h).append($(b).data('prototype').toString().replace(/__name__/g, counter)).html();
+                        if ($(b).data('form-element-prefix-markup')) {
+                            $(h).append($(b).data('form-element-prefix-markup').toString()).html();
                         }
+                        if (fields.data('element-wrapper')) {
+                            $(h).append(
+                                $(fields.data('element-wrapper')).append(
+                                    ($(b).data('form-element-hide').toString() === 'true' ? '<div class="d-none">' : '') +
+                                    $(b).data('prototype').toString().replace(/__name__/g, counter)
+                                    ($(b).data('form-element-hide').toString() === 'true' ? '</div>' : '')
+                                )
+                            ).html();
+                        } else {
+                            $(h).append(
+                                ($(b).data('form-element-hide').toString() === 'true' ? '<div class="d-none">' : '') +
+                                $(b).data('prototype').toString().replace(/__name__/g, counter) +
+                                ($(b).data('form-element-hide').toString() === 'true' ? '</div>' : '')
+                            ).html();
+                        }
+
+                        if ($(b).data('form-element-hide').toString() === 'true') {
+                            $(h).append('</div>');
+                        }
+
                         htmlStr += $(h).html();
                     });
 
@@ -186,11 +204,26 @@
 
                     counter++;
                     $('div.jumbotron>div[data-counter]').data('counter', counter);
+
+                    $('.panoramic_image .card-group .card').on('click', function (e) {
+                        applyPanoClick($(this));
+                    });
+
                 } else {
                     console.log('** No Matching Element **')
                 }
             });
 
+            $('.panoramic_image .card-group .card *').on('click', function (e) {
+                applyPanoClick($(this));
+            });
+
         });
+
+        function applyPanoClick(ele) {
+            $(ele).closest('.card-group').find(':radio').removeAttr('checked');
+            $(ele).closest('.card').find(':radio').attr('checked', 'checked');
+            $(ele).closest('.panoramic_image').find('select').val($(ele).closest('.card').find(':radio:checked').val());
+        }
     </script>
 {% endblock %}

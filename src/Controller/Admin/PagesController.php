@@ -20,6 +20,7 @@ use App\Entity\Page\TextLead;
 use App\Form\Admin\PageType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -45,7 +46,7 @@ class PagesController extends Controller
      * @Route("/new", name="admin-pages-create")
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function create(Request $request)
+    public function create(Request $request, ContainerInterface $container)
     {
 
         $form = $this->createForm(PageType::class, [
@@ -59,16 +60,18 @@ class PagesController extends Controller
             'list_group'              => [new ListGroup()],
             'panoramic_image'         => [new PanoramicImage()],
             'display_order'           => [new DisplayOrder()],
+        ], [
+            'container_interface' => $container
         ]);
 
         $templates = [
-            'text_heading_type' => $form->get('text_heading_type')->createView(),
-            'text_heading_css_class' => $form->get('text_heading_css_class')->createView(),
+            'text_heading_type'       => $form->get('text_heading_type')->createView(),
+            'text_heading_css_class'  => $form->get('text_heading_css_class')->createView(),
             'text_heading_text_value' => $form->get('text_heading_text_value')->createView(),
-            'paragraph_text' => $form->get('paragraph_text')->createView(),
-            'text_leading' => $form->get('text_leading')->createView(),
-            'list_group' => $form->get('list_group')->createView(),
-            'panoramic_image' => $form->get('panoramic_image')->createView(),
+            'paragraph_text'          => $form->get('paragraph_text')->createView(),
+            'text_leading'            => $form->get('text_leading')->createView(),
+            'list_group'              => $form->get('list_group')->createView(),
+            'panoramic_image'         => $form->get('panoramic_image')->createView(),
         ];
 
         $form->handleRequest($request);
@@ -85,10 +88,10 @@ class PagesController extends Controller
         }
 
         return $this->render('admin/pages.create.html.twig', array(
-            'selectedNav' => 'admin-pages',
-            'form'        => $form->createView(),
-            'template' => $templates,
-            'current_index' => $index+1
+            'selectedNav'   => 'admin-pages',
+            'form'          => $form->createView(),
+            'template'      => $templates,
+            'current_index' => $index + 1,
         ));
 
     }
