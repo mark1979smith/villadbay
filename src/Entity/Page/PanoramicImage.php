@@ -12,7 +12,7 @@ namespace App\Entity\Page;
 class PanoramicImage
 {
     /**
-     * @var string
+     * @var null|string
      */
     private $panoramicImage;
 
@@ -25,11 +25,11 @@ class PanoramicImage
     }
 
     /**
-     * @param string $panoramicImage
+     * @param null|string $panoramicImage
      *
-     * @return PageType
+     * @return PanoramicImage
      */
-    public function setPanoramicImage(string $panoramicImage): PageType
+    public function setPanoramicImage($panoramicImage): PanoramicImage
     {
         $this->panoramicImage = $panoramicImage;
 
