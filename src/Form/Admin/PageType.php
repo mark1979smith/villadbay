@@ -193,13 +193,27 @@ class PageType extends AbstractType
 
     private function getPanoramicImages(ContainerInterface $container)
     {
+        /** @var \App\Utils\Redis $redisService */
+        $redisService = $container->get('app.redis');
+        $redisClient = $redisService->get();
+
         /** @var \App\Utils\AwsS3Client $s3Service */
         $s3Service = $container->get('app.aws.s3');
         $s3Client = $s3Service->get();
 
-        $response = $s3Client->listObjects([
-            'Bucket' => $s3Service->getBucket(),
-        ]);
+        $cacheKey = 'aws.s3.listobjects.'.$s3Service->getBucket();
+        if ($redisClient->hasItem($cacheKey)) {
+            $response = $redisClient->getItem($cacheKey)->get();
+        } else {
+            $response = $s3Client->listObjects([
+                'Bucket' => $s3Service->getBucket(),
+            ]);
+
+            $cacheItem = $redisClient->getItem($cacheKey);
+            $cacheItem->set($response);
+
+            $redisClient->save($cacheItem);
+        }
 
         $panoImages = [];
         if ($response instanceof \Aws\Result) {
