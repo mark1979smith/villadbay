@@ -218,12 +218,12 @@ class PageType extends AbstractType
 
     private function getPanoramicImagesHtml(array $panoImages)
     {
-        $html = '<div class="card-group">';
+        $html = '<div class="card-deck">';
 
         foreach ($panoImages as $panoImage) {
             $html .= '<div class="card text-center js--card-pano-image">'.
                 '<div class="card-body" style="background-position: center; background-size: cover; background-image: url(https://d3orc742w48r4f.cloudfront.net/images/pano/'. $panoImage .');"></div>' .
-                '<div class="card-footer"><label><input type="radio" name="pano_image" value="'. $panoImage .'" /></label></div>' .
+                '<div class="card-footer btn-group-toggle" data-toggle="buttons"><label class="btn btn-secondary"><input name="do-not-send[]" type="radio" autocomplete="off" value="'. $panoImage .'" /> Select</label></div>' .
                 '</div>';
         }
 

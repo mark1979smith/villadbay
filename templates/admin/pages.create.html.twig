@@ -205,7 +205,7 @@
                     counter++;
                     $('div.jumbotron>div[data-counter]').data('counter', counter);
 
-                    $('.panoramic_image .card-group .card').on('click', function (e) {
+                    $('.panoramic_image .card-deck .card .btn').on('click', function (e) {
                         applyPanoClick($(this));
                     });
 
@@ -214,15 +214,19 @@
                 }
             });
 
-            $('.panoramic_image .card-group .card *').on('click', function (e) {
+            $('.panoramic_image .card-deck .card .btn').on('click', function (e) {
                 applyPanoClick($(this));
             });
 
         });
 
         function applyPanoClick(ele) {
-            $(ele).closest('.card-group').find(':radio').removeAttr('checked');
+            $(ele).closest('.card-deck').find(':radio').removeAttr('checked');
+            $(ele).closest('.card-deck').find('label').removeClass('active');
+            $(ele).closest('.card-deck').find('.card').removeClass('border-success');
             $(ele).closest('.card').find(':radio').attr('checked', 'checked');
+            $(ele).closest('.card').find(':radio[checked="checked"]').closest('label').addClass('active');
+            $(ele).closest('.card').addClass('border-success');
             $(ele).closest('.panoramic_image').find('select').val($(ele).closest('.card').find(':radio:checked').val());
         }
     </script>
