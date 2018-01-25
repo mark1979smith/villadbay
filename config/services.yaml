@@ -26,6 +26,13 @@ services:
             $region: '%env(AWS_S3_REGION)%'
             $bucket: '%env(AWS_S3_BUCKET)%'
 
+    app.redis:
+        class: App\Utils\Redis
+        public: true
+        arguments:
+            $redisHost: '%env(REDIS_HOST)%'
+            $redisPort: '%env(REDIS_PORT)%'
+
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
     App\Controller\:
