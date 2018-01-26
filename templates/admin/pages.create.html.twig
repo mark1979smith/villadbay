@@ -132,7 +132,7 @@
 
 {% endblock %}
 
-{% block javascripts %}
+{%- block javascripts -%}
     <script type="text/javascript">
         $(document).ready(function () {
             if ($('#page_page_route').val() && !$('#page_page_route').hasClass('is-invalid')
@@ -165,35 +165,12 @@
                 if (fields.length > 0) {
                     // Try to find the counter of the list
                     var counter = fields.data('counter');
+
                     var newWidget = fields.find('*[data-prototype]');
                     var htmlStr = '';
 
                     $.each(newWidget, function (a, b) {
-                        var h = $('<body>');
-                        if ($(b).data('form-element-prefix-markup')) {
-                            $(h).append($(b).data('form-element-prefix-markup').toString()).html();
-                        }
-                        if (fields.data('element-wrapper')) {
-                            $(h).append(
-                                $(fields.data('element-wrapper')).append(
-                                    ($(b).data('form-element-hide').toString() === 'true' ? '<div class="d-none">' : '') +
-                                    $(b).data('prototype').toString().replace(/__name__/g, counter)
-                                    ($(b).data('form-element-hide').toString() === 'true' ? '</div>' : '')
-                                )
-                            ).html();
-                        } else {
-                            $(h).append(
-                                ($(b).data('form-element-hide').toString() === 'true' ? '<div class="d-none">' : '') +
-                                $(b).data('prototype').toString().replace(/__name__/g, counter) +
-                                ($(b).data('form-element-hide').toString() === 'true' ? '</div>' : '')
-                            ).html();
-                        }
-
-                        if ($(b).data('form-element-hide').toString() === 'true') {
-                            $(h).append('</div>');
-                        }
-
-                        htmlStr += $(h).html();
+                        htmlStr += getElementHtml(fields, b, counter);
                     });
 
                     var newElem = jQuery(fields.data('template').replace('#FORMELEMENTS#', htmlStr).replace('#NEWCOUNTER#', counter));
@@ -218,7 +195,57 @@
                 applyPanoClick($(this));
             });
 
+            applyPanoSelected();
         });
+
+        $('#form-opt-options>div.panoramic_image').each(function() {
+            var currentValues = $(this).find(':input');
+            var fields = jQuery('#' + jQuery(this).attr('class') + '_container');
+            // Try to find the counter of the list
+            var counter = $(this).data('counter');
+
+            var newWidget = fields.find('*[data-prototype]');
+            var htmlStr = '';
+
+            $.each(newWidget, function (a, b) {
+                htmlStr += getElementHtml(fields, b, counter, currentValues.parent());
+            });
+            $(this).html(htmlStr);
+        });
+
+        function getElementHtml(fields, b, counter, currentValues)
+        {
+            var h = $('<body>');
+            if (typeof currentValues !== 'undefined') {
+                var c = $('<body>');
+                $(c).append(currentValues.html());
+            }
+            if ($(b).data('form-element-prefix-markup')) {
+                $(h).append($(b).data('form-element-prefix-markup').toString()).html();
+            }
+            if (fields.data('element-wrapper')) {
+                $(h).append(
+                    $(fields.data('element-wrapper')).append(
+                        (($(b).data('form-element-hide').toString() === 'true') ? '<div class="d-none">' : '') +
+                        (typeof currentValues !== 'undefined' ?
+                            $(c).html() :
+                            $(b).data('prototype').toString().replace(/__name__/g, counter)
+                        ) +
+                        (($(b).data('form-element-hide').toString() === 'true') ? '</div>' : '')
+                    )
+                ).html();
+            } else {
+                $(h).append(
+                    (($(b).data('form-element-hide').toString() === 'true') ? '<div class="d-none">' : '') +
+                    (typeof currentValues != 'undefined' ?
+                        $(c).html() :
+                        $(b).data('prototype').toString().replace(/__name__/g, counter)) +
+                    (($(b).data('form-element-hide').toString() === 'true') ? '</div>' : '')
+                ).html();
+            }
+
+            return $(h).html();
+        }
 
         function applyPanoClick(ele) {
             $(ele).closest('.card-deck').find(':radio').removeAttr('checked');
@@ -229,5 +256,12 @@
             $(ele).closest('.card').addClass('border-success');
             $(ele).closest('.panoramic_image').find('select').val($(ele).closest('.card').find(':radio:checked').val());
         }
+
+        function applyPanoSelected() {
+            $('.panoramic_image :input[id^="page_panoramic_image"]').each(function (e) {
+                $(this).closest('.panoramic_image').find(':radio[value="' + $(this).val() + '"]').trigger('click');
+            });
+
+        }
     </script>
-{% endblock %}
+{%- endblock -%}
