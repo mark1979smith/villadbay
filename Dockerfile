@@ -21,31 +21,23 @@ RUN CURRENT_DEPLOYMENT_KEY_ID=$( \
             awk '{print $2}' |  \
             sed s/,//g \
     ) && \
-    mkdir -p ~/.ssh && \
-    ssh-keygen -t rsa -N "" -b 4096 -C "mark1979smith@googlemail.com" -f ~/.ssh/id_rsa && \
-    eval $(ssh-agent -s) && \
-    ssh-add ~/.ssh/id_rsa && \
     # Create New Deployment Key
     printf "%s" '{"title": "Villa DBay Deploy Key (Write) ' >> .create-deployment-key.json && \
     echo `date` >> .create-deployment-key.json && \
     printf "%s" '", "key":"' >> .create-deployment-key.json && \
     cat ~/.ssh/id_rsa.pub | tee >> .create-deployment-key.json && \
     printf "%s"  '", "read_only": false}' >> .create-deployment-key.json && \
-    curl -i -X POST -H @.git.token -d @.create-deployment-key.json https://api.github.com/repos/mark1979smith/villadbay/keys && \
+    curl -i -X POST -H @.git.token -d @.create-deployment-key.json https://api.github.com/repos/mark1979smith/villadbay/keys > /dev/null && \
     # Remove Old Deployment Key
     echo "Removing Deployment Key Id: $CURRENT_DEPLOYMENT_KEY_ID" && \
     curl -i -X DELETE -H @.git.token https://api.github.com/repos/mark1979smith/villadbay/keys/$CURRENT_DEPLOYMENT_KEY_ID && \
     rm -f .create-deployment-key.json && \
-    rm -f .git.token
+    rm -f .git.token && \
+    rm -rf html && \
+    git clone git@github.com:mark1979smith/villadbay.git .
     
 WORKDIR /var/www
-
-RUN rm -rf html && \
-    ssh-keyscan github.com >> ~/.ssh/known_hosts && \
-    git clone git@github.com:mark1979smith/villadbay.git . && \
-    git config user.email "mark1979smith@googlemail.com" && \
-    git config user.name "Mark Smith"
-
+    
 # RUN COMPOSER to generate parameters.yml file
 RUN /usr/local/bin/php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
     /usr/local/bin/php -r "copy('https://composer.github.io/installer.sig', 'composer-installer.sig');" && \
