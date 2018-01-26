@@ -171,6 +171,7 @@ class PageType extends AbstractType
                     'required'   => false,
                     'data_class' => null,
                     'choices'    => $panoramicImages,
+                    'placeholder' => false,
                     'attr'       => [
 
                     ],

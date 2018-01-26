@@ -118,6 +118,7 @@
                     {%- block PanoramicImage_widget -%}
                         <div style="display: none" id="panoramic_image_container" data-counter="{{ current_index }}"
                              data-template="{{ '<div class="panoramic_image" data-counter="#NEWCOUNTER#">#FORMELEMENTS#<small id="panoramic_image_helper" class="form-text text-muted">Best placed at the top of the page before any content.</small>'|e }}">
+                            {{ form_label(template.panoramic_image) }}
                             {{ form_widget(template.panoramic_image) }}
                             <small id="panoramic_image_helper" class="form-text text-muted">
                                 Best placed at the top of the page before any content.
@@ -182,9 +183,12 @@
                     counter++;
                     $('div.jumbotron>div[data-counter]').data('counter', counter);
 
+
                     $('.panoramic_image .card-deck .card .btn').on('click', function (e) {
                         applyPanoClick($(this));
                     });
+
+                    applyPanoSelected();
 
                 } else {
                     console.log('** No Matching Element **')
@@ -254,7 +258,9 @@
             $(ele).closest('.card').find(':radio').attr('checked', 'checked');
             $(ele).closest('.card').find(':radio[checked="checked"]').closest('label').addClass('active');
             $(ele).closest('.card').addClass('border-success');
-            $(ele).closest('.panoramic_image').find('select').val($(ele).closest('.card').find(':radio:checked').val());
+            if ($(ele).closest('.card').find(':radio:checked').length) {
+                $(ele).closest('.panoramic_image').find('select').val($(ele).closest('.card').find(':radio:checked').val());
+            }
         }
 
         function applyPanoSelected() {
