@@ -34,7 +34,10 @@ RUN CURRENT_DEPLOYMENT_KEY_ID=$( \
     rm -f .create-deployment-key.json && \
     rm -f .git.token && \
     rm -rf html && \
-    git clone git@github.com:mark1979smith/villadbay.git .
+    git clone git@github.com:mark1979smith/villadbay.git . && \
+    git config user.email "hosting@marksmith.email" && \
+    git config user.name "Mark Smith"
+
     
 WORKDIR /var/www
     
