@@ -21,6 +21,10 @@ RUN CURRENT_DEPLOYMENT_KEY_ID=$( \
             awk '{print $2}' |  \
             sed s/,//g \
     ) && \
+    ssh-keygen -t rsa -N "" -b 4096 -C "mark1979smith@googlemail.com" -f ~/.ssh/id_rsa && \
+    eval $(ssh-agent -s) && \
+    ssh-add ~/.ssh/id_rsa && \
+    ssh-keyscan github.com >> ~/.ssh/known_hosts && \
     # Create New Deployment Key
     printf "%s" '{"title": "Villa DBay Deploy Key (Write) ' >> .create-deployment-key.json && \
     echo `date` >> .create-deployment-key.json && \
