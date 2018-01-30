@@ -92,6 +92,7 @@ class PagesController extends Controller
             'form'          => $form->createView(),
             'template'      => $templates,
             'current_index' => $index + 1,
+            'dev_mode'      => getenv('DEV_MODE')
         ));
 
     }
