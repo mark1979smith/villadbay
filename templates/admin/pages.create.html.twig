@@ -29,7 +29,8 @@
                                data-target="#list_group_container">Add List</a>
 
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#" data-target="#panoramic_image_container">Add Panoramic Image</a>
+                            <a class="dropdown-item" href="#" data-target="#panoramic_image_container">Add Panoramic
+                                Image</a>
                         </div>
                     </li>
                     <li class="nav-item" id="subnav--prev">
@@ -58,7 +59,7 @@
                     <div id="form-opt-options">
                         {%- for key, field in form.display_order -%}
                             {% set el = key|split('--') %}
-                            {%  set counter = field.vars.value %}
+                            {% set counter = field.vars.value %}
                             {% if el|length == 2 %}
                                 {% if el[0] starts with 'text_heading_' %}
                                     {# This is a special group of elements #}
@@ -131,7 +132,7 @@
         </div>
     </div>
 
-    {%  if (dev_mode == 'true') %}
+    {% if (dev_mode == 'true') %}
         <div class="container">
             <div class="row">
                 <div id="qunit"></div>
@@ -222,7 +223,7 @@
             applyPanoSelected();
         });
 
-        $('#form-opt-options>div').each(function() {
+        $('#form-opt-options>div').each(function () {
             var target = $('#page_' + jQuery(this).attr('class'));
 
             if (target.data('form-element-prefix-markup')) {
@@ -236,13 +237,8 @@
             }
         });
 
-        function getElementHtml(fields, b, counter, currentValues)
-        {
+        function getElementHtml(fields, b, counter) {
             var h = $('<body>');
-            if (typeof currentValues !== 'undefined') {
-                var c = $('<body>');
-                appendHtml(c, currentValues);
-            }
             if ($(b).data('form-element-prefix-markup')) {
                 if (typeof $(b).data('form-element-prefix-markup-append-to') === 'undefined') {
                     appendHtml(h, $(b).data('form-element-prefix-markup'));
@@ -251,19 +247,13 @@
             if (fields.data('element-wrapper')) {
                 $(h).append(
                     $(fields.data('element-wrapper')).append(
-                        (typeof currentValues !== 'undefined' ?
-                            currentValues.html() :
-                            $(b).data('prototype').toString().replace(/__name__/g, counter)
-                        )
+                        $(b).data('prototype').toString().replace(/__name__/g, counter)
                     )
                 ).html();
                 hideElement(h, $(b).data('form-element-hide'));
             } else {
                 $(h).append(
-                    (typeof currentValues !== 'undefined' ?
-                        $($(b).data('prototype').toString().replace(/__name__/g, counter)).find(':input').html(currentValues.html()) :
-                        // $(b).data('prototype').toString().replace(/__name__/g, counter) :
-                        $(b).data('prototype').toString().replace(/__name__/g, counter))
+                    $(b).data('prototype').toString().replace(/__name__/g, counter)
                 ).html();
 
                 hideElement(h, $(b).data('form-element-hide'));
