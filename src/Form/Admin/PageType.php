@@ -80,6 +80,7 @@ class PageType extends AbstractType
                 ],
                 'attr'          => array(
                     'class' => 'js--text_heading_type col',
+                    'data-form-element-hide' => 'false'
                 ),
             ])
             ->add('text_heading_css_class', CollectionType::class, [
@@ -100,6 +101,7 @@ class PageType extends AbstractType
                 ],
                 'attr'          => array(
                     'class' => 'js--text_heading_type col',
+                    'data-form-element-hide' => 'false'
                 ),
             ])
             ->add('text_heading_text_value', CollectionType::class, [
@@ -113,6 +115,7 @@ class PageType extends AbstractType
                 ],
                 'attr'          => array(
                     'class' => 'js--text_heading_type col',
+                    'data-form-element-hide' => 'false'
                 ),
             ])
             ->add('text_leading', CollectionType::class, [
@@ -124,7 +127,9 @@ class PageType extends AbstractType
                     'label'    => 'Enter leading text',
                     'required' => false,
                 ],
-
+                'attr' => [
+                    'data-form-element-hide' => 'false'
+                ]
             ])
             ->add('paragraph_text', CollectionType::class, [
                 'entry_type'    => \App\Form\Admin\Types\ParagraphText::class,
@@ -135,6 +140,9 @@ class PageType extends AbstractType
                     'label'    => 'Enter text',
                     'required' => false,
                 ],
+                'attr' => [
+                    'data-form-element-hide' => 'false'
+                ]
 
             ])
             ->add('list_group', CollectionType::class, [
@@ -149,6 +157,7 @@ class PageType extends AbstractType
                 ],
                 'attr'          => [
                     'aria-describedby' => 'list_group_helper',
+                    'data-form-element-hide' => 'false'
                 ],
 
             ])
@@ -162,6 +171,7 @@ class PageType extends AbstractType
                     'required'   => false,
                     'data_class' => null,
                     'choices'    => $panoramicImages,
+                    'placeholder' => false,
                     'attr'       => [
 
                     ],
@@ -169,7 +179,8 @@ class PageType extends AbstractType
                 'attr'          => [
                     'aria-describedby' => 'panoramic_image_helper',
                     'data-form-element-prefix-markup' => $this->getPanoramicImagesHtml($panoramicImages),
-                    'data-form-element-hide' => 'true'
+                    'data-form-element-prefix-markup-append-to' => '.form-group',
+                    'data-form-element-hide' => 'select'
                 ],
 
             ])

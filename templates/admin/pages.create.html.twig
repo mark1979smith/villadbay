@@ -118,6 +118,7 @@
                     {%- block PanoramicImage_widget -%}
                         <div style="display: none" id="panoramic_image_container" data-counter="{{ current_index }}"
                              data-template="{{ '<div class="panoramic_image" data-counter="#NEWCOUNTER#">#FORMELEMENTS#<small id="panoramic_image_helper" class="form-text text-muted">Best placed at the top of the page before any content.</small>'|e }}">
+                            {{ form_label(template.panoramic_image) }}
                             {{ form_widget(template.panoramic_image) }}
                             <small id="panoramic_image_helper" class="form-text text-muted">
                                 Best placed at the top of the page before any content.
@@ -132,7 +133,8 @@
 
 {% endblock %}
 
-{% block javascripts %}
+{%- block javascripts -%}
+    <script type="text/javascript" src="{{ asset('/bundles/js/admin--pages.js') }}"></script>
     <script type="text/javascript">
         $(document).ready(function () {
             if ($('#page_page_route').val() && !$('#page_page_route').hasClass('is-invalid')
@@ -165,35 +167,12 @@
                 if (fields.length > 0) {
                     // Try to find the counter of the list
                     var counter = fields.data('counter');
+
                     var newWidget = fields.find('*[data-prototype]');
                     var htmlStr = '';
 
                     $.each(newWidget, function (a, b) {
-                        var h = $('<body>');
-                        if ($(b).data('form-element-prefix-markup')) {
-                            $(h).append($(b).data('form-element-prefix-markup').toString()).html();
-                        }
-                        if (fields.data('element-wrapper')) {
-                            $(h).append(
-                                $(fields.data('element-wrapper')).append(
-                                    ($(b).data('form-element-hide').toString() === 'true' ? '<div class="d-none">' : '') +
-                                    $(b).data('prototype').toString().replace(/__name__/g, counter)
-                                    ($(b).data('form-element-hide').toString() === 'true' ? '</div>' : '')
-                                )
-                            ).html();
-                        } else {
-                            $(h).append(
-                                ($(b).data('form-element-hide').toString() === 'true' ? '<div class="d-none">' : '') +
-                                $(b).data('prototype').toString().replace(/__name__/g, counter) +
-                                ($(b).data('form-element-hide').toString() === 'true' ? '</div>' : '')
-                            ).html();
-                        }
-
-                        if ($(b).data('form-element-hide').toString() === 'true') {
-                            $(h).append('</div>');
-                        }
-
-                        htmlStr += $(h).html();
+                        htmlStr += getElementHtml(fields, b, counter);
                     });
 
                     var newElem = jQuery(fields.data('template').replace('#FORMELEMENTS#', htmlStr).replace('#NEWCOUNTER#', counter));
@@ -205,9 +184,12 @@
                     counter++;
                     $('div.jumbotron>div[data-counter]').data('counter', counter);
 
+
                     $('.panoramic_image .card-deck .card .btn').on('click', function (e) {
                         applyPanoClick($(this));
                     });
+
+                    applyPanoSelected();
 
                 } else {
                     console.log('** No Matching Element **')
@@ -218,7 +200,63 @@
                 applyPanoClick($(this));
             });
 
+            applyPanoSelected();
         });
+
+        $('#form-opt-options>div').each(function() {
+            var target = $('#page_' + jQuery(this).attr('class'));
+
+            if (target.data('form-element-prefix-markup')) {
+                if (typeof target.data('form-element-prefix-markup-append-to') !== 'undefined') {
+                    appendHtmlTo($(this), $(target).data('form-element-prefix-markup'), $(target).data('form-element-prefix-markup-append-to'));
+                }
+            }
+
+            if (typeof target.data('form-element-hide') !== 'undefined') {
+                hideElement($(this), target.data('form-element-hide'));
+            }
+        });
+
+        function getElementHtml(fields, b, counter, currentValues)
+        {
+            var h = $('<body>');
+            if (typeof currentValues !== 'undefined') {
+                var c = $('<body>');
+                appendHtml(c, currentValues);
+            }
+            if ($(b).data('form-element-prefix-markup')) {
+                if (typeof $(b).data('form-element-prefix-markup-append-to') === 'undefined') {
+                    appendHtml(h, $(b).data('form-element-prefix-markup'));
+                }
+            }
+            if (fields.data('element-wrapper')) {
+                $(h).append(
+                    $(fields.data('element-wrapper')).append(
+                        (typeof currentValues !== 'undefined' ?
+                            currentValues.html() :
+                            $(b).data('prototype').toString().replace(/__name__/g, counter)
+                        )
+                    )
+                ).html();
+                hideElement(h, $(b).data('form-element-hide'));
+            } else {
+                $(h).append(
+                    (typeof currentValues !== 'undefined' ?
+                        $($(b).data('prototype').toString().replace(/__name__/g, counter)).find(':input').html(currentValues.html()) :
+                        // $(b).data('prototype').toString().replace(/__name__/g, counter) :
+                        $(b).data('prototype').toString().replace(/__name__/g, counter))
+                ).html();
+
+                hideElement(h, $(b).data('form-element-hide'));
+            }
+            if ($(b).data('form-element-prefix-markup')) {
+                if (typeof $(b).data('form-element-prefix-markup-append-to') !== 'undefined') {
+                    appendHtmlTo(h, $(b).data('form-element-prefix-markup'), $(b).data('form-element-prefix-markup-append-to'))
+                }
+            }
+
+            return $(h).html();
+        }
 
         function applyPanoClick(ele) {
             $(ele).closest('.card-deck').find(':radio').removeAttr('checked');
@@ -227,7 +265,16 @@
             $(ele).closest('.card').find(':radio').attr('checked', 'checked');
             $(ele).closest('.card').find(':radio[checked="checked"]').closest('label').addClass('active');
             $(ele).closest('.card').addClass('border-success');
-            $(ele).closest('.panoramic_image').find('select').val($(ele).closest('.card').find(':radio:checked').val());
+            if ($(ele).closest('.card').find(':radio:checked').length) {
+                $(ele).closest('.panoramic_image').find('select').val($(ele).closest('.card').find(':radio:checked').val());
+            }
+        }
+
+        function applyPanoSelected() {
+            $('.panoramic_image :input[id^="page_panoramic_image"]').each(function (e) {
+                $(this).closest('.panoramic_image').find(':radio[value="' + $(this).val() + '"]').trigger('click');
+            });
+
         }
     </script>
-{% endblock %}
+{%- endblock -%}
