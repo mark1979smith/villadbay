@@ -131,10 +131,29 @@
         </div>
     </div>
 
+    {%  if (dev_mode == 'true') %}
+        <div class="container">
+            <div class="row">
+                <div id="qunit"></div>
+                <div id="qunit-fixture"></div>
+            </div>
+        </div>
+
+    {% endif %}
 {% endblock %}
+
+{% if (dev_mode == 'true') %}
+    {% block stylesheets %}
+        <link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-2.5.0.css">
+    {% endblock %}
+{% endif %}
 
 {%- block javascripts -%}
     <script type="text/javascript" src="{{ asset('/bundles/js/admin--pages.js') }}"></script>
+    {% if (dev_mode == 'true') %}
+        <script src="https://code.jquery.com/qunit/qunit-2.5.0.js"></script>
+        <script type="text/javascript" src="{{ asset('/bundles/js/admin--pages-test.js') }}"></script>
+    {% endif %}
     <script type="text/javascript">
         $(document).ready(function () {
             if ($('#page_page_route').val() && !$('#page_page_route').hasClass('is-invalid')
