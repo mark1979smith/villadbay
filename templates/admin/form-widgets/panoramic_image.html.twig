@@ -1,5 +1,8 @@
 <div class="panoramic_image" data-counter="{{ index }}">
-    {{ form_widget(form.panoramic_image[counter]) }}
+    <div class="form-group">
+        {{ form_label(form.panoramic_image[counter]) }}
+        {{ form_widget(form.panoramic_image[counter]) }}
+    </div>
     <small id="panoramic_image_helper" class="form-text text-muted">Best placed at the top of the page before any
         content.
     </small>
