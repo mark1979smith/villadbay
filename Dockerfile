@@ -43,6 +43,7 @@ WORKDIR /var/www
 RUN rm -rf html && \
     ssh-keyscan github.com >> ~/.ssh/known_hosts && \
     git clone git@github.com:mark1979smith/villadbay.git . && \
+    git checkout page-management && \
     git config user.email "mark1979smith@googlemail.com" && \
     git config user.name "Mark Smith"
 
