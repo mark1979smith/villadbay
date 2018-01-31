@@ -80,7 +80,7 @@ final class Versions
   'symfony/thanks' => 'v1.0.2@0621e9e403cbae531165c98c99f05221bf3b9dba',
   'symfony/var-dumper' => 'v4.0.3@883f6109a2069773e088c08626b87a3d3d61c566',
   'symfony/web-profiler-bundle' => 'v4.0.3@20a04d0672d7f538d1c06ded7bf5990f23c089aa',
-  '__root__' => 'dev-page-management@1b59b2ac7a73081ada310c603287af9dbca1f630',
+  '__root__' => 'dev-page-management@9ba29864afe7fc676e2df9ccec0122f4600baf0a',
 );
 
     private function __construct()
