@@ -8,6 +8,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Page;
 use App\Entity\Page\DisplayOrder;
 use App\Entity\Page\ListGroup;
 use App\Entity\Page\PageRoute;
@@ -78,6 +79,16 @@ class PagesController extends Controller
 
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
+
+                $em = $this->getDoctrine()->getManager();
+
+//                var_dump($form->getData()); exit;
+                $page = new Page();
+                $page->setData($form->getData());
+                $page->setRouteName($form->getData()['page_route']->getPageRoute());
+                $page->setPublish(new \DateTime());
+                $em->persist($page);
+                $em->flush();
 //                return $this->redirectToRoute('search');
             }
         }

@@ -10,6 +10,7 @@ namespace App\Controller;
 
 use App\Entity\Availability;
 use App\Entity\Contact;
+use App\Entity\Page;
 use App\Entity\Search;
 use App\Form\Search as SearchForm;
 use App\Form\SearchType;
@@ -117,6 +118,31 @@ class PagesController extends Controller
         return $this->render('pages/contact.html.twig', array(
             'form' => $form->createView(),
             'selectedNav' => 'contact'
+        ));
+    }
+
+    /**
+     * @Route("/test", name="test")
+     *
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function test(Request $request)
+    {
+
+        $page = $this->getDoctrine()
+            ->getRepository(Page::class)
+            ->findOneByLatestPage('test');
+
+        if (!$page) {
+            throw $this->createNotFoundException(
+                'No page found!'
+            );
+        }
+        return $this->render('pages/test.html.twig', array(
+            'selectedNav' => 'about',
+            'page' => $page->__toString()
         ));
     }
 }

@@ -43,4 +43,5 @@ class TextValue
     {
         return (string) $this->value;
     }
+
 }

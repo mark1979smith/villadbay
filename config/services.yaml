@@ -18,6 +18,11 @@ services:
         resource: '../src/*'
         exclude: '../src/{Entity,Migrations,Tests}'
 
+    App\Repository\:
+        resource: '../src/Repository'
+        autowire: true
+        tags: ['doctrine.repository_service']
+
     app.aws.s3:
         class: App\Utils\AwsS3Client
         public: true

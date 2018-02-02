@@ -150,10 +150,10 @@
 {% endif %}
 
 {%- block javascripts -%}
-    <script type="text/javascript" src="{{ asset('/bundles/js/admin--pages.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('/js/admin--pages.js') }}"></script>
     {% if (dev_mode == 'true') %}
         <script src="https://code.jquery.com/qunit/qunit-2.5.0.js"></script>
-        <script type="text/javascript" src="{{ asset('/bundles/js/admin--pages-test.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('/js/admin--pages-test.js') }}"></script>
     {% endif %}
     <script type="text/javascript">
         $(document).ready(function () {

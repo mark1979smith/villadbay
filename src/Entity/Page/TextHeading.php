@@ -8,28 +8,33 @@
 
 namespace App\Entity\Page;
 
+
+use App\Entity\Page\TextHeading\CssClass;
+use App\Entity\Page\TextHeading\TextValue;
+use App\Entity\Page\TextHeading\Type;
+
 class TextHeading
 {
     /** @var string  */
     private $template = '<%s class="%s">%s</%s>';
 
-    /** @var null|string  */
+    /** @var null|\App\Entity\Page\TextHeading\Type;  */
     private $type;
 
-    /** @var null|string  */
+    /** @var null|\App\Entity\Page\TextHeading\CssClass  */
     private $cssClass;
 
-    /** @var string */
+    /** @var null|\App\Entity\Page\TextHeading\TextValue */
     private $textValue;
 
     public function __toString()
     {
         return sprintf(
             $this->getTemplate(),
-            $this->getType(),
-            $this->getCssClass(),
-            $this->getTextValue(),
-            $this->getType()
+            $this->getType()->getValue(),
+            $this->getCssClass()->getValue(),
+            $this->getTextValue()->getValue(),
+            $this->getType()->getValue()
         );
     }
 
@@ -54,19 +59,19 @@ class TextHeading
     }
 
     /**
-     * @return string
+     * @return \App\Entity\Page\TextHeading\CssClass|null
      */
-    public function getCssClass(): ?string
+    public function getCssClass(): ?CssClass
     {
         return $this->cssClass;
     }
 
     /**
-     * @param mixed $cssClass
+     * @param \App\Entity\Page\TextHeading\CssClass $cssClass
      *
      * @return TextHeading
      */
-    public function setCssClass($cssClass): TextHeading
+    public function setCssClass(CssClass $cssClass): TextHeading
     {
         $this->cssClass = $cssClass;
 
@@ -74,19 +79,19 @@ class TextHeading
     }
 
     /**
-     * @return string
+     * @return \App\Entity\Page\TextHeading\TextValue|null
      */
-    public function getTextValue(): ?string
+    public function getTextValue(): ?TextValue
     {
         return $this->textValue;
     }
 
     /**
-     * @param mixed $textValue
+     * @param \App\Entity\Page\TextHeading\TextValue $textValue
      *
      * @return TextHeading
      */
-    public function setTextValue($textValue): TextHeading
+    public function setTextValue(TextValue $textValue): TextHeading
     {
         $this->textValue = $textValue;
 
@@ -94,19 +99,19 @@ class TextHeading
     }
 
     /**
-     * @return string
+     * @return \App\Entity\Page\TextHeading\Type
      */
-    public function getType(): ?string
+    public function getType(): ?Type
     {
         return $this->type;
     }
 
     /**
-     * @param string $type
+     * @param \App\Entity\Page\TextHeading\Type $type
      *
      * @return TextHeading
      */
-    public function setType($type): TextHeading
+    public function setType(Type $type): TextHeading
     {
         $this->type = $type;
 
