@@ -13,12 +13,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 class ListGroup
 {
     /** @var string  */
-    private $template = '<ul class="%s">%s</ul>>';
+    private $template = '<div class="container"><div class="row"><div class="col"><ul class="%s">%s</ul></div></div></div>';
 
     /**
      * @var string
      */
-    private $cssClass = 'list-group-flush';
+    private $cssClass = 'list-group list-group-flush';
 
     /**
      * @Assert\NotBlank()
@@ -31,7 +31,7 @@ class ListGroup
         return sprintf(
             $this->getTemplate(),
             $this->getCssClass(),
-            implode('</li><li>', $this->getListItems())
+            '<li class="list-group-item">' . implode('</li><li class="list-group-item">', $this->getListItems()) . '</li>'
         );
     }
 

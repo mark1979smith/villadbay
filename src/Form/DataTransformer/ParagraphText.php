@@ -34,6 +34,6 @@ class ParagraphText implements DataTransformerInterface
      */
     public function reverseTransform($value)
     {
-        return (new \App\Entity\Page\TextLead())->setTextValue($value);
+        return (new \App\Entity\Page\ParagraphText())->setTextValue($value);
     }
 }

@@ -16,7 +16,7 @@ use App\Entity\Page\TextHeading\Type;
 class TextHeading
 {
     /** @var string  */
-    private $template = '<%s class="%s">%s</%s>';
+    private $template = "<div class=\"container\"><div class=\"row\"><div class=\"col\"><%s class=\"%s\">%s</%s></div></div></div>";
 
     /** @var null|\App\Entity\Page\TextHeading\Type;  */
     private $type;

@@ -158,8 +158,8 @@ class Page
         foreach ($this->data['display_order'] as $key => $order) {
             if (preg_match('/^text_heading_text_value/', $key)) {
                 $html .= $this->getData()['text_heading'][$order];
-            } else {
-                if (stristr('--', $key)) {
+            } elseif (!preg_match('/^text_heading_/', $key)) {
+                if (stristr($key, '--')) {
                     $keyParts = explode('--', $key);
                     $html .= $this->getData()[reset($keyParts)][$order];
                 }

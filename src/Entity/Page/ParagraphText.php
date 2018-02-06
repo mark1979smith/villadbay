@@ -13,7 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class ParagraphText
 {
     /** @var string  */
-    private $template = '<p>%s</p>';
+    private $template = '<div class="container"><div class="row"><div class="col"><p>%s</p></div></div></div>';
 
     /**
      * @Assert\NotBlank()

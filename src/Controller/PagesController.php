@@ -131,9 +131,11 @@ class PagesController extends Controller
     public function test(Request $request)
     {
 
+        /** @var \App\Entity\Page $page */
         $page = $this->getDoctrine()
             ->getRepository(Page::class)
-            ->findOneByLatestPage('test');
+            ->findOneByLatestPage('home');
+
 
         if (!$page) {
             throw $this->createNotFoundException(
@@ -142,6 +144,7 @@ class PagesController extends Controller
         }
         return $this->render('pages/test.html.twig', array(
             'selectedNav' => 'about',
+            'disablePanoramicView' => true,
             'page' => $page->__toString()
         ));
     }

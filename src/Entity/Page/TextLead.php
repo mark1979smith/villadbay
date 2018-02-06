@@ -13,7 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class TextLead
 {
     /** @var string  */
-    private $template = '<p class="lead">%s</p>';
+    private $template = '<div class="container"><div class="row"><div class="col"><p class="lead">%s</p></div></div></div>';
 
     /**
      * @Assert\NotBlank()

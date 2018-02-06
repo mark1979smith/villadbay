@@ -18,7 +18,7 @@ class ParagraphText extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addModelTransformer(new \App\Form\DataTransformer\TextLeading());
+        $builder->addModelTransformer(new \App\Form\DataTransformer\ParagraphText());
     }
 
     public function configureOptions(OptionsResolver $resolver)
