@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: mark.smith
- * Date: 23/01/2018
- * Time: 13:08
+ * Date: 07/02/2018
+ * Time: 11:58
  */
 
 namespace App\Form\DataTransformer;
@@ -11,10 +11,10 @@ namespace App\Form\DataTransformer;
 
 use Symfony\Component\Form\DataTransformerInterface;
 
-class PanoramicImage implements DataTransformerInterface
+class BackgroundImage implements DataTransformerInterface
 {
     /**
-     * @param \App\Entity\Page\PanoramicImage|string|null $value
+     * @param \App\Entity\Page\BackgroundImage|string|null $value
      *
      * @return string
      */
@@ -24,16 +24,16 @@ class PanoramicImage implements DataTransformerInterface
             return '';
         }
 
-        return $value->getPanoramicImage();
+        return $value->getBackgroundImage();
     }
 
     /**
      * @param string $value
      *
-     * @return \App\Entity\Page\PanoramicImage
+     * @return \App\Entity\Page\BackgroundImage
      */
     public function reverseTransform($value)
     {
-        return (new \App\Entity\Page\PanoramicImage())->setPanoramicImage($value);
+        return (new \App\Entity\Page\BackgroundImage())->setBackgroundImage($value);
     }
 }

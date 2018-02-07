@@ -34,6 +34,7 @@ class PageType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $panoramicImages = $this->getPanoramicImages($options['container_interface']);
+        $backgroundImages = $this->getBackgroundImages($options['container_interface']);
         $builder
             ->add('page_route', \App\Form\Admin\Types\PageRoute::class, [
                 'label'   => 'Please select the page to edit',
@@ -184,6 +185,28 @@ class PageType extends AbstractType
                 ],
 
             ])
+            ->add('background_image', CollectionType::class, [
+                'entry_type'    => \App\Form\Admin\Types\BackgroundImage::class,
+                'allow_add'     => true,
+                'allow_delete'  => true,
+                'prototype'     => true,
+                'entry_options' => [
+                    'label'      => 'Add Background Image',
+                    'required'   => false,
+                    'data_class' => null,
+                    'choices'    => $backgroundImages,
+                    'placeholder' => false,
+                    'attr'       => [
+
+                    ],
+                ],
+                'attr'          => [
+                    'data-form-element-prefix-markup' => $this->getBackgroundImagesHtml($backgroundImages),
+                    'data-form-element-prefix-markup-append-to' => '.form-group',
+                    'data-form-element-hide' => 'select'
+                ],
+
+            ])
             ->add('display_order', CollectionType::class, [
                 'entry_type'     => \App\Form\Admin\Types\DisplayOrder::class,
                 'allow_add'      => true,
@@ -193,13 +216,52 @@ class PageType extends AbstractType
                 ],
             ])
             ->add('submit', SubmitType::class, [
-                'label' => 'Next',
+                'label' => 'Preview Page',
                 'attr'  => [
                     'class'     => 'btn-success btn-block',
                     'data-role' => "core",
                 ],
             ]);
 
+    }
+
+    private function getBackgroundImages(ContainerInterface $container)
+    {
+        /** @var \App\Utils\Redis $redisService */
+        $redisService = $container->get('app.redis');
+        $redisClient = $redisService->get();
+
+        /** @var \App\Utils\AwsS3Client $s3Service */
+        $s3Service = $container->get('app.aws.s3');
+        $s3Client = $s3Service->get();
+
+        $cacheKey = 'aws.s3.listobjects.'.$s3Service->getBucket() .'-updated';
+        if ($redisClient->hasItem($cacheKey)) {
+            $response = $redisClient->getItem($cacheKey)->get();
+        } else {
+            $response = $s3Client->listObjects([
+                'Bucket' => $s3Service->getBucket(),
+            ]);
+
+            $cacheItem = $redisClient->getItem($cacheKey);
+            $cacheItem->set($response);
+
+            $redisClient->save($cacheItem);
+        }
+
+        $backgroundImages = [];
+        if ($response instanceof \Aws\Result) {
+            if (is_iterable($response->get('Contents'))) {
+                foreach ($response->get('Contents') as $asset) {
+                    if ($this->filterByPath($asset, 'images/backgrounds')) {
+                        $backgroundImages[] = str_replace('images/backgrounds/', '', $asset['Key']);
+                    }
+                }
+            }
+        }
+
+
+        return array_combine($backgroundImages, $backgroundImages);
     }
 
     private function getPanoramicImages(ContainerInterface $container)
@@ -249,6 +311,22 @@ class PageType extends AbstractType
             $html .= '<div class="card text-center js--card-pano-image">'.
                 '<div class="card-body" style="background-position: center; background-size: cover; background-image: url(https://d3orc742w48r4f.cloudfront.net/images/pano/'. $panoImage .');"></div>' .
                 '<div class="card-footer btn-group-toggle" data-toggle="buttons"><label class="btn btn-secondary"><input name="do-not-send[]" type="radio" autocomplete="off" value="'. $panoImage .'" /> Select</label></div>' .
+                '</div>';
+        }
+
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    private function getBackgroundImagesHtml(array $backgroundImages)
+    {
+        $html = '<div class="card-deck">';
+
+        foreach ($backgroundImages as $backgroundImage) {
+            $html .= '<div class="card text-center js--card-pano-image">'.
+                '<div class="card-body" style="height: 100px; background-position: center; background-size: contain; background-repeat: no-repeat; background-image: url(https://d3orc742w48r4f.cloudfront.net/images/backgrounds/'. $backgroundImage .');"></div>' .
+                '<div class="card-footer btn-group-toggle" data-toggle="buttons"><label class="btn btn-secondary"><input name="do-not-send[]" type="radio" autocomplete="off" value="'. $backgroundImage .'" /> Select</label></div>' .
                 '</div>';
         }
 

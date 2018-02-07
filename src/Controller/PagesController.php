@@ -145,7 +145,8 @@ class PagesController extends Controller
         return $this->render('pages/test.html.twig', array(
             'selectedNav' => 'about',
             'disablePanoramicView' => true,
-            'page' => $page->__toString()
+            'page' => $page->__toString(),
+            'styles' => $page->__toStyles()
         ));
     }
 }

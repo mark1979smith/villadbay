@@ -183,16 +183,38 @@ class Page
         asort($this->data['display_order'], SORT_REGULAR);
         foreach ($this->data['display_order'] as $key => $order) {
             if (preg_match('/^text_heading_text_value/', $key)) {
-                $html .= $this->getData()['text_heading'][$order];
+                if (preg_match('/^</', $this->getData()['text_heading'][$order])) {
+                    $html .= $this->getData()['text_heading'][$order];
+                }
             } elseif (!preg_match('/^text_heading_/', $key)) {
                 if (stristr($key, '--')) {
                     $keyParts = explode('--', $key);
-                    $html .= $this->getData()[reset($keyParts)][$order];
+                    if (preg_match('/^</', $this->getData()[reset($keyParts)][$order])) {
+                        $html .= $this->getData()[reset($keyParts)][$order];
+                    }
                 }
             }
         }
 
         return $html;
+    }
+
+    public function __toStyles()
+    {
+        $styles = [];
+        asort($this->data['display_order'], SORT_REGULAR);
+        foreach ($this->data['display_order'] as $key => $order) {
+            if (preg_match('/^background_image/', $key)) {
+                if (stristr($key, '--')) {
+                    $keyParts = explode('--', $key);
+                    $styles[] = $this->getData()[reset($keyParts)][$order]->__toString();
+                }
+            }
+        }
+
+        return '<style type="text/css">' .
+            implode('', $styles) .
+            '</style>';
     }
 
 }

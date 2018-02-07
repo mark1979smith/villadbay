@@ -60,6 +60,7 @@ class PagesController extends Controller
             'paragraph_text'          => [new ParagraphText()],
             'list_group'              => [new ListGroup()],
             'panoramic_image'         => [new PanoramicImage()],
+            'background_image'         => [new Page\BackgroundImage()],
             'display_order'           => [new DisplayOrder()],
         ], [
             'container_interface' => $container
@@ -73,12 +74,14 @@ class PagesController extends Controller
             'text_leading'            => $form->get('text_leading')->createView(),
             'list_group'              => $form->get('list_group')->createView(),
             'panoramic_image'         => $form->get('panoramic_image')->createView(),
+            'background_image'         => $form->get('background_image')->createView(),
         ];
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            if ($form->isValid()) {
+
+            if ($form->isValid() && $form->getData()['page_stage'] == 'options') {
 
                 $em = $this->getDoctrine()->getManager();
 
@@ -87,6 +90,9 @@ class PagesController extends Controller
                 $page->setData($form->getData());
                 $page->setRouteName($form->getData()['page_route']->getPageRoute());
                 $page->setPublish(new \DateTime());
+                $page->setPreview(true);
+
+
                 $em->persist($page);
                 $em->flush();
 //                return $this->redirectToRoute('search');
