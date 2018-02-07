@@ -24,6 +24,7 @@ class PageRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('p')
             ->andWhere('p.routeName = :route')
+            ->andWhere('p.preview = 0')
             ->setParameter('route', $routeName)
             ->orderBy('p.id', 'DESC')
             ->getQuery();
