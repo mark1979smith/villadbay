@@ -52,6 +52,12 @@ class Page
     private $publish;
 
     /**
+     * @ORM\Column(type="boolean")
+     * @var bool
+     */
+    private $preview;
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -146,6 +152,26 @@ class Page
     public function setPublish(\DateTime $publish): Page
     {
         $this->publish = $publish;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPreview(): bool
+    {
+        return $this->preview;
+    }
+
+    /**
+     * @param bool $preview
+     *
+     * @return Page
+     */
+    public function setPreview(bool $preview): Page
+    {
+        $this->preview = $preview;
 
         return $this;
     }
