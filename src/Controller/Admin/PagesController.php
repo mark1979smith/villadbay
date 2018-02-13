@@ -45,6 +45,9 @@ class PagesController extends Controller
 
     /**
      * @Route("/new", name="admin-pages-create")
+     * @param \Symfony\Component\HttpFoundation\Request                 $request
+     * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function create(Request $request, ContainerInterface $container)
@@ -80,12 +83,9 @@ class PagesController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-
             if ($form->isValid() && $form->getData()['page_stage'] == 'options') {
-
                 $em = $this->getDoctrine()->getManager();
 
-//                var_dump($form->getData()); exit;
                 $page = new Page();
                 $page->setData($form->getData());
                 $page->setRouteName($form->getData()['page_route']->getPageRoute());
@@ -109,8 +109,48 @@ class PagesController extends Controller
             'form'          => $form->createView(),
             'template'      => $templates,
             'current_index' => $index + 1,
-            'dev_mode'      => getenv('DEV_MODE')
+            'dev_mode'      => getenv('DEV_MODE'),
         ));
 
+    }
+
+    /**
+     * @Route("/get-page-data/{slug}",
+     *     name="admin-page-data",
+     *     defaults={"slug": ""}
+     * )
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function getLatestPage(Request $request)
+    {
+        /** @var \App\Entity\Page $homePage */
+        $page = $this->getDoctrine()
+            ->getRepository(Page::class)
+            ->findOneByLatestPage($request->get('slug'));
+
+        $pageData = [];
+        if ($page) {
+            $dbData = $page->getData();
+            $pageData = [
+                'page_type'               => $dbData['page_type']->getPageType(),
+                'page_route'              => $dbData['page_route']->getPageRoute(),
+                'page_stage'              => '',
+                'text_heading_type'       => [
+                    'text_heading_type'         => array_map(function($obj){ return $obj->getValue();}, $dbData['text_heading_type']),
+                    'text_heading_css_class'    => array_map(function($obj){ return $obj->getValue();}, $dbData['text_heading_css_class']),
+                    'text_heading_text_value'   => array_map(function($obj){ return $obj->getValue();}, $dbData['text_heading_text_value'])
+                ],
+                'text_leading'            => array_map(function($obj){ return $obj->getTextValue();}, $dbData['text_leading']),
+                'paragraph_text'          => array_map(function($obj){ return $obj->getTextValue();}, $dbData['paragraph_text']),
+                'list_group'              => array_map(function($obj){ return $obj->getListItems();}, $dbData['list_group']),
+                'panoramic_image'         => array_map(function($obj){ return $obj->getPanoramicImage();}, $dbData['panoramic_image']),
+                'background_image'        => array_map(function($obj){ return $obj->getBackgroundImage();}, $dbData['background_image']),
+                'display_order'           => $dbData['display_order'],
+            ];
+        }
+
+        return $this->json($pageData);
     }
 }
