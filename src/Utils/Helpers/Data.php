@@ -24,7 +24,6 @@ class Data
 
     public static function convertToObject($data)
     {
-
         if (self::isSerializedObject($data)) {
             return unserialize($data);
         }

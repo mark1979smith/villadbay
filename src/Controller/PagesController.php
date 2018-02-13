@@ -32,15 +32,27 @@ class PagesController extends Controller
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function home()
+    public function home(Request $request)
     {
+        if ($request->getQueryString('preview')) {
+            $page = $this->getDoctrine()
+                ->getRepository(Page::class)
+                ->findOneByLatestPage('home');
+
+        } else {
+            $page = $this->getDoctrine()
+                ->getRepository(Page::class)
+                ->findOneByLatestPublishedPage('home');
+        }
         $search = new Search();
 
         $form = $this->createForm(SearchType::class, $search, ['action' => $this->generateUrl('search')]);
         return $this->render('pages/home.html.twig', array(
+            'selectedNav' => 'home',
             'disablePanoramicView' => true,
             'form' => $form->createView(),
-            'selectedNav' => 'home'
+            'page' => $page->__toString(),
+            'styles' => $page->__toStyles()
         ));
     }
 
@@ -134,8 +146,7 @@ class PagesController extends Controller
         /** @var \App\Entity\Page $page */
         $page = $this->getDoctrine()
             ->getRepository(Page::class)
-            ->findOneByLatestPage('home');
-
+            ->findOneByLatestPublishedPage('home');
 
         if (!$page) {
             throw $this->createNotFoundException(

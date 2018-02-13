@@ -32,6 +32,18 @@ function appendHtmlTo(ele, what, selector)
     $(what).appendTo(ele.find(selector));
 }
 
+function prependHtml(ele, what) {
+    if (typeof what !== 'string') {
+        what=what.html();
+    }
+
+    if (typeof ele === 'string') {
+        ele=$(ele);
+    }
+
+    ele.prepend(what).html();
+}
+
 function hideElement(html, ele) {
     if (ele !== 'false') {
         html.find(ele).addClass('d-none');

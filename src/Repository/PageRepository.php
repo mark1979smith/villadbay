@@ -20,11 +20,23 @@ class PageRepository extends ServiceEntityRepository
         parent::__construct($registry, Page::class);
     }
 
-    public function findOneByLatestPage($routeName)
+    public function findOneByLatestPublishedPage($routeName)
     {
         $qb = $this->createQueryBuilder('p')
             ->andWhere('p.routeName = :route')
             ->andWhere('p.preview = 0')
+            ->setParameter('route', $routeName)
+            ->orderBy('p.id', 'DESC')
+            ->getQuery();
+
+        $page =  $qb->setMaxResults(1)->getOneOrNullResult();
+        return $page;
+    }
+
+    public function findOneByLatestPage($routeName)
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->andWhere('p.routeName = :route')
             ->setParameter('route', $routeName)
             ->orderBy('p.id', 'DESC')
             ->getQuery();

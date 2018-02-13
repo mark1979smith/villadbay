@@ -83,20 +83,35 @@ class PagesController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            if ($form->isValid() && $form->getData()['page_stage'] == 'options') {
+            if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
 
-                $page = new Page();
-                $page->setData($form->getData());
-                $page->setRouteName($form->getData()['page_route']->getPageRoute());
-                $page->setPublish(new \DateTime());
-                $page->setPreview(true);
+                $route = $form->getData()['page_route']->getPageRoute();
 
+                /** @var \App\Entity\Page $page */
+                $page = $this->getDoctrine()
+                    ->getRepository(Page::class)
+                    ->findOneByLatestPage($route);
+
+                if ($form->getData()['page_stage'] == 'options') {
+                    if (!$page->isPreview()) {
+                        // Insert new record
+                        $page = new Page();
+                        $page->setRouteName($route);
+                    }
+
+                    $page->setData($form->getData());
+                    $page->setPublish(new \DateTime());
+                    $page->setPreview(true);
+                }
 
                 $em->persist($page);
                 $em->flush();
-//                return $this->redirectToRoute('search');
+                return $this->redirectToRoute($route, ['preview' => 1]);
+
             }
+
+
         }
 
         $index = end($form->getData()['display_order']);
@@ -148,6 +163,7 @@ class PagesController extends Controller
                 'panoramic_image'         => array_map(function($obj){ return $obj->getPanoramicImage();}, $dbData['panoramic_image']),
                 'background_image'        => array_map(function($obj){ return $obj->getBackgroundImage();}, $dbData['background_image']),
                 'display_order'           => $dbData['display_order'],
+                'page_preview'            => $page->isPreview(),
             ];
         }
 
