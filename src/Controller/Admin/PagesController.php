@@ -15,6 +15,7 @@ use App\Entity\Page\PageRoute;
 use App\Entity\Page\PanoramicImage;
 use App\Entity\Page\ParagraphText;
 use App\Entity\Page\TextHeading\SizeClass;
+use App\Entity\Page\TextHeading\ColourClass;
 use App\Entity\Page\TextHeading\TextValue;
 use App\Entity\Page\TextHeading\Type;
 use App\Entity\Page\TextLead;
@@ -58,6 +59,7 @@ class PagesController extends Controller
             'page_stage'              => '',
             'text_heading_type'       => [new Type()],
             'text_heading_size_class'  => [new SizeClass()],
+            'text_heading_colour_class'  => [new ColourClass()],
             'text_heading_text_value' => [new TextValue()],
             'text_leading'            => [new TextLead()],
             'paragraph_text'          => [new ParagraphText()],
@@ -72,6 +74,7 @@ class PagesController extends Controller
         $templates = [
             'text_heading_type'       => $form->get('text_heading_type')->createView(),
             'text_heading_size_class'  => $form->get('text_heading_size_class')->createView(),
+            'text_heading_colour_class'  => $form->get('text_heading_colour_class')->createView(),
             'text_heading_text_value' => $form->get('text_heading_text_value')->createView(),
             'paragraph_text'          => $form->get('paragraph_text')->createView(),
             'text_leading'            => $form->get('text_leading')->createView(),
@@ -154,8 +157,9 @@ class PagesController extends Controller
                 'page_stage'              => '',
                 'text_heading_type'       => [
                     'text_heading_type'         => array_map(function($obj){ return $obj->getValue();}, $dbData['text_heading_type']),
-                    'text_heading_size_class'    => array_map(function($obj){ return $obj->getValue();}, (isset($dbData['text_heading_size_class']) ? $dbData['text_heading_size_class'] : [])),
-                    'text_heading_text_value'   => array_map(function($obj){ return $obj->getValue();}, $dbData['text_heading_text_value'])
+                    'text_heading_size_class'   => array_map(function($obj){ return $obj->getValue();}, $dbData['text_heading_size_class']),
+//                    'text_heading_colour_class' => array_map(function($obj){ return $obj->getValue();}, $dbData['text_heading_colour_class']),
+                    'text_heading_text_value'   => array_map(function($obj){ return $obj->getValue();}, $dbData['text_heading_text_value']),
                 ],
                 'text_leading'            => array_map(function($obj){ return $obj->getTextValue();}, $dbData['text_leading']),
                 'paragraph_text'          => array_map(function($obj){ return $obj->getTextValue();}, $dbData['paragraph_text']),

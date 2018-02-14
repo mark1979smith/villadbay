@@ -105,6 +105,29 @@ class PageType extends AbstractType
                     'data-form-element-hide' => 'false'
                 ),
             ])
+            ->add('text_heading_colour_class', CollectionType::class, [
+                'entry_type'    => \App\Form\Admin\Types\TextHeadingColourType::class,
+                'allow_add'     => true,
+                'allow_delete'  => true,
+                'prototype'     => true,
+                'entry_options' => [
+                    'choices'  => [
+                        'Black' => 'text-dark',
+                        'Blue' => 'text-primary',
+                        'Green' => 'text-success',
+                        'Red' => 'text-danger',
+                        'Yellow' => 'text-warning',
+                        'White' => 'text-white',
+                    ],
+                    'label'    => 'Choose a heading colour',
+                    'required' => false,
+                    'placeholder' => false
+                ],
+                'attr'          => array(
+                    'class' => 'js--text_heading_type col-6',
+                    'data-form-element-hide' => 'false'
+                ),
+            ])
             ->add('text_heading_text_value', CollectionType::class, [
                 'entry_type'    => \App\Form\Admin\Types\TextHeadingTextValueType::class,
                 'allow_add'     => true,

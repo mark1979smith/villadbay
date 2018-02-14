@@ -120,6 +120,7 @@ class Page
                             $data['text_heading'][$k] = serialize(
                                 (new TextHeading())
                                     ->setSizeClass(Data::convertToObject($data['text_heading_size_class'][$k]))
+                                    ->setColourClass(Data::convertToObject($data['text_heading_colour_class'][$k]))
                                     ->setType(Data::convertToObject($data['text_heading_type'][$k]))
                                     ->setTextValue(Data::convertToObject($data['text_heading_text_value'][$k]))
                             );

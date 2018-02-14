@@ -22,17 +22,29 @@ class TextHeading
     private $type;
 
     /** @var null|\App\Entity\Page\TextHeading\SizeClass  */
-    private $cssClass;
+    private $sizeClass;
+
+    /** @var null|\App\Entity\Page\TextHeading\ColourClass */
+    private $colourClass;
 
     /** @var null|\App\Entity\Page\TextHeading\TextValue */
     private $textValue;
 
     public function __toString()
     {
+        $cssClass = '';
+        if ($this->getSizeClass()->getValue()) {
+            $cssClass .= ' ' . $this->getSizeClass()->getValue();
+        }
+
+        if ($this->getColourClass()->getValue()) {
+            $cssClass .= ' ' . $this->getColourClass()->getValue();
+        }
+
         return sprintf(
             $this->getTemplate(),
             $this->getType()->getValue(),
-            $this->getCssClass()->getValue(),
+            $cssClass,
             $this->getTextValue()->getValue(),
             $this->getType()->getValue()
         );
@@ -61,9 +73,9 @@ class TextHeading
     /**
      * @return \App\Entity\Page\TextHeading\SizeClass|null
      */
-    public function getCssClass(): ?SizeClass
+    public function getSizeClass(): ?SizeClass
     {
-        return $this->cssClass;
+        return $this->sizeClass;
     }
 
     /**
@@ -73,7 +85,27 @@ class TextHeading
      */
     public function setSizeClass(SizeClass $cssClass): TextHeading
     {
-        $this->cssClass = $cssClass;
+        $this->sizeClass = $cssClass;
+
+        return $this;
+    }
+
+    /**
+     * @return \App\Entity\Page\TextHeading\ColourClass|null
+     */
+    public function getColourClass(): ?\App\Entity\Page\TextHeading\ColourClass
+    {
+        return $this->colourClass;
+    }
+
+    /**
+     * @param \App\Entity\Page\TextHeading\ColourClass|null $colourClass
+     *
+     * @return TextHeading
+     */
+    public function setColourClass(?\App\Entity\Page\TextHeading\ColourClass $colourClass): TextHeading
+    {
+        $this->colourClass = $colourClass;
 
         return $this;
     }
