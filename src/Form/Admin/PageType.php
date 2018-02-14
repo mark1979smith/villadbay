@@ -84,8 +84,8 @@ class PageType extends AbstractType
                     'data-form-element-hide' => 'false'
                 ),
             ])
-            ->add('text_heading_css_class', CollectionType::class, [
-                'entry_type'    => \App\Form\Admin\Types\TextHeadingClassType::class,
+            ->add('text_heading_size_class', CollectionType::class, [
+                'entry_type'    => \App\Form\Admin\Types\TextHeadingSizeType::class,
                 'allow_add'     => true,
                 'allow_delete'  => true,
                 'prototype'     => true,

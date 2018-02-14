@@ -119,7 +119,7 @@ class Page
                         if ($v instanceof Page\TextHeading\TextValue) {
                             $data['text_heading'][$k] = serialize(
                                 (new TextHeading())
-                                    ->setCssClass(Data::convertToObject($data['text_heading_css_class'][$k]))
+                                    ->setSizeClass(Data::convertToObject($data['text_heading_size_class'][$k]))
                                     ->setType(Data::convertToObject($data['text_heading_type'][$k]))
                                     ->setTextValue(Data::convertToObject($data['text_heading_text_value'][$k]))
                             );

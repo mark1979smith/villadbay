@@ -9,7 +9,7 @@
 namespace App\Entity\Page;
 
 
-use App\Entity\Page\TextHeading\CssClass;
+use App\Entity\Page\TextHeading\SizeClass;
 use App\Entity\Page\TextHeading\TextValue;
 use App\Entity\Page\TextHeading\Type;
 
@@ -21,7 +21,7 @@ class TextHeading
     /** @var null|\App\Entity\Page\TextHeading\Type;  */
     private $type;
 
-    /** @var null|\App\Entity\Page\TextHeading\CssClass  */
+    /** @var null|\App\Entity\Page\TextHeading\SizeClass  */
     private $cssClass;
 
     /** @var null|\App\Entity\Page\TextHeading\TextValue */
@@ -59,19 +59,19 @@ class TextHeading
     }
 
     /**
-     * @return \App\Entity\Page\TextHeading\CssClass|null
+     * @return \App\Entity\Page\TextHeading\SizeClass|null
      */
-    public function getCssClass(): ?CssClass
+    public function getCssClass(): ?SizeClass
     {
         return $this->cssClass;
     }
 
     /**
-     * @param \App\Entity\Page\TextHeading\CssClass $cssClass
+     * @param \App\Entity\Page\TextHeading\SizeClass $cssClass
      *
      * @return TextHeading
      */
-    public function setCssClass(CssClass $cssClass): TextHeading
+    public function setSizeClass(SizeClass $cssClass): TextHeading
     {
         $this->cssClass = $cssClass;
 

@@ -10,7 +10,7 @@ namespace App\Entity\Page\TextHeading;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-class CssClass
+class SizeClass
 {
     /** @var null|string */
     private $value;
@@ -28,9 +28,9 @@ class CssClass
     /**
      * @param null|string $value
      *
-     * @return CssClass
+     * @return SizeClass
      */
-    public function setValue(?string $value): CssClass
+    public function setValue(?string $value): SizeClass
     {
         $this->value = $value;
 

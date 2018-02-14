@@ -11,10 +11,10 @@ namespace App\Form\DataTransformer;
 use App\Entity\Page\TextHeading;
 use Symfony\Component\Form\DataTransformerInterface;
 
-class TextHeadingClassType implements DataTransformerInterface
+class TextHeadingSizeType implements DataTransformerInterface
 {
     /**
-     * @param TextHeading\CssClass|null $value
+     * @param TextHeading\SizeClass|null $value
      *
      * @return string
      */
@@ -30,10 +30,10 @@ class TextHeadingClassType implements DataTransformerInterface
     /**
      * @param string $value
      *
-     * @return TextHeading\CssClass
+     * @return TextHeading\SizeClass
      */
     public function reverseTransform($value)
     {
-        return (new TextHeading\CssClass())->setValue($value);
+        return (new TextHeading\SizeClass())->setValue($value);
     }
 }
