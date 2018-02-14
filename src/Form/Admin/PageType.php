@@ -97,7 +97,7 @@ class PageType extends AbstractType
                         'Display 4' => 'display-4',
                         'Display 5' => 'display-5',
                     ],
-                    'label'    => 'Choose a heading style',
+                    'label'    => 'Choose a heading size',
                     'required' => false,
                 ],
                 'attr'          => array(
