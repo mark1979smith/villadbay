@@ -83,7 +83,7 @@
                     {# The following are placeholders when adding elements are added dynamically #}
                     {%- block TextHeadingType_widget -%}
                         <div style="display:none;" id="text_heading_type_container" data-counter="{{ current_index }}"
-                             data-element-wrapper="{{ '<div class="col"></div>'|e }}"
+                             data-element-wrapper="{{ '<div class="col-lg-4 col-md-6 col-sm-12"></div>'|e }}"
                              data-template="{{ '<div class="text_heading_type" data-counter="#NEWCOUNTER#"><div class="form-row">#FORMELEMENTS#</div><div class="invisible card card-body" id="js--text_heading_preview"></div>'|e }}">
                             <div class="form-row">
                                 {{ form_widget(template.text_heading_type) }}
