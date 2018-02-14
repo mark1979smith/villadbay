@@ -158,7 +158,7 @@ class PagesController extends Controller
                 'text_heading_type'       => [
                     'text_heading_type'         => array_map(function($obj){ return $obj->getValue();}, $dbData['text_heading_type']),
                     'text_heading_size_class'   => array_map(function($obj){ return $obj->getValue();}, $dbData['text_heading_size_class']),
-//                    'text_heading_colour_class' => array_map(function($obj){ return $obj->getValue();}, $dbData['text_heading_colour_class']),
+                    'text_heading_colour_class' => array_map(function($obj){ return $obj->getValue();}, $dbData['text_heading_colour_class']),
                     'text_heading_text_value'   => array_map(function($obj){ return $obj->getValue();}, $dbData['text_heading_text_value']),
                 ],
                 'text_leading'            => array_map(function($obj){ return $obj->getTextValue();}, $dbData['text_leading']),
