@@ -1,12 +1,13 @@
 {% extends 'base.html.twig' %}
 {% block body %}
     {{ page|raw }}
-    {% with {'form': search_form} %}
+    {% if search_form is defined %}
+        {% with {'form': search_form} %}
         {% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
-        {{ block('search_form') }}
-    {% endwith %}
+            {{ block('search_form') }}
+        {% endwith %}
+    {% endif %}
 {% endblock %}
 {% block stylesheets %}
     {{ styles|raw }}
 {% endblock %}
-
