@@ -3,18 +3,19 @@
  * Created by PhpStorm.
  * User: mark.smith
  * Date: 14/02/2018
- * Time: 13:14
+ * Time: 14:30
  */
 
 namespace App\Form\DataTransformer;
 
 use App\Entity\Page\TextHeading;
+
 use Symfony\Component\Form\DataTransformerInterface;
 
-class TextHeadingColourType implements DataTransformerInterface
+class TextHeadingAlignType implements DataTransformerInterface
 {
     /**
-     * @param TextHeading\SizeClass|null $value
+     * @param TextHeading\AlignClass|null $value
      *
      * @return string
      */
@@ -30,10 +31,10 @@ class TextHeadingColourType implements DataTransformerInterface
     /**
      * @param string $value
      *
-     * @return TextHeading\ColourClass
+     * @return TextHeading\AlignClass
      */
     public function reverseTransform($value)
     {
-        return (new TextHeading\ColourClass())->setValue($value);
+        return (new TextHeading\AlignClass())->setValue($value);
     }
 }

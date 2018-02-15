@@ -54,7 +54,24 @@
 </div>
 {% endif %}
 
-{% block body %}{% endblock %}
+{% block body %}
+    {% block search_form %}
+        <div class="container">
+            <div class="jumbotron">
+                {{ form_start(form) }}
+
+                {{ form_row(form.date_start) }}
+                {{ form_row(form.date_end) }}
+                {{ form_row(form.adult_count) }}
+                {{ form_row(form.child_count) }}
+                {{ form_row(form.search) }}
+
+                {{ form_end(form) }}
+
+            </div>
+        </div>
+    {% endblock %}
+{% endblock body %}
 
 <div class="container">
     <div class="row">

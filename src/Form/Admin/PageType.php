@@ -80,7 +80,7 @@ class PageType extends AbstractType
                     'required' => false,
                 ],
                 'attr'          => array(
-                    'class' => 'js--text_heading_type col',
+                    'class' => 'js--text_heading_type col-lg-4 col-md-6 col-sm-12',
                     'data-form-element-hide' => 'false'
                 ),
             ])
@@ -101,7 +101,7 @@ class PageType extends AbstractType
                     'required' => false,
                 ],
                 'attr'          => array(
-                    'class' => 'js--text_heading_type col',
+                    'class' => 'js--text_heading_type col-lg-4 col-md-6 col-sm-12',
                     'data-form-element-hide' => 'false'
                 ),
             ])
@@ -124,7 +124,27 @@ class PageType extends AbstractType
                     'placeholder' => false
                 ],
                 'attr'          => array(
-                    'class' => 'js--text_heading_type col-6',
+                    'class' => 'js--text_heading_type col-lg-4 col-md-6 col-sm-12',
+                    'data-form-element-hide' => 'false'
+                ),
+            ])
+            ->add('text_heading_align_class', CollectionType::class, [
+                'entry_type'    => \App\Form\Admin\Types\TextHeadingAlignType::class,
+                'allow_add'     => true,
+                'allow_delete'  => true,
+                'prototype'     => true,
+                'entry_options' => [
+                    'choices'  => [
+                        'Left' => 'text-left',
+                        'Centre' => 'text-center',
+                        'Right' => 'text-right',
+                    ],
+                    'label'    => 'Choose a heading alignment',
+                    'required' => false,
+                    'placeholder' => false
+                ],
+                'attr'          => array(
+                    'class' => 'js--text_heading_type col-lg-4 col-md-6 col-sm-12',
                     'data-form-element-hide' => 'false'
                 ),
             ])
@@ -138,7 +158,7 @@ class PageType extends AbstractType
                     'required' => false,
                 ],
                 'attr'          => array(
-                    'class' => 'js--text_heading_type col',
+                    'class' => 'js--text_heading_type col-lg-4 col-md-6 col-sm-12',
                     'data-form-element-hide' => 'false'
                 ),
             ])

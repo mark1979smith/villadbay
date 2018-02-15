@@ -1,23 +1,12 @@
 {% extends 'base.html.twig' %}
-{% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
 {% block body %}
     {{ page|raw }}
-    <div class="container">
-        <div class="jumbotron">
-            {{ form_start(form) }}
-
-            {{ form_row(form.date_start) }}
-            {{ form_row(form.date_end) }}
-            {{ form_row(form.adult_count) }}
-            {{ form_row(form.child_count) }}
-            {{ form_row(form.search) }}
-
-            {{ form_end(form) }}
-
-        </div>
-    </div>
+    {% with {'form': search_form} %}
+        {% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
+        {{ block('search_form') }}
+    {% endwith %}
 {% endblock %}
-
 {% block stylesheets %}
     {{ styles|raw }}
 {% endblock %}
+

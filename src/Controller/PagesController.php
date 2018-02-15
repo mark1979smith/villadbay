@@ -50,7 +50,7 @@ class PagesController extends Controller
         return $this->render('pages/home.html.twig', array(
             'selectedNav' => 'home',
             'disablePanoramicView' => true,
-            'form' => $form->createView(),
+            'search_form' => $form->createView(),
             'page' => $page->__toString(),
             'styles' => $page->__toStyles()
         ));

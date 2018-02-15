@@ -16,6 +16,7 @@ use App\Entity\Page\PanoramicImage;
 use App\Entity\Page\ParagraphText;
 use App\Entity\Page\TextHeading\SizeClass;
 use App\Entity\Page\TextHeading\ColourClass;
+use App\Entity\Page\TextHeading\AlignClass;
 use App\Entity\Page\TextHeading\TextValue;
 use App\Entity\Page\TextHeading\Type;
 use App\Entity\Page\TextLead;
@@ -55,32 +56,34 @@ class PagesController extends Controller
     {
 
         $form = $this->createForm(PageType::class, [
-            'page_route'              => new PageRoute(),
-            'page_stage'              => '',
-            'text_heading_type'       => [new Type()],
-            'text_heading_size_class'  => [new SizeClass()],
-            'text_heading_colour_class'  => [new ColourClass()],
-            'text_heading_text_value' => [new TextValue()],
-            'text_leading'            => [new TextLead()],
-            'paragraph_text'          => [new ParagraphText()],
-            'list_group'              => [new ListGroup()],
-            'panoramic_image'         => [new PanoramicImage()],
-            'background_image'         => [new Page\BackgroundImage()],
-            'display_order'           => [new DisplayOrder()],
+            'page_route'                => new PageRoute(),
+            'page_stage'                => '',
+            'text_heading_type'         => [new Type()],
+            'text_heading_size_class'   => [new SizeClass()],
+            'text_heading_colour_class' => [new ColourClass()],
+            'text_heading_align_class'  => [new AlignClass()],
+            'text_heading_text_value'   => [new TextValue()],
+            'text_leading'              => [new TextLead()],
+            'paragraph_text'            => [new ParagraphText()],
+            'list_group'                => [new ListGroup()],
+            'panoramic_image'           => [new PanoramicImage()],
+            'background_image'          => [new Page\BackgroundImage()],
+            'display_order'             => [new DisplayOrder()],
         ], [
-            'container_interface' => $container
+            'container_interface' => $container,
         ]);
 
         $templates = [
-            'text_heading_type'       => $form->get('text_heading_type')->createView(),
-            'text_heading_size_class'  => $form->get('text_heading_size_class')->createView(),
-            'text_heading_colour_class'  => $form->get('text_heading_colour_class')->createView(),
-            'text_heading_text_value' => $form->get('text_heading_text_value')->createView(),
-            'paragraph_text'          => $form->get('paragraph_text')->createView(),
-            'text_leading'            => $form->get('text_leading')->createView(),
-            'list_group'              => $form->get('list_group')->createView(),
-            'panoramic_image'         => $form->get('panoramic_image')->createView(),
-            'background_image'         => $form->get('background_image')->createView(),
+            'text_heading_type'         => $form->get('text_heading_type')->createView(),
+            'text_heading_size_class'   => $form->get('text_heading_size_class')->createView(),
+            'text_heading_colour_class' => $form->get('text_heading_colour_class')->createView(),
+            'text_heading_align_class'  => $form->get('text_heading_align_class')->createView(),
+            'text_heading_text_value'   => $form->get('text_heading_text_value')->createView(),
+            'paragraph_text'            => $form->get('paragraph_text')->createView(),
+            'text_leading'              => $form->get('text_leading')->createView(),
+            'list_group'                => $form->get('list_group')->createView(),
+            'panoramic_image'           => $form->get('panoramic_image')->createView(),
+            'background_image'          => $form->get('background_image')->createView(),
         ];
 
         $form->handleRequest($request);
@@ -159,6 +162,7 @@ class PagesController extends Controller
                     'text_heading_type'         => array_map(function($obj){ return $obj->getValue();}, $dbData['text_heading_type']),
                     'text_heading_size_class'   => array_map(function($obj){ return $obj->getValue();}, $dbData['text_heading_size_class']),
                     'text_heading_colour_class' => array_map(function($obj){ return $obj->getValue();}, $dbData['text_heading_colour_class']),
+                    'text_heading_align_class'  => array_map(function($obj){ return $obj->getValue();}, (isset($dbData['text_heading_align_class']) ? $dbData['text_heading_align_class'] : [])),
                     'text_heading_text_value'   => array_map(function($obj){ return $obj->getValue();}, $dbData['text_heading_text_value']),
                 ],
                 'text_leading'            => array_map(function($obj){ return $obj->getTextValue();}, $dbData['text_leading']),

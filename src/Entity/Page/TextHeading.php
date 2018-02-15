@@ -27,6 +27,9 @@ class TextHeading
     /** @var null|\App\Entity\Page\TextHeading\ColourClass */
     private $colourClass;
 
+    /** @var null|\App\Entity\Page\TextHeading\AlignClass */
+    private $alignClass;
+
     /** @var null|\App\Entity\Page\TextHeading\TextValue */
     private $textValue;
 
@@ -39,6 +42,10 @@ class TextHeading
 
         if ($this->getColourClass()->getValue()) {
             $cssClass .= ' ' . $this->getColourClass()->getValue();
+        }
+
+        if ($this->getAlignClass()->getValue()) {
+            $cssClass .= ' ' . $this->getAlignClass()->getValue();
         }
 
         return sprintf(
@@ -150,7 +157,23 @@ class TextHeading
         return $this;
     }
 
+    /**
+     * @return \App\Entity\Page\TextHeading\AlignClass|null
+     */
+    public function getAlignClass(): ?\App\Entity\Page\TextHeading\AlignClass
+    {
+        return $this->alignClass;
+    }
 
+    /**
+     * @param \App\Entity\Page\TextHeading\AlignClass|null $alignClass
+     *
+     * @return TextHeading
+     */
+    public function setAlignClass(?\App\Entity\Page\TextHeading\AlignClass $alignClass): TextHeading
+    {
+        $this->alignClass = $alignClass;
 
-
+        return $this;
+    }
 }
