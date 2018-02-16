@@ -250,6 +250,16 @@ class PageType extends AbstractType
                 ],
 
             ])
+            ->add('form', CollectionType::class, [
+                'entry_type'     => \App\Form\Admin\Types\FormType::class,
+                'allow_add'      => true,
+                'prototype'      => true,
+                'entry_options'  => [
+                    'label' => 'Add Form',
+                    'data_class' => null,
+                    'choices'    => ['Search' => 'search-form'],
+                ],
+            ])
             ->add('display_order', CollectionType::class, [
                 'entry_type'     => \App\Form\Admin\Types\DisplayOrder::class,
                 'allow_add'      => true,

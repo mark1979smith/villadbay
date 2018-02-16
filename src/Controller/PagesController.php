@@ -35,11 +35,13 @@ class PagesController extends Controller
     public function home(Request $request)
     {
         if ($request->getQueryString('preview')) {
+            /** @var \App\Entity\Page $page */
             $page = $this->getDoctrine()
                 ->getRepository(Page::class)
                 ->findOneByLatestPage('home');
 
         } else {
+            /** @var \App\Entity\Page $page */
             $page = $this->getDoctrine()
                 ->getRepository(Page::class)
                 ->findOneByLatestPublishedPage('home');

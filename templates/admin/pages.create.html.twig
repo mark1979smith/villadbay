@@ -33,6 +33,9 @@
                                 Image</a>
                             <a class="dropdown-item" href="#" data-target="#background_image_container">Add Background
                                 Image</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#" data-target="#form_container">Add Form</a>
+
                         </div>
                     </li>
                     <li class="nav-item" id="subnav--prev">
@@ -136,6 +139,13 @@
                              data-template="{{ '<div class="background_image" data-counter="#NEWCOUNTER#">#FORMELEMENTS#</div>'|e }}">
                             {{ form_label(template.background_image) }}
                             {{ form_widget(template.background_image) }}
+                        </div>
+                    {%- endblock -%}
+                    {%- block Form_widget -%}
+                        <div style="display: none" id="form_container" data-counter="{{ current_index }}"
+                             data-template="{{ '<div class="form" data-counter="#NEWCOUNTER#">#FORMELEMENTS#</div>'|e }}">
+                            {{ form_label(template.form) }}
+                            {{ form_widget(template.form) }}
                         </div>
                     {%- endblock -%}
                 </div>

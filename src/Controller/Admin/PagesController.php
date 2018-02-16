@@ -68,6 +68,7 @@ class PagesController extends Controller
             'list_group'                => [new ListGroup()],
             'panoramic_image'           => [new PanoramicImage()],
             'background_image'          => [new Page\BackgroundImage()],
+            'form'                      => [new Page\Form()],
             'display_order'             => [new DisplayOrder()],
         ], [
             'container_interface' => $container,
@@ -84,6 +85,7 @@ class PagesController extends Controller
             'list_group'                => $form->get('list_group')->createView(),
             'panoramic_image'           => $form->get('panoramic_image')->createView(),
             'background_image'          => $form->get('background_image')->createView(),
+            'form'                      => $form->get('form')->createView(),
         ];
 
         $form->handleRequest($request);
