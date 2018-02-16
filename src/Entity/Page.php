@@ -90,6 +90,7 @@ class Page
      */
     public function getData(): array
     {
+        asort($this->data['display_order'], SORT_REGULAR);
         foreach ($this->data as $key => $row) {
             if (is_array($row)) {
                 foreach ($row as $k => $v) {
@@ -182,10 +183,7 @@ class Page
     public function __toString()
     {
         $html = '';
-        asort($this->data['display_order'], SORT_REGULAR);
-        $index = 0;
-        foreach ($this->data['display_order'] as $key => $order) {
-            $index++;
+        foreach ($this->getData()['display_order'] as $key => $order) {
             if (preg_match('/^text_heading_text_value/', $key)) {
                 if (preg_match('/^</', $this->getData()['text_heading'][$order])) {
                     $html .= $this->getData()['text_heading'][$order];
@@ -212,8 +210,7 @@ class Page
     public function __toStyles()
     {
         $styles = [];
-        asort($this->data['display_order'], SORT_REGULAR);
-        foreach ($this->data['display_order'] as $key => $order) {
+        foreach ($this->getData()['display_order'] as $key => $order) {
             if (preg_match('/^background_image/', $key)) {
                 if (stristr($key, '--')) {
                     $keyParts = explode('--', $key);
