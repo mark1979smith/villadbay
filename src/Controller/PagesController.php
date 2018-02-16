@@ -44,16 +44,23 @@ class PagesController extends Controller
                 ->getRepository(Page::class)
                 ->findOneByLatestPublishedPage('home');
         }
-        $search = new Search();
 
-        $form = $this->createForm(SearchType::class, $search, ['action' => $this->generateUrl('search')]);
-        return $this->render('pages/home.html.twig', array(
-            'selectedNav' => 'home',
-            'disablePanoramicView' => true,
-            'search_form' => $form->createView(),
-            'page' => $page->__toString(),
-            'styles' => $page->__toStyles()
-        ));
+        $viewData = [];
+        $viewData['selectedNav'] = 'home';
+        $viewData['disablePanoramicView'] = true;
+
+        $pageContent = $page->__toString();
+        $viewData['page'] = $pageContent;
+        $viewData['styles'] = $page->__toStyles();
+
+        if (preg_match('/#search-form#/', $pageContent)) {
+            $search = new Search();
+            $form = $this->createForm(SearchType::class, $search, ['action' => $this->generateUrl('search')]);
+            $viewData['form'] = $form->createView();
+        }
+
+
+        return $this->render('pages/home.html.twig', $viewData);
     }
 
     /**

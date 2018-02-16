@@ -183,19 +183,24 @@ class Page
     {
         $html = '';
         asort($this->data['display_order'], SORT_REGULAR);
+        $index = 0;
         foreach ($this->data['display_order'] as $key => $order) {
+            $index++;
             if (preg_match('/^text_heading_text_value/', $key)) {
                 if (preg_match('/^</', $this->getData()['text_heading'][$order])) {
                     $html .= $this->getData()['text_heading'][$order];
+                    continue;
                 }
             } elseif (!preg_match('/^text_heading_/', $key)) {
                 if (stristr($key, '--')) {
                     $keyParts = explode('--', $key);
                     if (preg_match('/^</', $this->getData()[reset($keyParts)][$order])) {
                         $html .= $this->getData()[reset($keyParts)][$order];
+                        continue;
                     }
                 }
             }
+
         }
 
         return $html;

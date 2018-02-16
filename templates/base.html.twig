@@ -56,6 +56,8 @@
 
 {% block body %}
     {% block search_form %}
+        {%  if form is defined %}
+        {% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
         <div class="container">
             <div class="jumbotron">
                 {{ form_start(form) }}
@@ -70,6 +72,7 @@
 
             </div>
         </div>
+        {% endif %}
     {% endblock %}
 {% endblock body %}
 
