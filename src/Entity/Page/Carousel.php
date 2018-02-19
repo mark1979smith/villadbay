@@ -2,37 +2,44 @@
 /**
  * Created by PhpStorm.
  * User: mark.smith
- * Date: 14/01/2018
- * Time: 20:26
+ * Date: 19/02/2018
+ * Time: 19:41
  */
 
 namespace App\Entity\Page;
 
+use Symfony\Component\Validator\Constraints as Assert;
 
 class Carousel
 {
-    /** @var array Carousel */
-    private $slides;
+    /**
+     * @Assert\NotBlank()
+     * @var string
+     */
+    private $value;
 
     /**
-     * @return array
+     * @return string
      */
-    public function getSlides(): array
+    public function getValue(): string
     {
-        return $this->slides;
+        return $this->value;
     }
 
     /**
-     * @param array $slides
+     * @param string $value
      *
-     * @return Carousel
+     * @return Form
      */
-    public function setSlides(array $slides): Carousel
+    public function setValue(string $value): Carousel
     {
-        $this->slides = $slides;
+        $this->value = $value;
 
         return $this;
     }
 
-
+    public function __toString()
+    {
+        return (string) $this->value;
+    }
 }

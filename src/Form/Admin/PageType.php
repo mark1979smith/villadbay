@@ -257,7 +257,22 @@ class PageType extends AbstractType
                 'entry_options'  => [
                     'label' => 'Add Form',
                     'data_class' => null,
-                    'choices'    => ['Search' => 'search-form'],
+                    'choices'    => [
+                        'Search' => 'search-form',
+                        'Contact' => 'contact-form',
+                    ],
+                ],
+            ])
+            ->add('image_carousel', CollectionType::class, [
+                'entry_type'     => \App\Form\Admin\Types\CarouselType::class,
+                'allow_add'      => true,
+                'prototype'      => true,
+                'entry_options'  => [
+                    'label' => 'Add Image Carousel',
+                    'data_class' => null,
+                    'choices'    => [
+                        'Main Carousel' => 'image-carousel',
+                    ],
                 ],
             ])
             ->add('display_order', CollectionType::class, [

@@ -34,33 +34,7 @@ class PagesController extends Controller
      */
     public function home(Request $request)
     {
-        if ($request->getQueryString('preview')) {
-            /** @var \App\Entity\Page $page */
-            $page = $this->getDoctrine()
-                ->getRepository(Page::class)
-                ->findOneByLatestPage('home');
-
-        } else {
-            /** @var \App\Entity\Page $page */
-            $page = $this->getDoctrine()
-                ->getRepository(Page::class)
-                ->findOneByLatestPublishedPage('home');
-        }
-
-        $viewData = [];
-        $viewData['selectedNav'] = 'home';
-        $viewData['disablePanoramicView'] = true;
-
-        $pageContent = $page->__toString();
-        $viewData['page'] = $pageContent;
-        $viewData['styles'] = $page->__toStyles();
-
-        if (preg_match('/#search-form#/', $pageContent)) {
-            $search = new Search();
-            $form = $this->createForm(SearchType::class, $search, ['action' => $this->generateUrl('search')]);
-            $viewData['form'] = $form->createView();
-        }
-
+        $viewData = $this->defineViewData($request);
 
         return $this->render('pages/home.html.twig', $viewData);
     }
@@ -72,26 +46,22 @@ class PagesController extends Controller
      */
     public function search(Request $request)
     {
+        $viewData = $this->defineViewData($request);
 
-        $search = new Search();
-
-        $form = $this->createForm(SearchType::class, $search);
+        $form = $this->getSearchForm();
 
         $form->handleRequest($request);
 
-        $returnedData = [
-            'selectedNav' => 'rooms'
-        ];
         if ($form->isSubmitted() && $form->isValid()) {
             $search = $form->getData();
-            $returnedData['searchData'] = Availability::search($search);
-            $returnedData['searchDataSerialised'] = base64_encode(serialize($search));
-
-
+            $viewData['searchData'] = Availability::search($search);
+            $viewData['searchDataSerialised'] = base64_encode(serialize($search));
+            $viewData['form_search'] = $form->createView();
         }
-        $returnedData['form'] = $form->createView();
 
-        return $this->render('pages/search.html.twig', $returnedData);
+
+
+        return $this->render('pages/search.html.twig', $viewData);
     }
 
     /**
@@ -99,14 +69,11 @@ class PagesController extends Controller
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function about()
+    public function about(Request $request)
     {
-        $number = mt_rand(0, 1000);
+        $viewData = $this->defineViewData($request);
 
-        return $this->render('pages/about.html.twig', array(
-            'number' => $number,
-            'selectedNav' => 'about'
-        ));
+        return $this->render('pages/about.html.twig', $viewData);
     }
 
     /**
@@ -117,6 +84,85 @@ class PagesController extends Controller
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function contact(Request $request)
+    {
+        $viewData = $this->defineViewData($request);
+
+        $form = $this->getContactForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $contact = $form->getData();
+            $viewData['form_contact'] = $form->createView();
+        }
+
+
+        return $this->render('pages/contact.html.twig', $viewData);
+    }
+
+    /**
+     * Define View Data for Current Page
+     *
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     *
+     * @return array
+     */
+    protected function defineViewData(Request $request): array
+    {
+        $route = $request->attributes->get('_route');
+        if ($request->getQueryString('preview')) {
+            /** @var \App\Entity\Page $page */
+            $page = $this->getDoctrine()
+                ->getRepository(Page::class)
+                ->findOneByLatestPage($route);
+
+        } else {
+            /** @var \App\Entity\Page $page */
+            $page = $this->getDoctrine()
+                ->getRepository(Page::class)
+                ->findOneByLatestPublishedPage($route);
+        }
+
+        $viewData = [];
+        if (null !== $page) {
+            $viewData['selectedNav'] = $route;
+            $viewData['disablePanoramicView'] = true;
+
+            $pageContent = $page->__toString();
+            $viewData['page'] = $pageContent;
+            $viewData['styles'] = $page->__toStyles();
+
+            if (preg_match('/#search-form#/', $pageContent)) {
+                $form = $this->getSearchForm();
+
+                $viewData['form_search'] = $form->createView();
+            }
+
+            if (preg_match('/#contact-form#/', $pageContent)) {
+                $form = $this->getContactForm();
+
+                $viewData['form_contact'] = $form->createView();
+            }
+        }
+
+        return $viewData;
+    }
+
+    /**
+     * @return \Symfony\Component\Form\FormInterface
+     */
+    private function getSearchForm(): \Symfony\Component\Form\FormInterface
+    {
+        $search = new Search();
+        $form = $this->createForm(SearchType::class, $search, ['action' => $this->generateUrl('search')]);
+
+        return $form;
+    }
+
+    /**
+     * @return \Symfony\Component\Form\FormInterface
+     */
+    private function getContactForm(): \Symfony\Component\Form\FormInterface
     {
         $contact = new Contact();
         $form = $this->createFormBuilder($contact)
@@ -129,44 +175,6 @@ class PagesController extends Controller
             ->add('send', SubmitType::class, ['label' => 'Send'])
             ->getForm();
 
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $contact = $form->getData();
-
-        }
-
-        return $this->render('pages/contact.html.twig', array(
-            'form' => $form->createView(),
-            'selectedNav' => 'contact'
-        ));
-    }
-
-    /**
-     * @Route("/test", name="test")
-     *
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function test(Request $request)
-    {
-
-        /** @var \App\Entity\Page $page */
-        $page = $this->getDoctrine()
-            ->getRepository(Page::class)
-            ->findOneByLatestPublishedPage('home');
-
-        if (!$page) {
-            throw $this->createNotFoundException(
-                'No page found!'
-            );
-        }
-        return $this->render('pages/test.html.twig', array(
-            'selectedNav' => 'about',
-            'disablePanoramicView' => true,
-            'page' => $page->__toString(),
-            'styles' => $page->__toStyles()
-        ));
+        return $form;
     }
 }

@@ -69,6 +69,7 @@ class PagesController extends Controller
             'panoramic_image'           => [new PanoramicImage()],
             'background_image'          => [new Page\BackgroundImage()],
             'form'                      => [new Page\Form()],
+            'image_carousel'            => [new Page\Carousel()],
             'display_order'             => [new DisplayOrder()],
         ], [
             'container_interface' => $container,
@@ -86,6 +87,7 @@ class PagesController extends Controller
             'panoramic_image'           => $form->get('panoramic_image')->createView(),
             'background_image'          => $form->get('background_image')->createView(),
             'form'                      => $form->get('form')->createView(),
+            'image_carousel'            => $form->get('image_carousel')->createView(),
         ];
 
         $form->handleRequest($request);
@@ -102,7 +104,7 @@ class PagesController extends Controller
                     ->findOneByLatestPage($route);
 
                 if ($form->getData()['page_stage'] == 'options') {
-                    if (!$page->isPreview()) {
+                    if (null === $page || ($page instanceof Page && !$page->isPreview())) {
                         // Insert new record
                         $page = new Page();
                         $page->setRouteName($route);
@@ -161,18 +163,20 @@ class PagesController extends Controller
                 'page_route'              => $dbData['page_route']->getPageRoute(),
                 'page_stage'              => '',
                 'text_heading_type'       => [
-                    'text_heading_type'         => array_map(function($obj){ return $obj->getValue();}, $dbData['text_heading_type']),
-                    'text_heading_size_class'   => array_map(function($obj){ return $obj->getValue();}, $dbData['text_heading_size_class']),
-                    'text_heading_colour_class' => array_map(function($obj){ return $obj->getValue();}, $dbData['text_heading_colour_class']),
+                    'text_heading_type'         => array_map(function($obj){ return $obj->getValue();}, (isset($dbData['text_heading_type']) ? $dbData['text_heading_type'] : [])),
+                    'text_heading_size_class'   => array_map(function($obj){ return $obj->getValue();}, (isset($dbData['text_heading_size_class']) ? $dbData['text_heading_size_class'] : [])),
+                    'text_heading_colour_class' => array_map(function($obj){ return $obj->getValue();}, (isset($dbData['text_heading_colour_class']) ? $dbData['text_heading_colour_class'] : [])),
                     'text_heading_align_class'  => array_map(function($obj){ return $obj->getValue();}, (isset($dbData['text_heading_align_class']) ? $dbData['text_heading_align_class'] : [])),
-                    'text_heading_text_value'   => array_map(function($obj){ return $obj->getValue();}, $dbData['text_heading_text_value']),
+                    'text_heading_text_value'   => array_map(function($obj){ return $obj->getValue();}, (isset($dbData['text_heading_text_value']) ? $dbData['text_heading_text_value'] : [])),
                 ],
-                'text_leading'            => array_map(function($obj){ return $obj->getTextValue();}, $dbData['text_leading']),
-                'paragraph_text'          => array_map(function($obj){ return $obj->getTextValue();}, $dbData['paragraph_text']),
-                'list_group'              => array_map(function($obj){ return $obj->getListItems();}, $dbData['list_group']),
-                'panoramic_image'         => array_map(function($obj){ return $obj->getPanoramicImage();}, $dbData['panoramic_image']),
-                'background_image'        => array_map(function($obj){ return $obj->getBackgroundImage();}, $dbData['background_image']),
+                'text_leading'            => array_map(function($obj){ return $obj->getTextValue();}, (isset($dbData['text_leading']) ? $dbData['text_leading'] : [])),
+                'paragraph_text'          => array_map(function($obj){ return $obj->getTextValue();}, (isset($dbData['paragraph_text']) ? $dbData['paragraph_text'] : [])),
+                'list_group'              => array_map(function($obj){ return $obj->getListItems();}, (isset($dbData['list_group']) ? $dbData['list_group'] : [])),
+                'panoramic_image'         => array_map(function($obj){ return $obj->getPanoramicImage();}, (isset($dbData['panoramic_image']) ? $dbData['panoramic_image'] : [])),
+                'background_image'        => array_map(function($obj){ return $obj->getBackgroundImage();}, (isset($dbData['background_image']) ? $dbData['background_image'] : [])),
                 'display_order'           => $dbData['display_order'],
+                'form'                    => (isset($dbData['form']) ? $dbData['form'] : []),
+                'image_carousel'          => (isset($dbData['image_carousel']) ? $dbData['image_carousel'] : []),
                 'page_preview'            => $page->isPreview(),
             ];
         }

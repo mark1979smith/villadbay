@@ -195,7 +195,7 @@ class Page
                     if (preg_match('/^</', $this->getData()[reset($keyParts)][$order])) {
                         $html .= $this->getData()[reset($keyParts)][$order];
                         continue;
-                    } elseif (preg_match('/\-form$/', $this->getData()[reset($keyParts)][$order])) {
+                    } elseif (preg_match('/\-(form|carousel)$/', $this->getData()[reset($keyParts)][$order])) {
                         $html .= '#'. $this->getData()[reset($keyParts)][$order] . '#';
                         continue;
                     }

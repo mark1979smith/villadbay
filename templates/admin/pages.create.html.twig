@@ -35,6 +35,7 @@
                                 Image</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="#" data-target="#form_container">Add Form</a>
+                            <a class="dropdown-item" href="#" data-target="#image_carousel_container">Add Carousel</a>
 
                         </div>
                     </li>
@@ -148,6 +149,13 @@
                             {{ form_widget(template.form) }}
                         </div>
                     {%- endblock -%}
+                    {%- block CarouselImage_widget -%}
+                        <div style="display: none" id="image_carousel_container" data-counter="{{ current_index }}"
+                             data-template="{{ '<div class="form" data-counter="#NEWCOUNTER#">#FORMELEMENTS#</div>'|e }}">
+                            {{ form_label(template.image_carousel) }}
+                            {{ form_widget(template.image_carousel) }}
+                        </div>
+                    {%- endblock -%}
                 </div>
             </div>
         </div>
@@ -230,11 +238,19 @@
                             var f = field.split("--")[0];
                             addElementToForm('#' + f + '_container');
                             if (typeof d[f] !== 'undefined' && d[f].hasOwnProperty(value) && typeof d[f][value] === 'string') {
+                                console.log(d[f][value]);
                                 $('#page_' + f + '_' + value).val(d[f][value]);
                             } else {
-                                $.each(d[f], function(a, b) {
-                                    $('#page_' + a + '_' + value).val(b[value]);
-                                });
+                                if (typeof d[f] !== 'undefined' && d[f].hasOwnProperty(value) && $.isArray(d[f][value])) {
+                                    $('#page_' + f + '_' + value).val(d[f][value].join(','));
+                                } else {
+                                    $.each(d[f], function (a, b) {
+                                        ele = $('#page_' + a + '_' + value);
+                                        if (ele.length) {
+                                            ele.val(b[value]);
+                                        }
+                                    });
+                                }
                             }
                         }
                     });

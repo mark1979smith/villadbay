@@ -1,8 +1,1 @@
-{% extends 'base.html.twig' %}
-{% block body %}
-    {{ page|replace({'#search-form#': block('search_form') })|raw }}
-
-{% endblock %}
-{% block stylesheets %}
-    {{ styles|raw }}
-{% endblock %}
+{% extends 'pages/page.html.twig' %}
