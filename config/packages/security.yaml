@@ -10,12 +10,21 @@ security:
                     sales@villadbay.com:
                         password: $2y$12$OMQ1JArciGsJ97V0DwTydeNi84rBI2/GQlRzocC5IO7bOoC0LPLFG
                         roles: 'ROLE_ADMIN'
+                    hosting@marksmith.email:
+                        password: $2y$12$cVWcJnVdMPCoHWOgel4hc.uOvEE71yFxH1VMsutbqQiKyX8chnBwu
+                        roles: 'ROLE_SUPERADMIN'
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        testing:
-            host: ^villadbay\.my\.webhop\.info$
+        development:
+            host: ^dev\.villadbay\.com$
+            http_basic: ~
+        staging:
+            host: ^staging\.villadbay\.com$
+            http_basic: ~
+        preprod:
+            host: ^preprod\.villadbay\.com$
             http_basic: ~
         main:
             anonymous: ~
@@ -35,5 +44,16 @@ security:
             algorithm: bcrypt
             cost: 12
     access_control:
+        # require ROLE_SUPERADMIN for dev domain
+        - { path: ^/, roles: ROLE_SUPERADMIN, host: ^dev\.villadbay\.com$}
+        # require ROLE_ADMIN for dev domain
+        - { path: ^/, roles: ROLE_ADMIN, host: ^staging\.villadbay\.com$}
+        - { path: ^/, roles: ROLE_ADMIN, host: ^preprod\.villadbay\.com$}
         # require ROLE_ADMIN for /admin*
         - { path: ^/admin, roles: ROLE_ADMIN }
+
+    role_hierarchy:
+        ROLE_USER: ROLE_GUEST
+        ROLE_ADMIN: ROLE_USER
+        ROLE_SUPERADMIN: ROLE_ADMIN
+
