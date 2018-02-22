@@ -200,7 +200,7 @@ class PagesController extends Controller
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function approvePage(Request $request, AuthorizationCheckerInterface $authorizationChecker)
+    public function approveRevision(Request $request, AuthorizationCheckerInterface $authorizationChecker)
     {
         if (false === $authorizationChecker->isGranted('ROLE_ADMIN')) {
             throw new AccessDeniedException('Unable to access this page!');
