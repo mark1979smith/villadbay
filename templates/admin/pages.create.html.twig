@@ -216,7 +216,6 @@
 
                 $(ele).closest('form').find('*:disabled').removeAttr('disabled');
                 $(ele).closest('form').submit();
-
             });
 
             $('#page_page_route').on('change', function(e) {
@@ -228,7 +227,9 @@
 
                     if (d.page_preview) {
                         $('#modal').modal();
-                        prependHtml($('div.jumbotron'), '<p class="text-right"><strong>UNPUBLISHED<\/script><\/p>');
+                        var f = $('<div>{{ form_start(delete_revision_form, {'attr': {'action': path('admin-delete-revision')}}) }}{{  form_widget(delete_revision_form) }}{{ form_end(delete_revision_form) }}</div>');
+                        f.find('#delete_page_revision_slug').val(s);
+                        prependHtml($('div.jumbotron'), f);
 
                     }
                     lockPage();

@@ -20,7 +20,8 @@ use App\Entity\Page\TextHeading\AlignClass;
 use App\Entity\Page\TextHeading\TextValue;
 use App\Entity\Page\TextHeading\Type;
 use App\Entity\Page\TextLead;
-use App\Form\Admin\ApprovePage;
+use App\Form\Admin\ApprovePageRevision;
+use App\Form\Admin\DeletePageRevision;
 use App\Form\Admin\PageType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -138,12 +139,15 @@ class PagesController extends Controller
             $index = $index->__toString();
         }
 
+        $deleteRevisionForm = $this->createForm(DeletePageRevision::class);
+
         return $this->render('admin/pages.create.html.twig', array(
             'selectedNav'   => 'admin-pages',
             'form'          => $form->createView(),
             'template'      => $templates,
             'current_index' => $index + 1,
             'dev_mode'      => getenv('DEV_MODE'),
+            'delete_revision_form' => $deleteRevisionForm->createView()
         ));
 
     }
@@ -194,7 +198,7 @@ class PagesController extends Controller
     }
 
     /**
-     * @Route("/admin/progress-revision", name="admin-progress-revision")
+     * @Route("/progress-revision", name="admin-progress-revision")
      * @param \Symfony\Component\HttpFoundation\Request                                    $request
      * @param \Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface $authorizationChecker
      *
@@ -206,7 +210,7 @@ class PagesController extends Controller
             throw new AccessDeniedException('Unable to access this page!');
         }
 
-        $form = $this->createForm(ApprovePage::class, []);
+        $form = $this->createForm(ApprovePageRevision::class, []);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $formData = $form->getData();
@@ -240,6 +244,49 @@ class PagesController extends Controller
                 );
                 return $this->redirectToRoute('admin-pages-create');
             }
+        }
+    }
+
+    /**
+     * @Route("/delete-revision", name="admin-delete-revision")
+     * @param \Symfony\Component\HttpFoundation\Request                                    $request
+     * @param \Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface $authorizationChecker
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function deleteRevision(Request $request, AuthorizationCheckerInterface $authorizationChecker)
+    {
+        if (false === $authorizationChecker->isGranted('ROLE_ADMIN')) {
+            throw new AccessDeniedException('Unable to access this page!');
+        }
+
+        $form = $this->createForm(DeletePageRevision::class, []);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $formData = $form->getData();
+            /** @var \App\Entity\Page $page */
+            $page = $this->getDoctrine()
+                ->getRepository(Page::class)
+                ->findOneByLatestPage($formData['slug']);
+
+            // Only allow deleting of un-published revisions
+            if ($page->isPreview()) {
+                $em = $this->getDoctrine()->getManager();
+                $em->remove($page);
+                $em->flush();
+
+                $this->addFlash(
+                    'admin-success',
+                    'This page revision has been deleted'
+                );
+            } else {
+                $this->addFlash(
+                    'admin-info',
+                    'This page revision could not be deleted because it was published'
+                );
+            }
+
+            return $this->redirectToRoute('admin-pages-create');
         }
     }
 }

@@ -8,7 +8,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Admin\ApprovePage;
 use App\Entity\Availability;
 use App\Entity\Contact;
 use App\Entity\Page;
@@ -132,7 +131,7 @@ class PagesController extends Controller
                 ->findOneByLatestPage($route);
 
             $approvePageForm = $this
-                ->createForm(\App\Form\Admin\ApprovePage::class, ['slug' => $route])
+                ->createForm(\App\Form\Admin\ApprovePageRevision::class, ['slug' => $route])
                 ->createView();
 
             $viewData['preview_mode'] = ((false !== $authorizationChecker->isGranted('ROLE_ADMIN')) && $request->getQueryString('preview'));
