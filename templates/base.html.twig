@@ -19,6 +19,27 @@
     {% block stylesheets %}{% endblock %}
 </head>
 <body>
+{% if preview_mode is defined and preview_mode == true and preview_mode_form is defined  %}
+    {% form_theme preview_mode_form 'bootstrap_4_horizontal_layout.html.twig' %}
+    {% set current_path = app.request.get('_route') %}
+    <div class="container-fluid">
+        <div class="row justify-content-center bg-white">
+            <div class="alert alert-info text-center d-block mt-3" role="alert">
+                <h4 class="alert-heading">Publish this page?</h4>
+                {{ form_start(preview_mode_form, {'attr': {'class': 'form'}, 'action': path('admin-progress-revision')}) }}
+                <div class="form-row">
+                    <div class="col">
+                        {{ form_widget(preview_mode_form.approve) }}
+                    </div>
+                    <div class="col">
+                        {{ form_widget(preview_mode_form.decline) }}
+                    </div>
+                </div>
+                {{ form_end(preview_mode_form) }}
+            </div>
+        </div>
+    </div>
+{% endif %}
 <nav class="navbar navbar-expand-sm navbar-dark bg-primary">
     <a class="navbar-brand" href="#">The Villa at The Bay</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"

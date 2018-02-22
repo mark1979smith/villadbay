@@ -8,12 +8,14 @@
 
 namespace App\Controller;
 
+use App\Entity\Admin\ApprovePage;
 use App\Entity\Availability;
 use App\Entity\Contact;
 use App\Entity\Page;
 use App\Entity\Search;
 use App\Form\Search as SearchForm;
 use App\Form\SearchType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -24,17 +26,21 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\DataTransformer\NumberToLocalizedStringTransformer;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class PagesController extends Controller
 {
     /**
      * @Route("/", name="home")
      *
+     * @param \Symfony\Component\HttpFoundation\Request                                    $request
+     * @param \Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface $authorizationChecker
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function home(Request $request)
+    public function home(Request $request, AuthorizationCheckerInterface $authorizationChecker)
     {
-        $viewData = $this->defineViewData($request);
+        $viewData = $this->defineViewData($request, $authorizationChecker);
 
         return $this->render('pages/home.html.twig', $viewData);
     }
@@ -42,11 +48,14 @@ class PagesController extends Controller
     /**
      * @Route("/search-availability", name="search")
      *
+     * @param \Symfony\Component\HttpFoundation\Request                                    $request
+     * @param \Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface $authorizationChecker
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function search(Request $request)
+    public function search(Request $request, AuthorizationCheckerInterface $authorizationChecker)
     {
-        $viewData = $this->defineViewData($request);
+        $viewData = $this->defineViewData($request, $authorizationChecker);
 
         $form = $this->getSearchForm();
 
@@ -67,11 +76,14 @@ class PagesController extends Controller
     /**
      * @Route("/about", name="about")
      *
+     * @param \Symfony\Component\HttpFoundation\Request                                    $request
+     * @param \Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface $authorizationChecker
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function about(Request $request)
+    public function about(Request $request, AuthorizationCheckerInterface $authorizationChecker)
     {
-        $viewData = $this->defineViewData($request);
+        $viewData = $this->defineViewData($request, $authorizationChecker);
 
         return $this->render('pages/about.html.twig', $viewData);
     }
@@ -79,13 +91,14 @@ class PagesController extends Controller
     /**
      * @Route("/contact-us", name="contact")
      *
-     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param \Symfony\Component\HttpFoundation\Request                                    $request
+     * @param \Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface $authorizationChecker
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function contact(Request $request)
+    public function contact(Request $request, AuthorizationCheckerInterface $authorizationChecker)
     {
-        $viewData = $this->defineViewData($request);
+        $viewData = $this->defineViewData($request, $authorizationChecker);
 
         $form = $this->getContactForm();
 
@@ -103,19 +116,27 @@ class PagesController extends Controller
     /**
      * Define View Data for Current Page
      *
-     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param \Symfony\Component\HttpFoundation\Request                                    $request
+     * @param \Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface $authorizationChecker
      *
      * @return array
      */
-    protected function defineViewData(Request $request): array
+    protected function defineViewData(Request $request, AuthorizationCheckerInterface $authorizationChecker): array
     {
         $route = $request->attributes->get('_route');
+        $viewData = [];
         if ($request->getQueryString('preview')) {
             /** @var \App\Entity\Page $page */
             $page = $this->getDoctrine()
                 ->getRepository(Page::class)
                 ->findOneByLatestPage($route);
 
+            $approvePageForm = $this
+                ->createForm(\App\Form\Admin\ApprovePage::class, ['slug' => $route])
+                ->createView();
+
+            $viewData['preview_mode'] = ((false !== $authorizationChecker->isGranted('ROLE_ADMIN')) && $request->getQueryString('preview'));
+            $viewData['preview_mode_form'] = ((false !== $authorizationChecker->isGranted('ROLE_ADMIN')) && $request->getQueryString('preview') ? $approvePageForm : null);
         } else {
             /** @var \App\Entity\Page $page */
             $page = $this->getDoctrine()
@@ -123,7 +144,7 @@ class PagesController extends Controller
                 ->findOneByLatestPublishedPage($route);
         }
 
-        $viewData = [];
+
         if (null !== $page) {
             $viewData['selectedNav'] = $route;
             $viewData['disablePanoramicView'] = true;

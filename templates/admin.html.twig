@@ -42,6 +42,16 @@
     </div>
 </nav>
 
+{% for message in app.flashes('admin-notice') %}
+    <div class="alert alert-info" role="alert">
+        {{ message }}
+    </div>
+{% endfor %}
+{% for message in app.flashes('admin-success') %}
+    <div class="alert alert-success" role="alert">
+        {{ message }}
+    </div>
+{% endfor %}
 {% block body %}{% endblock %}
 
 <div class="container">

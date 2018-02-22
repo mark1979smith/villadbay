@@ -20,11 +20,14 @@ use App\Entity\Page\TextHeading\AlignClass;
 use App\Entity\Page\TextHeading\TextValue;
 use App\Entity\Page\TextHeading\Type;
 use App\Entity\Page\TextLead;
+use App\Form\Admin\ApprovePage;
 use App\Form\Admin\PageType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Class PagesController
@@ -47,13 +50,19 @@ class PagesController extends Controller
 
     /**
      * @Route("/new", name="admin-pages-create")
-     * @param \Symfony\Component\HttpFoundation\Request                 $request
-     * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
+     * @param \Symfony\Component\HttpFoundation\Request                                    $request
+     * @param \Symfony\Component\DependencyInjection\ContainerInterface                    $container
+     * @param \Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface $authorizationChecker
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function create(Request $request, ContainerInterface $container)
+    public function create(Request $request, ContainerInterface $container, AuthorizationCheckerInterface $authorizationChecker)
     {
+
+        if (false === $authorizationChecker->isGranted('ROLE_ADMIN')) {
+            throw new AccessDeniedException('Unable to access this page!');
+        }
+
 
         $form = $this->createForm(PageType::class, [
             'page_route'                => new PageRoute(),
@@ -182,5 +191,55 @@ class PagesController extends Controller
         }
 
         return $this->json($pageData);
+    }
+
+    /**
+     * @Route("/admin/progress-revision", name="admin-progress-revision")
+     * @param \Symfony\Component\HttpFoundation\Request                                    $request
+     * @param \Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface $authorizationChecker
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function approvePage(Request $request, AuthorizationCheckerInterface $authorizationChecker)
+    {
+        if (false === $authorizationChecker->isGranted('ROLE_ADMIN')) {
+            throw new AccessDeniedException('Unable to access this page!');
+        }
+
+        $form = $this->createForm(ApprovePage::class, []);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $formData = $form->getData();
+            // If APPROVE button clicked
+            if ($form->get('approve')->isClicked()) {
+                /** @var \App\Entity\Page $page */
+                $page = $this->getDoctrine()
+                    ->getRepository(Page::class)
+                    ->findOneByLatestPage($formData['slug']);
+
+                $page->setPreview(false);
+
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($page);
+                $em->flush();
+
+                $this->addFlash(
+                    'admin-success',
+                    'Your changes were published!'
+                );
+
+                return $this->redirectToRoute('admin-pages-create');
+            }
+
+            // If DECLINE button clicked
+            if ($form->get('decline')->isClicked()) {
+
+                $this->addFlash(
+                    'admin-notice',
+                    'Your changes were not published!'
+                );
+                return $this->redirectToRoute('admin-pages-create');
+            }
+        }
     }
 }
