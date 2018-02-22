@@ -184,19 +184,19 @@ class Page
     {
         $html = '';
         foreach ($this->getData()['display_order'] as $key => $order) {
+            $keyParts = explode('--', $key);
             if (preg_match('/^text_heading_text_value/', $key)) {
-                if (preg_match('/^</', $this->getData()['text_heading'][$order])) {
-                    $html .= $this->getData()['text_heading'][$order];
+                if (preg_match('/^</', $this->getData()['text_heading'][$keyParts[1]])) {
+                    $html .= $this->getData()['text_heading'][$keyParts[1]];
                     continue;
                 }
             } elseif (!preg_match('/^text_heading_/', $key)) {
                 if (stristr($key, '--')) {
-                    $keyParts = explode('--', $key);
-                    if (preg_match('/^</', $this->getData()[reset($keyParts)][$order])) {
-                        $html .= $this->getData()[reset($keyParts)][$order];
+                    if (preg_match('/^</', $this->getData()[$keyParts[0]][$keyParts[1]])) {
+                        $html .= $this->getData()[$keyParts[0]][$keyParts[1]];
                         continue;
-                    } elseif (preg_match('/\-(form|carousel)$/', $this->getData()[reset($keyParts)][$order])) {
-                        $html .= '#'. $this->getData()[reset($keyParts)][$order] . '#';
+                    } elseif (preg_match('/\-(form|carousel)$/', $this->getData()[$keyParts[0]][$keyParts[1]])) {
+                        $html .= '#'. $this->getData()[$keyParts[0]][$keyParts[1]] . '#';
                         continue;
                     }
                 }

@@ -239,7 +239,6 @@
                             var f = field.split("--")[0];
                             addElementToForm('#' + f + '_container');
                             if (typeof d[f] !== 'undefined' && d[f].hasOwnProperty(value) && typeof d[f][value] === 'string') {
-                                console.log(d[f][value]);
                                 $('#page_' + f + '_' + value).val(d[f][value]);
                             } else {
                                 if (typeof d[f] !== 'undefined' && d[f].hasOwnProperty(value) && $.isArray(d[f][value])) {
@@ -255,6 +254,14 @@
                             }
                         }
                     });
+
+                    htmlStr = '';
+                    htmlStr += '<ul class="nav justify-content-end clearfix"><li class="nav-item"><a href="#" class="nav-link"><span class="oi oi-trash"></span></a></li></ul>';
+                    $('div[data-counter]').prepend('<ul class="nav justify-content-end clearfix">' +
+                        '<li class="nav-item"><a href="#" class="nav-link js-nav-link--delete"><span class="oi oi-trash"></span></a></li>' +
+                        '</ul>');
+
+
                 }, 'json');
 
             });
@@ -290,6 +297,17 @@
         });
 
         /**
+         * Delete Block Opt
+         */
+        $('#form-opt-options').on('click', '.js-nav-link--delete', function (e) {
+            e.preventDefault();
+            var displayOrder = $(this).closest('div[data-counter]').data('counter');
+
+            $(':input[id^="page_display_order_"][id$="--' + displayOrder + '"]').remove();
+            $(this).closest('div[data-counter]').remove();
+        });
+
+        /**
          * Lock Core options and allow the adition of options
          */
         function lockPage() {
@@ -311,7 +329,6 @@
          */
         function addElementToForm(t) {
             var fields = jQuery(t);
-            console.log(t);
             if (fields.length > 0) {
 
                 // Try to find the counter of the list
