@@ -214,7 +214,7 @@ class Page
             if (preg_match('/^background_image/', $key)) {
                 if (stristr($key, '--')) {
                     $keyParts = explode('--', $key);
-                    $styles[] = $this->getData()[reset($keyParts)][$order]->__toString();
+                    $styles[] = $this->getData()[$keyParts[0]][$keyParts[1]]->__toString();
                 }
             }
         }

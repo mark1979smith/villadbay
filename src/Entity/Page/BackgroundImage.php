@@ -20,7 +20,32 @@ class BackgroundImage
         -moz-background-size: cover;
         background-size: cover;
         -o-background-size: cover;
-    }';
+    }
+     @media (max-width: 991px) {
+        body {
+            background-image: url(\'https://d3orc742w48r4f.cloudfront.net/images/backgrounds/%s\');
+        }
+    }
+
+    @media (max-width: 767px) {
+        body {
+            background-image: url(\'https://d3orc742w48r4f.cloudfront.net/images/backgrounds/%s\');
+        }
+    }
+
+    @media (max-width: 576px) {
+        body {
+            background-image: url(\'https://d3orc742w48r4f.cloudfront.net/images/backgrounds/%s\');
+        }
+
+        .display-1, .display-2, .display-3, .display-4, .display-5 {
+            font-size: x-large;
+            font-weight: bold;
+        }
+    }
+    ';
+
+
 
     private $backgroundImage;
 
@@ -28,7 +53,10 @@ class BackgroundImage
     {
         return sprintf(
             $this->getInlineStyleTemplate(),
-            $this->getBackgroundImage()
+            $this->getBackgroundImage(),
+            'lg/'.$this->getBackgroundImage(),
+            'md/'.$this->getBackgroundImage(),
+            'sm/'.$this->getBackgroundImage()
         );
     }
 
