@@ -266,7 +266,7 @@
                 var targetPageType = $(jQuery(this).data('target')).data('page-type');
                 if ((typeof targetLimit === 'undefined') || (typeof targetLimit !== 'undefined' && targetLimit > existingCount)) {
                     if (targetPageType.indexOf($('#page_page_type').val()) > -1) {
-                        addElementToForm(jQuery(this).data('target'));
+                        addElementToForm(jQuery(this).data('target'), $(jQuery(this).data('target')).data('counter'));
                     } else {
                         $('#modalPageTypeConflict').modal();
                     }
@@ -329,12 +329,9 @@
          * @param t Jquery selector for template
          * @returns {*}
          */
-        function addElementToForm(t) {
+        function addElementToForm(t, counter) {
             var fields = jQuery(t);
             if (fields.length > 0) {
-
-                // Try to find the counter of the list
-                var counter = fields.data('counter');
 
                 var newWidget = fields.find('*[data-prototype]');
                 var htmlStr = '';
@@ -342,12 +339,16 @@
                 $.each(newWidget, function (a, b) {
                     htmlStr += getElementHtml(fields, b, counter);
                 });
-
                 var newElem = jQuery(fields.data('template').replace('#FORMELEMENTS#', htmlStr).replace('#NEWCOUNTER#', counter));
                 $('#form-opt-options').append(newElem.css('display', 'block'));
                 $.each(newWidget, function (a, b) {
                     $('#form-opt-options').before(jQuery('#page_display_order').data('prototype').toString().replace(/__name__/g, $(b).prop('id').replace(/^page_/, '') + '--' + counter).replace('#NEWCOUNTER#', $('#form-opt-options>div').length));
                 });
+
+                $(newElem).prepend('<ul class="nav justify-content-end clearfix">' +
+                    '<li class="nav-item"><a href="#" class="nav-link js-nav-link--delete"><span class="oi oi-trash"></span></a></li>' +
+                    '</ul>');
+
 
                 counter++;
                 $('div.jumbotron>div[data-counter]').data('counter', counter);
@@ -438,32 +439,27 @@
                 lockPage();
 
                 $.each(d.display_order, function (field, value) {
-                    if (value > 0) {
-                        var f = field.split("--")[0];
-                        addElementToForm('#' + f + '_container');
-                        if (typeof d[f] !== 'undefined' && d[f].hasOwnProperty(value) && typeof d[f][value] === 'string') {
-                            $('#page_' + f + '_' + value).val(d[f][value]);
+                    var fieldSplit = field.split("--")
+                    var f = fieldSplit[0];
+                    var c = fieldSplit[1];
+                    if (c > 0) {
+                        addElementToForm('#' + f + '_container', c);
+                        if (typeof d[f] !== 'undefined' && d[f].hasOwnProperty(c) && typeof d[f][c] === 'string') {
+                            $('#page_' + f + '_' + c).val(d[f][c]);
                         } else {
-                            if (typeof d[f] !== 'undefined' && d[f].hasOwnProperty(value) && $.isArray(d[f][value])) {
-                                $('#page_' + f + '_' + value).val(d[f][value].join(','));
+                            if (typeof d[f] !== 'undefined' && d[f].hasOwnProperty(c) && $.isArray(d[f][c])) {
+                                $('#page_' + f + '_' + c).val(d[f][c].join(','));
                             } else {
                                 $.each(d[f], function (a, b) {
                                     ele = $('#page_' + a + '_' + value);
                                     if (ele.length) {
-                                        ele.val(b[value]);
+                                        ele.val(b[c]);
                                     }
                                 });
                             }
                         }
                     }
                 });
-
-                htmlStr = '';
-                htmlStr += '<ul class="nav justify-content-end clearfix"><li class="nav-item"><a href="#" class="nav-link"><span class="oi oi-trash"></span></a></li></ul>';
-                $('div[data-counter]').prepend('<ul class="nav justify-content-end clearfix">' +
-                    '<li class="nav-item"><a href="#" class="nav-link js-nav-link--delete"><span class="oi oi-trash"></span></a></li>' +
-                    '</ul>');
-
 
             }, 'json');
         }
