@@ -86,7 +86,7 @@
 
                     {# The following are placeholders when adding elements are added dynamically #}
                     {%- block TextHeadingType_widget -%}
-                        <div style="display:none;" id="text_heading_type_container" data-counter="{{ current_index }}"
+                        <div style="display:none;" id="text_heading_type_container" data-page-type="landing|content" data-counter="{{ current_index }}"
                              data-element-wrapper="{{ '<div class="col-lg-4 col-md-6 col-sm-12"></div>'|e }}"
                              data-template="{{ '<div class="text_heading_type" data-counter="#NEWCOUNTER#"><div class="form-row">#FORMELEMENTS#</div><div class="invisible card card-body" id="js--text_heading_preview"></div>'|e }}">
                             <div class="form-row">
@@ -102,19 +102,19 @@
                         </div>
                     {%- endblock -%}
                     {%- block TextLeading_widget -%}
-                        <div style="display: none" id="text_leading_container" data-counter="{{ current_index }}"
+                        <div style="display: none" id="text_leading_container" data-page-type="landing|content" data-counter="{{ current_index }}"
                              data-template="{{ '<div class="text_leading" data-counter="#NEWCOUNTER#">#FORMELEMENTS#<div class="invisible card card-body" id="js--text_leading_preview"></div>'|e }}">
                             {{ form_widget(template.text_leading) }}
                         </div>
                     {%- endblock -%}
                     {%- block ParagraphText_widget -%}
-                        <div style="display: none" id="paragraph_text_container" data-counter="{{ current_index }}"
+                        <div style="display: none" id="paragraph_text_container" data-page-type="landing|content" data-counter="{{ current_index }}"
                              data-template="{{ '<div class="paragraph_text" data-counter="#NEWCOUNTER#">#FORMELEMENTS#<div class="invisible card card-body" id="js--text_paragraph_preview"></div>'|e }}">
                             {{ form_widget(template.paragraph_text) }}
                         </div>
                     {%- endblock -%}
                     {%- block ListGroup_widget -%}
-                        <div style="display: none" id="list_group_container" data-counter="{{ current_index }}"
+                        <div style="display: none" id="list_group_container" data-page-type="content" data-counter="{{ current_index }}"
                              data-template="{{ '<div class="list_group" data-counter="#NEWCOUNTER#">#FORMELEMENTS#<small id="list_group_helper" class="form-text text-muted">Separate items with a comma (,). Wrap items in double-quotes (&quot;) if you require an items to include a comma.</small><div class="invisible card card-body" id="js--text_leading_preview"></div>'|e }}">
                             {{ form_widget(template.list_group) }}
                             <small id="list_group_helper" class="form-text text-muted">
@@ -124,7 +124,7 @@
                         </div>
                     {%- endblock -%}
                     {%- block PanoramicImage_widget -%}
-                        <div style="display: none" id="panoramic_image_container" data-limit="1" data-counter="{{ current_index }}"
+                        <div style="display: none" id="panoramic_image_container" data-page-type="content" data-limit="1" data-counter="{{ current_index }}"
                              data-template="{{ '<div class="panoramic_image" data-counter="#NEWCOUNTER#">#FORMELEMENTS#<small id="panoramic_image_helper" class="form-text text-muted">Best placed at the top of the page before any content.</small>'|e }}">
                             {{ form_label(template.panoramic_image) }}
                             {{ form_widget(template.panoramic_image) }}
@@ -135,21 +135,21 @@
                         </div>
                     {%- endblock -%}
                     {%- block BackgroundImage_widget -%}
-                        <div style="display: none" id="background_image_container" data-limit="1" data-counter="{{ current_index }}"
+                        <div style="display: none" id="background_image_container" data-page-type="landing" data-limit="1" data-counter="{{ current_index }}"
                              data-template="{{ '<div class="background_image" data-counter="#NEWCOUNTER#">#FORMELEMENTS#</div>'|e }}">
                             {{ form_label(template.background_image) }}
                             {{ form_widget(template.background_image) }}
                         </div>
                     {%- endblock -%}
                     {%- block Form_widget -%}
-                        <div style="display: none" id="form_container" data-counter="{{ current_index }}"
+                        <div style="display: none" id="form_container" data-page-type="landing|content" data-counter="{{ current_index }}"
                              data-template="{{ '<div class="form" data-counter="#NEWCOUNTER#">#FORMELEMENTS#</div>'|e }}">
                             {{ form_label(template.form) }}
                             {{ form_widget(template.form) }}
                         </div>
                     {%- endblock -%}
                     {%- block CarouselImage_widget -%}
-                        <div style="display: none" id="image_carousel_container" data-counter="{{ current_index }}"
+                        <div style="display: none" id="image_carousel_container" data-page-type="content" data-counter="{{ current_index }}"
                              data-template="{{ '<div class="form" data-counter="#NEWCOUNTER#">#FORMELEMENTS#</div>'|e }}">
                             {{ form_label(template.image_carousel) }}
                             {{ form_widget(template.image_carousel) }}
@@ -189,6 +189,24 @@
                 </div>
                 <div class="modal-body">
                     <p>A limit has been placed on that option. You are unable exceed this limit.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="modalPageTypeConflict" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Element Not Available</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>The Element that you've requested is not available for the Page Type selected.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -246,15 +264,19 @@
 
                 var ele = $(this);
 
-                if ($(jQuery(this).data('target')).has('[data-limit]')) {
-                    var targetLimit = $(jQuery(this).data('target')).data('limit');
-                    var existingCount = $('#form-opt-options').find(jQuery(this).data('target').replace('#', '.').replace('_container', '')).length;
-                    if ((typeof targetLimit === 'undefined') || (typeof targetLimit !== 'undefined' && targetLimit > existingCount)) {
+                var targetLimit = $(jQuery(this).data('target')).data('limit');
+                var existingCount = $('#form-opt-options').find(jQuery(this).data('target').replace('#', '.').replace('_container', '')).length;
+                var targetPageType = $(jQuery(this).data('target')).data('page-type');
+                if ((typeof targetLimit === 'undefined') || (typeof targetLimit !== 'undefined' && targetLimit > existingCount)) {
+                    if (targetPageType.indexOf($('#page_page_type').val()) > -1) {
                         addElementToForm(jQuery(this).data('target'));
                     } else {
-                        $('#modalLimitExceeded').modal();
+                        $('#modalPageTypeConflict').modal();
                     }
+                } else {
+                    $('#modalLimitExceeded').modal();
                 }
+
             });
 
             $('.panoramic_image .card-deck .card .btn,.background_image .card-deck .card .btn').on('click', function (e) {
