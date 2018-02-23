@@ -6,7 +6,7 @@
     <div class="container">
         <div class="row">
             <div class="col">
-                <h1 class="display-3">Create a new page</h1>
+                <h1 class="display-3">Manage a page</h1>
             </div>
         </div>
         <div class="row">
@@ -121,11 +121,10 @@
                                 Separate items with a comma (,). Wrap items in double-quotes (&quot;) if you require an
                                 items to include a comma.
                             </small>
-
                         </div>
                     {%- endblock -%}
                     {%- block PanoramicImage_widget -%}
-                        <div style="display: none" id="panoramic_image_container" data-counter="{{ current_index }}"
+                        <div style="display: none" id="panoramic_image_container" data-limit="1" data-counter="{{ current_index }}"
                              data-template="{{ '<div class="panoramic_image" data-counter="#NEWCOUNTER#">#FORMELEMENTS#<small id="panoramic_image_helper" class="form-text text-muted">Best placed at the top of the page before any content.</small>'|e }}">
                             {{ form_label(template.panoramic_image) }}
                             {{ form_widget(template.panoramic_image) }}
@@ -136,7 +135,7 @@
                         </div>
                     {%- endblock -%}
                     {%- block BackgroundImage_widget -%}
-                        <div style="display: none" id="background_image_container" data-counter="{{ current_index }}"
+                        <div style="display: none" id="background_image_container" data-limit="1" data-counter="{{ current_index }}"
                              data-template="{{ '<div class="background_image" data-counter="#NEWCOUNTER#">#FORMELEMENTS#</div>'|e }}">
                             {{ form_label(template.background_image) }}
                             {{ form_widget(template.background_image) }}
@@ -172,6 +171,24 @@
                 </div>
                 <div class="modal-body">
                     <p>This version has possible changes which have not yet been published.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="modalLimitExceeded" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Limit Exceeded</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>A limit has been placed on that option. You are unable exceed this limit.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -229,7 +246,15 @@
 
                 var ele = $(this);
 
-               addElementToForm(jQuery(this).data('target'));
+                if ($(jQuery(this).data('target')).has('[data-limit]')) {
+                    var targetLimit = $(jQuery(this).data('target')).data('limit');
+                    var existingCount = $('#form-opt-options').find(jQuery(this).data('target').replace('#', '.').replace('_container', '')).length;
+                    if ((typeof targetLimit === 'undefined') || (typeof targetLimit !== 'undefined' && targetLimit > existingCount)) {
+                        addElementToForm(jQuery(this).data('target'));
+                    } else {
+                        $('#modalLimitExceeded').modal();
+                    }
+                }
             });
 
             $('.panoramic_image .card-deck .card .btn,.background_image .card-deck .card .btn').on('click', function (e) {
