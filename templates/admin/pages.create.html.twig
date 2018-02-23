@@ -206,6 +206,7 @@
         $(document).ready(function () {
             if ($('#page_page_route').val() && !$('#page_page_route').hasClass('is-invalid')
                 && $('#page_page_type').val() && !$('#page_page_type').hasClass('is-invalid')) {
+                getPageData($('#page_page_route').val());
                 lockPage();
             }
 
@@ -220,50 +221,7 @@
 
             $('#page_page_route').on('change', function(e) {
                 var s = $(this).val();
-
-                var route = "{{ path('admin-page-data')|escape('js') }}";
-                $.post(route + '/' + s, {}, function(d) {
-                    $('#page_page_type').val(d.page_type);
-
-                    if (d.page_preview) {
-                        $('#modal').modal();
-                        var f = $('<div><div class="d-flex justify-content-end">{{ form_start(delete_revision_form, {'attr': {'action': path('admin-delete-revision')}}) }}{{  form_widget(delete_revision_form) }}{{ form_end(delete_revision_form) }}</div></div>');
-                        f.find('#delete_page_revision_slug').val(s);
-                        prependHtml($('div.jumbotron'), f);
-
-                    }
-                    lockPage();
-
-                    $.each(d.display_order, function (field, value) {
-                        if (value > 0) {
-                            var f = field.split("--")[0];
-                            addElementToForm('#' + f + '_container');
-                            if (typeof d[f] !== 'undefined' && d[f].hasOwnProperty(value) && typeof d[f][value] === 'string') {
-                                $('#page_' + f + '_' + value).val(d[f][value]);
-                            } else {
-                                if (typeof d[f] !== 'undefined' && d[f].hasOwnProperty(value) && $.isArray(d[f][value])) {
-                                    $('#page_' + f + '_' + value).val(d[f][value].join(','));
-                                } else {
-                                    $.each(d[f], function (a, b) {
-                                        ele = $('#page_' + a + '_' + value);
-                                        if (ele.length) {
-                                            ele.val(b[value]);
-                                        }
-                                    });
-                                }
-                            }
-                        }
-                    });
-
-                    htmlStr = '';
-                    htmlStr += '<ul class="nav justify-content-end clearfix"><li class="nav-item"><a href="#" class="nav-link"><span class="oi oi-trash"></span></a></li></ul>';
-                    $('div[data-counter]').prepend('<ul class="nav justify-content-end clearfix">' +
-                        '<li class="nav-item"><a href="#" class="nav-link js-nav-link--delete"><span class="oi oi-trash"></span></a></li>' +
-                        '</ul>');
-
-
-                }, 'json');
-
+                getPageData(s);
             });
 
             $('#subnav--opts').on('click', '.dropdown-item', function (e) {
@@ -419,6 +377,51 @@
                 $(this).closest('.panoramic_image').find(':radio[value="' + $(this).val() + '"]').trigger('click');
             });
 
+        }
+
+        function getPageData(s) {
+            var route = "{{ path('admin-page-data')|escape('js') }}";
+            $.post(route + '/' + s, {}, function(d) {
+                $('#page_page_type').val(d.page_type);
+
+                if (d.page_preview) {
+                    $('#modal').modal();
+                    var f = $('<div><div class="d-flex justify-content-end">{{ form_start(delete_revision_form, {'attr': {'action': path('admin-delete-revision')}}) }}{{  form_widget(delete_revision_form) }}{{ form_end(delete_revision_form) }}</div></div>');
+                    f.find('#delete_page_revision_slug').val(s);
+                    prependHtml($('div.jumbotron'), f);
+
+                }
+                lockPage();
+
+                $.each(d.display_order, function (field, value) {
+                    if (value > 0) {
+                        var f = field.split("--")[0];
+                        addElementToForm('#' + f + '_container');
+                        if (typeof d[f] !== 'undefined' && d[f].hasOwnProperty(value) && typeof d[f][value] === 'string') {
+                            $('#page_' + f + '_' + value).val(d[f][value]);
+                        } else {
+                            if (typeof d[f] !== 'undefined' && d[f].hasOwnProperty(value) && $.isArray(d[f][value])) {
+                                $('#page_' + f + '_' + value).val(d[f][value].join(','));
+                            } else {
+                                $.each(d[f], function (a, b) {
+                                    ele = $('#page_' + a + '_' + value);
+                                    if (ele.length) {
+                                        ele.val(b[value]);
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
+
+                htmlStr = '';
+                htmlStr += '<ul class="nav justify-content-end clearfix"><li class="nav-item"><a href="#" class="nav-link"><span class="oi oi-trash"></span></a></li></ul>';
+                $('div[data-counter]').prepend('<ul class="nav justify-content-end clearfix">' +
+                    '<li class="nav-item"><a href="#" class="nav-link js-nav-link--delete"><span class="oi oi-trash"></span></a></li>' +
+                    '</ul>');
+
+
+            }, 'json');
         }
     </script>
 {%- endblock -%}
