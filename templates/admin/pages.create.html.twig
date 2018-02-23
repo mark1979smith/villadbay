@@ -88,7 +88,7 @@
                     {%- block TextHeadingType_widget -%}
                         <div style="display:none;" id="text_heading_type_container" data-page-type="landing|content" data-counter="{{ current_index }}"
                              data-element-wrapper="{{ '<div class="col-lg-4 col-md-6 col-sm-12"></div>'|e }}"
-                             data-template="{{ '<div class="text_heading_type" data-counter="#NEWCOUNTER#"><div class="form-row">#FORMELEMENTS#</div><div class="invisible card card-body" id="js--text_heading_preview"></div>'|e }}">
+                             data-template="{{ '<div class="text_heading_type" data-counter="#NEWCOUNTER#"><div class="form-row">#FORMELEMENTS#</div></div>'|e }}">
                             <div class="form-row">
                                 {{ form_widget(template.text_heading_type) }}
                                 {{ form_widget(template.text_heading_size_class) }}
@@ -96,26 +96,23 @@
                                 {{ form_widget(template.text_heading_align_class) }}
                                 {{ form_widget(template.text_heading_text_value) }}
                             </div>
-                            <div class="invisible card card-body" id="js--text_heading_preview">
-
-                            </div>
                         </div>
                     {%- endblock -%}
                     {%- block TextLeading_widget -%}
                         <div style="display: none" id="text_leading_container" data-page-type="landing|content" data-counter="{{ current_index }}"
-                             data-template="{{ '<div class="text_leading" data-counter="#NEWCOUNTER#">#FORMELEMENTS#<div class="invisible card card-body" id="js--text_leading_preview"></div>'|e }}">
+                             data-template="{{ '<div class="text_leading" data-counter="#NEWCOUNTER#">#FORMELEMENTS#</div>'|e }}">
                             {{ form_widget(template.text_leading) }}
                         </div>
                     {%- endblock -%}
                     {%- block ParagraphText_widget -%}
                         <div style="display: none" id="paragraph_text_container" data-page-type="landing|content" data-counter="{{ current_index }}"
-                             data-template="{{ '<div class="paragraph_text" data-counter="#NEWCOUNTER#">#FORMELEMENTS#<div class="invisible card card-body" id="js--text_paragraph_preview"></div>'|e }}">
+                             data-template="{{ '<div class="paragraph_text" data-counter="#NEWCOUNTER#">#FORMELEMENTS#</div>'|e }}">
                             {{ form_widget(template.paragraph_text) }}
                         </div>
                     {%- endblock -%}
                     {%- block ListGroup_widget -%}
                         <div style="display: none" id="list_group_container" data-page-type="content" data-counter="{{ current_index }}"
-                             data-template="{{ '<div class="list_group" data-counter="#NEWCOUNTER#">#FORMELEMENTS#<small id="list_group_helper" class="form-text text-muted">Separate items with a comma (,). Wrap items in double-quotes (&quot;) if you require an items to include a comma.</small><div class="invisible card card-body" id="js--text_leading_preview"></div>'|e }}">
+                             data-template="{{ '<div class="list_group" data-counter="#NEWCOUNTER#">#FORMELEMENTS#<small id="list_group_helper" class="form-text text-muted">Separate items with a comma (,). Wrap items in double-quotes (&quot;) if you require an items to include a comma.</small></div>'|e }}">
                             {{ form_widget(template.list_group) }}
                             <small id="list_group_helper" class="form-text text-muted">
                                 Separate items with a comma (,). Wrap items in double-quotes (&quot;) if you require an
@@ -125,7 +122,7 @@
                     {%- endblock -%}
                     {%- block PanoramicImage_widget -%}
                         <div style="display: none" id="panoramic_image_container" data-page-type="content" data-limit="1" data-counter="{{ current_index }}"
-                             data-template="{{ '<div class="panoramic_image" data-counter="#NEWCOUNTER#">#FORMELEMENTS#<small id="panoramic_image_helper" class="form-text text-muted">Best placed at the top of the page before any content.</small>'|e }}">
+                             data-template="{{ '<div class="panoramic_image" data-counter="#NEWCOUNTER#">#FORMELEMENTS#<small id="panoramic_image_helper" class="form-text text-muted">Best placed at the top of the page before any content.</small></div>'|e }}">
                             {{ form_label(template.panoramic_image) }}
                             {{ form_widget(template.panoramic_image) }}
                             <small id="panoramic_image_helper" class="form-text text-muted">
