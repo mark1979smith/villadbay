@@ -23,7 +23,7 @@ class DeletePageRevision  extends AbstractType
             ->add('delete', SubmitType::class, [
                 'label' => 'Delete This Revision?',
                 'attr'  => [
-                    'class' => 'btn btn-danger btn-lg',
+                    'class' => 'btn btn-danger',
                 ],
             ]);
     }

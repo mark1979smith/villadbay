@@ -227,7 +227,7 @@
 
                     if (d.page_preview) {
                         $('#modal').modal();
-                        var f = $('<div>{{ form_start(delete_revision_form, {'attr': {'action': path('admin-delete-revision')}}) }}{{  form_widget(delete_revision_form) }}{{ form_end(delete_revision_form) }}</div>');
+                        var f = $('<div><div class="d-flex justify-content-end">{{ form_start(delete_revision_form, {'attr': {'action': path('admin-delete-revision')}}) }}{{  form_widget(delete_revision_form) }}{{ form_end(delete_revision_form) }}</div></div>');
                         f.find('#delete_page_revision_slug').val(s);
                         prependHtml($('div.jumbotron'), f);
 
