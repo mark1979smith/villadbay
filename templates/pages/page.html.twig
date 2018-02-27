@@ -1,0 +1,7 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    {{ page|replace({'#search-form#': block('search_form') })|replace({'#contact-form#': block('contact_form')})|replace({'#image-carousel#': block('image_carousel')})|raw }}
+{% endblock %}
+{% block stylesheets %}
+    {{ styles|raw }}
+{% endblock %}

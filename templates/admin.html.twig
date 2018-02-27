@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta id="vp" name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ asset('css/open-iconic-bootstrap.min.css') }}">
+    <script src="{{ asset('js/jquery-3.2.1.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
+    <script>
+        window.onload = function() {
+            if (screen.width < 276) {
+                var mvp = document.getElementById('vp');
+                mvp.setAttribute('content','user-scalable=no,width=276');
+            }
+        }
+    </script>
+    {% block stylesheets %}{% endblock %}
+</head>
+<body>
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+    <a class="navbar-brand" href="{{ path('admin-home') }}">The Villa at The Bay (Admin)</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item{% if selectedNav is defined and selectedNav == 'admin-home' %} active{% endif %}">
+                <a href="{{ path('admin-home') }}" class="nav-link">Home</a>
+            </li>
+            <li class="nav-item dropdown{% if selectedNav is defined and selectedNav == 'admin-pages' %} active{% endif %}">
+                <a href="#" class="nav-link dropdown-toggle" id="navbarPagesDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pages</a>
+                <div class="dropdown-menu" aria-labelledby="navbarPagesDropdownMenuLink">
+                    <a class="dropdown-item" href="{{ path('admin-pages-create') }}"><span class="oi oi-plus" title="icon name" aria-hidden="true"></span> Manage Pages</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+{% for message in app.flashes('admin-notice') %}
+    <div class="alert alert-info" role="alert">
+        {{ message }}
+    </div>
+{% endfor %}
+{% for message in app.flashes('admin-success') %}
+    <div class="alert alert-success" role="alert">
+        {{ message }}
+    </div>
+{% endfor %}
+{% block body %}{% endblock %}
+
+<div class="container">
+    <div class="row">
+        <div class="col text-center">
+            <span class="badge badge-pill badge-light">
+            &copy; <?= date('Y') ?> by THE VILLA AT THE BAY.
+            </span>
+        </div>
+    </div>
+</div>
+{% block javascripts %}{% endblock %}
+</body>
+</html>
