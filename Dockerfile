@@ -16,7 +16,7 @@ USER deployuser
 WORKDIR /tmp
 
 RUN CURRENT_DEPLOYMENT_KEY_ID=$( \
-        curl -i -H @.git.token https://api.github.com/repos/mark1979smith/villadbay/keys | \
+        curl -i -H "$(cat .git.token)" https://api.github.com/repos/mark1979smith/villadbay/keys | \
             grep "\"id\":" |  \
             awk '{print $2}' |  \
             sed s/,//g \
@@ -31,10 +31,10 @@ RUN CURRENT_DEPLOYMENT_KEY_ID=$( \
     printf "%s" '", "key":"' >> .create-deployment-key.json && \
     cat ~/.ssh/id_rsa.pub | tee >> .create-deployment-key.json && \
     printf "%s"  '", "read_only": false}' >> .create-deployment-key.json && \
-    curl -i -X POST -H @.git.token -d @.create-deployment-key.json https://api.github.com/repos/mark1979smith/villadbay/keys > /dev/null && \
+    curl -i -X POST -H "$(cat .git.token)" -d "$(cat .create-deployment-key.json)" https://api.github.com/repos/mark1979smith/villadbay/keys > /dev/null && \
     # Remove Old Deployment Key
     echo "Removing Deployment Key Id: $CURRENT_DEPLOYMENT_KEY_ID" && \
-    curl -i -X DELETE -H @.git.token https://api.github.com/repos/mark1979smith/villadbay/keys/$CURRENT_DEPLOYMENT_KEY_ID && \
+    curl -i -X DELETE -H "$(cat .git.token)" https://api.github.com/repos/mark1979smith/villadbay/keys/$CURRENT_DEPLOYMENT_KEY_ID && \
     rm -f .create-deployment-key.json && \
     rm -f .git.token
 
