@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Symfony package.
+ * This file is part of the Symfony MakerBundle package.
  *
  * (c) Fabien Potencier <fabien@symfony.com>
  *
@@ -13,10 +13,8 @@ namespace Symfony\Bundle\MakerBundle\Maker;
 
 use Symfony\Bundle\MakerBundle\ConsoleStyle;
 use Symfony\Bundle\MakerBundle\DependencyBuilder;
+use Symfony\Bundle\MakerBundle\Generator;
 use Symfony\Bundle\MakerBundle\InputConfiguration;
-use Symfony\Bundle\MakerBundle\MakerInterface;
-use Symfony\Bundle\MakerBundle\Str;
-use Symfony\Bundle\MakerBundle\Validator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Bundle\SecurityBundle\SecurityBundle;
@@ -25,7 +23,7 @@ use Symfony\Component\Console\Input\InputInterface;
 /**
  * @author Ryan Weaver <ryan@knpuniversity.com>
  */
-final class MakeAuthenticator implements MakerInterface
+final class MakeAuthenticator extends AbstractMaker
 {
     public static function getCommandName(): string
     {
@@ -41,29 +39,22 @@ final class MakeAuthenticator implements MakerInterface
         ;
     }
 
-    public function interact(InputInterface $input, ConsoleStyle $io, Command $command)
+    public function generate(InputInterface $input, ConsoleStyle $io, Generator $generator)
     {
-    }
+        $classNameDetails = $generator->createClassNameDetails(
+            $input->getArgument('authenticator-class'),
+            'Security\\'
+        );
 
-    public function getParameters(InputInterface $input): array
-    {
-        $className = Str::asClassName($input->getArgument('authenticator-class'));
-        Validator::validateClassName($className);
+        $generator->generateClass(
+            $classNameDetails->getFullName(),
+            'authenticator/Empty.tpl.php',
+            []
+        );
+        $generator->writeChanges();
 
-        return [
-            'class_name' => $className,
-        ];
-    }
+        $this->writeSuccessMessage($io);
 
-    public function getFiles(array $params): array
-    {
-        return [
-            __DIR__.'/../Resources/skeleton/authenticator/Empty.tpl.php' => 'src/Security/'.$params['class_name'].'.php',
-        ];
-    }
-
-    public function writeNextStepsMessage(array $params, ConsoleStyle $io)
-    {
         $io->text([
             'Next: Customize your new authenticator.',
             'Then, configure the "guard" key on your firewall to use it.',

@@ -1,0 +1,11 @@
+<div class="list_group" data-counter="{{ index }}">
+    <div class="form-group">
+        {{ form_label(form.list_group[counter]) }}
+        {{ form_widget(form.list_group[counter]) }}
+        {{ form_errors(form.list_group[counter]) }}
+    </div>
+    <small id="list_group_helper" class="form-text text-muted">Separate items with a comma (,). Wrap items in
+        double-quotes (&quot;) if you require an items to include a comma.
+    </small>
+    <div class="invisible card card-body" id="js--text_leading_preview"></div>
+</div>

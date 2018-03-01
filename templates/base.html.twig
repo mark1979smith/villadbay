@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta id="vp" name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>{% block title %}Welcome!{% endblock %}</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
     <script>
         window.onload = function() {
             if (screen.width < 276) {
@@ -19,6 +19,27 @@
     {% block stylesheets %}{% endblock %}
 </head>
 <body>
+{% if preview_mode is defined and preview_mode == true and preview_mode_form is defined  %}
+    {% form_theme preview_mode_form 'bootstrap_4_horizontal_layout.html.twig' %}
+    {% set current_path = app.request.get('_route') %}
+    <div class="container-fluid">
+        <div class="row justify-content-center bg-white">
+            <div class="alert alert-info text-center d-block mt-3" role="alert">
+                <h4 class="alert-heading">Publish this page?</h4>
+                {{ form_start(preview_mode_form, {'attr': {'class': 'form', 'action': path('admin-progress-revision')}}) }}
+                <div class="form-row">
+                    <div class="col">
+                        {{ form_widget(preview_mode_form.approve) }}
+                    </div>
+                    <div class="col">
+                        {{ form_widget(preview_mode_form.decline) }}
+                    </div>
+                </div>
+                {{ form_end(preview_mode_form) }}
+            </div>
+        </div>
+    </div>
+{% endif %}
 <nav class="navbar navbar-expand-sm navbar-dark bg-primary">
     <a class="navbar-brand" href="#">The Villa at The Bay</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
@@ -30,7 +51,7 @@
             <li class="nav-item{% if selectedNav is defined and selectedNav == 'home' %} active{% endif %}">
                 <a href="{{ path('home') }}" class="nav-link">Home</a>
             </li>
-            <li class="nav-item{% if selectedNav is defined and selectedNav == 'rooms' %} active{% endif %}">
+            <li class="nav-item{% if selectedNav is defined and selectedNav == 'search' %} active{% endif %}">
                 <a href="{{ path('search') }}" class="nav-link">Search</a>
             </li>
             <li class="nav-item{% if selectedNav is defined and selectedNav == 'about' %} active{% endif %}">
@@ -54,7 +75,358 @@
 </div>
 {% endif %}
 
-{% block body %}{% endblock %}
+{% block body %}
+    {% block search_form %}
+        {%  if form_search is defined %}
+        {% form_theme form_search 'bootstrap_4_horizontal_layout.html.twig' %}
+        <div class="container{% if searchData is defined and searchData.isAvailable() == true %} d-none{% endif %}" id="search_form">
+            <div class="jumbotron">
+                {{ form_start(form_search) }}
+
+                {{ form_row(form_search.date_start) }}
+                {{ form_row(form_search.date_end) }}
+                {{ form_row(form_search.adult_count) }}
+                {{ form_row(form_search.child_count) }}
+                {{ form_row(form_search.search) }}
+
+                {{ form_end(form_search) }}
+
+            </div>
+        </div>
+        {% endif %}
+    {% endblock %}
+
+    {% block contact_form %}
+        {% if form_contact is defined %}
+            {% form_theme form_contact 'bootstrap_4_horizontal_layout.html.twig' %}
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <h1 class="display-3">Contact the Villa</h1>
+                        <p class="lead">Should you have any questions please don't hesitate to contact us.</p>
+
+                        {{ form_start(form_contact) }}
+                        {{ form_widget(form_contact) }}
+                        {{ form_end(form_contact) }}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endblock %}
+
+    {% block image_carousel %}
+        <div class="container">
+
+            <div class="row">
+                <div class="col">
+                    <div id="carouselVillaIndicators" class="carousel slide" data-ride="carousel">
+                        <ol class="carousel-indicators">
+                            <li data-target="#carouselVillaIndicators" data-slide-to="0" class="active"></li>
+                            <li data-target="#carouselVillaIndicators" data-slide-to="1"></li>
+                            <li data-target="#carouselVillaIndicators" data-slide-to="2"></li>
+                            <li data-target="#carouselVillaIndicators" data-slide-to="3"></li>
+                            <li data-target="#carouselVillaIndicators" data-slide-to="4"></li>
+                            <li data-target="#carouselVillaIndicators" data-slide-to="5"></li>
+                            <li data-target="#carouselVillaIndicators" data-slide-to="6"></li>
+                            <li data-target="#carouselVillaIndicators" data-slide-to="7"></li>
+                            <li data-target="#carouselVillaIndicators" data-slide-to="8"></li>
+                            <li data-target="#carouselVillaIndicators" data-slide-to="9"></li>
+                            <li data-target="#carouselVillaIndicators" data-slide-to="10"></li>
+                            <li data-target="#carouselVillaIndicators" data-slide-to="11"></li>
+                            <li data-target="#carouselVillaIndicators" data-slide-to="12"></li>
+                            <li data-target="#carouselVillaIndicators" data-slide-to="13"></li>
+                            <li data-target="#carouselVillaIndicators" data-slide-to="14"></li>
+                            <li data-target="#carouselVillaIndicators" data-slide-to="15"></li>
+                        </ol>
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <picture>
+                                    <source media="(min-width: 1200px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--bedroom-5-xl.jpg">
+                                    <source media="(min-width: 992px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--bedroom-5-lg.jpg">
+                                    <source media="(min-width: 768px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--bedroom-5-md.jpg">
+                                    <img class="d-block w-100"
+                                         src="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--bedroom-5-sm.jpg"
+                                         alt="First slide">
+                                </picture>
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h3>...</h3>
+                                    <p>...</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <picture>
+                                    <source media="(min-width: 1200px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--bedroom-1-xl.jpg">
+                                    <source media="(min-width: 992px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--bedroom-1-lg.jpg">
+                                    <source media="(min-width: 768px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--bedroom-1-md.jpg">
+                                    <img class="d-block w-100"
+                                         src="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--bedroom-1-sm.jpg"
+                                         alt="First slide">
+                                </picture>
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h3>...</h3>
+                                    <p>...</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <picture>
+                                    <source media="(min-width: 1200px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--bedroom-2-xl.jpg">
+                                    <source media="(min-width: 992px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--bedroom-2-lg.jpg">
+                                    <source media="(min-width: 768px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--bedroom-2-md.jpg">
+                                    <img class="d-block w-100"
+                                         src="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--bedroom-2-sm.jpg"
+                                         alt="First slide">
+                                </picture>
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h3>...</h3>
+                                    <p>...</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <picture>
+                                    <source media="(min-width: 1200px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--bedroom-3-xl.jpg">
+                                    <source media="(min-width: 992px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--bedroom-3-lg.jpg">
+                                    <source media="(min-width: 768px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--bedroom-3-md.jpg">
+                                    <img class="d-block w-100"
+                                         src="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--bedroom-3-sm.jpg"
+                                         alt="First slide">
+                                </picture>
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h3>...</h3>
+                                    <p>...</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <picture>
+                                    <source media="(min-width: 1200px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--bedroom-4-xl.jpg">
+                                    <source media="(min-width: 992px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--bedroom-4-lg.jpg">
+                                    <source media="(min-width: 768px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--bedroom-4-md.jpg">
+                                    <img class="d-block w-100"
+                                         src="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--bedroom-4-sm.jpg"
+                                         alt="First slide">
+                                </picture>
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h3>...</h3>
+                                    <p>...</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <picture>
+                                    <source media="(min-width: 1200px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--bathroom-xl.jpg">
+                                    <source media="(min-width: 992px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--bathroom-lg.jpg">
+                                    <source media="(min-width: 768px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--bathroom-md.jpg">
+                                    <img class="d-block w-100"
+                                         src="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--bathroom-sm.jpg"
+                                         alt="First slide">
+                                </picture>
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h3>...</h3>
+                                    <p>...</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <picture>
+                                    <source media="(min-width: 1200px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--dining-area-1-xl.jpg">
+                                    <source media="(min-width: 992px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--dining-area-1-lg.jpg">
+                                    <source media="(min-width: 768px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--dining-area-1-md.jpg">
+                                    <img class="d-block w-100"
+                                         src="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--dining-area-1-sm.jpg"
+                                         alt="First slide">
+                                </picture>
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h3>...</h3>
+                                    <p>...</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <picture>
+                                    <source media="(min-width: 1200px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--dining-area-2-xl.jpg">
+                                    <source media="(min-width: 992px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--dining-area-2-lg.jpg">
+                                    <source media="(min-width: 768px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--dining-area-2-md.jpg">
+                                    <img class="d-block w-100"
+                                         src="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--dining-area-2-sm.jpg"
+                                         alt="First slide">
+                                </picture>
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h3>...</h3>
+                                    <p>...</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <picture>
+                                    <source media="(min-width: 1200px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--entrance-door-xl.jpg">
+                                    <source media="(min-width: 992px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--entrance-door-lg.jpg">
+                                    <source media="(min-width: 768px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--entrance-door-md.jpg">
+                                    <img class="d-block w-100"
+                                         src="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--entrance-door-sm.jpg"
+                                         alt="First slide">
+                                </picture>
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h3>...</h3>
+                                    <p>...</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <picture>
+                                    <source media="(min-width: 1200px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--external-xl.jpg">
+                                    <source media="(min-width: 992px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--external-lg.jpg">
+                                    <source media="(min-width: 768px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--external-md.jpg">
+                                    <img class="d-block w-100"
+                                         src="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--external-sm.jpg"
+                                         alt="First slide">
+                                </picture>
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h3>...</h3>
+                                    <p>...</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <picture>
+                                    <source media="(min-width: 1200px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--kitchen-1-xl.jpg">
+                                    <source media="(min-width: 992px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--kitchen-1-lg.jpg">
+                                    <source media="(min-width: 768px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--kitchen-1-md.jpg">
+                                    <img class="d-block w-100"
+                                         src="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--kitchen-1-sm.jpg"
+                                         alt="First slide">
+                                </picture>
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h3>...</h3>
+                                    <p>...</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <picture>
+                                    <source media="(min-width: 1200px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--kitchen-2-xl.jpg">
+                                    <source media="(min-width: 992px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--kitchen-2-lg.jpg">
+                                    <source media="(min-width: 768px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--kitchen-2-md.jpg">
+                                    <img class="d-block w-100"
+                                         src="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--kitchen-2-sm.jpg"
+                                         alt="First slide">
+                                </picture>
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h3>...</h3>
+                                    <p>...</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <picture>
+                                    <source media="(min-width: 1200px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--kitchen-3-xl.jpg">
+                                    <source media="(min-width: 992px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--kitchen-3-lg.jpg">
+                                    <source media="(min-width: 768px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--kitchen-3-md.jpg">
+                                    <img class="d-block w-100"
+                                         src="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--kitchen-3-sm.jpg"
+                                         alt="First slide">
+                                </picture>
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h3>...</h3>
+                                    <p>...</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <picture>
+                                    <source media="(min-width: 1200px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--living-room-1-xl.jpg">
+                                    <source media="(min-width: 992px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--living-room-1-lg.jpg">
+                                    <source media="(min-width: 768px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--living-room-1-md.jpg">
+                                    <img class="d-block w-100"
+                                         src="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--living-room-1-sm.jpg"
+                                         alt="First slide">
+                                </picture>
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h3>...</h3>
+                                    <p>...</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <picture>
+                                    <source media="(min-width: 1200px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--living-room-2-xl.jpg">
+                                    <source media="(min-width: 992px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--living-room-2-lg.jpg">
+                                    <source media="(min-width: 768px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--living-room-2-md.jpg">
+                                    <img class="d-block w-100"
+                                         src="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--living-room-2-sm.jpg"
+                                         alt="First slide">
+                                </picture>
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h3>...</h3>
+                                    <p>...</p>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <picture>
+                                    <source media="(min-width: 1200px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--living-room-3-xl.jpg">
+                                    <source media="(min-width: 992px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--living-room-3-lg.jpg">
+                                    <source media="(min-width: 768px)"
+                                            srcset="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--living-room-3-md.jpg">
+                                    <img class="d-block w-100"
+                                         src="https://d3orc742w48r4f.cloudfront.net/images/carousel/villa--living-room-3-sm.jpg"
+                                         alt="First slide">
+                                </picture>
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h3>...</h3>
+                                    <p>...</p>
+                                </div>
+                            </div>
+                        </div>
+                        <a class="carousel-control-prev" href="#carouselVillaIndicators" role="button" data-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#carouselVillaIndicators" role="button" data-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    {% endblock %}
+{% endblock body %}
 
 <div class="container">
     <div class="row">

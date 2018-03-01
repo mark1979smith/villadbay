@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Symfony package.
+ * This file is part of the Symfony MakerBundle package.
  *
  * (c) Fabien Potencier <fabien@symfony.com>
  *
@@ -10,6 +10,8 @@
  */
 
 namespace Symfony\Bundle\MakerBundle;
+
+use Symfony\Component\DependencyInjection\Container;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
@@ -95,6 +97,24 @@ final class Str
     public static function asEventMethod(string $eventName): string
     {
         return sprintf('on%s', self::asClassName($eventName));
+    }
+
+    public static function getShortClassName(string $fullClassName): string
+    {
+        return substr($fullClassName, strrpos($fullClassName, '\\') + 1);
+    }
+
+    public static function getNamespace(string $fullClassName): string
+    {
+        return substr($fullClassName, 0, strrpos($fullClassName, '\\'));
+    }
+
+    public static function asFilePath(string $value): string
+    {
+        $value = Container::underscore(trim($value));
+        $value = str_replace('\\', '/', $value);
+
+        return $value;
     }
 
     public static function getRandomTerm(): string

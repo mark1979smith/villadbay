@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Symfony package.
+ * This file is part of the Symfony MakerBundle package.
  *
  * (c) Fabien Potencier <fabien@symfony.com>
  *
@@ -14,10 +14,9 @@ namespace Symfony\Bundle\MakerBundle\Maker;
 use Doctrine\ORM\Mapping\Column;
 use Symfony\Bundle\MakerBundle\ConsoleStyle;
 use Symfony\Bundle\MakerBundle\DependencyBuilder;
+use Symfony\Bundle\MakerBundle\Generator;
 use Symfony\Bundle\MakerBundle\InputConfiguration;
-use Symfony\Bundle\MakerBundle\MakerInterface;
 use Symfony\Bundle\MakerBundle\Str;
-use Symfony\Bundle\MakerBundle\Validator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -26,7 +25,7 @@ use Symfony\Component\Console\Input\InputInterface;
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  * @author Ryan Weaver <weaverryan@gmail.com>
  */
-final class MakeEntity implements MakerInterface
+final class MakeEntity extends AbstractMaker
 {
     public static function getCommandName(): string
     {
@@ -42,34 +41,43 @@ final class MakeEntity implements MakerInterface
         ;
     }
 
-    public function interact(InputInterface $input, ConsoleStyle $io, Command $command)
+    public function generate(InputInterface $input, ConsoleStyle $io, Generator $generator)
     {
-    }
+        $entityClassDetails = $generator->createClassNameDetails(
+            $input->getArgument('entity-class'),
+            'Entity\\'
+        );
 
-    public function getParameters(InputInterface $input): array
-    {
-        $entityClassName = Str::asClassName($input->getArgument('entity-class'));
-        Validator::validateClassName($entityClassName);
-        $entityAlias = strtolower($entityClassName[0]);
-        $repositoryClassName = Str::addSuffix($entityClassName, 'Repository');
+        $repositoryClassDetails = $generator->createClassNameDetails(
+            $entityClassDetails->getRelativeName(),
+            'Repository\\',
+            'Repository'
+        );
 
-        return [
-            'entity_class_name' => $entityClassName,
-            'entity_alias' => $entityAlias,
-            'repository_class_name' => $repositoryClassName,
-        ];
-    }
+        $entityAlias = strtolower($entityClassDetails->getShortName()[0]);
 
-    public function getFiles(array $params): array
-    {
-        return [
-            __DIR__.'/../Resources/skeleton/doctrine/Entity.tpl.php' => 'src/Entity/'.$params['entity_class_name'].'.php',
-            __DIR__.'/../Resources/skeleton/doctrine/Repository.tpl.php' => 'src/Repository/'.$params['repository_class_name'].'.php',
-        ];
-    }
+        $generator->generateClass(
+            $entityClassDetails->getFullName(),
+            'doctrine/Entity.tpl.php',
+            [
+                'repository_full_class_name' => $repositoryClassDetails->getFullName(),
+            ]
+        );
 
-    public function writeNextStepsMessage(array $params, ConsoleStyle $io)
-    {
+        $generator->generateClass(
+            $repositoryClassDetails->getFullName(),
+            'doctrine/Repository.tpl.php',
+            [
+                'entity_full_class_name' => $entityClassDetails->getFullName(),
+                'entity_class_name' => $entityClassDetails->getShortName(),
+                'entity_alias' => $entityAlias,
+            ]
+        );
+
+        $generator->writeChanges();
+
+        $this->writeSuccessMessage($io);
+
         $io->text([
             'Next: Add more fields to your entity and start using it.',
             'Find the documentation at <fg=yellow>https://symfony.com/doc/current/doctrine.html#creating-an-entity-class</>',

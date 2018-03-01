@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Symfony package.
+ * This file is part of the Symfony MakerBundle package.
  *
  * (c) Fabien Potencier <fabien@symfony.com>
  *
@@ -11,17 +11,19 @@
 
 namespace Symfony\Bundle\MakerBundle\Command;
 
+use Symfony\Bundle\MakerBundle\ApplicationAwareMakerInterface;
 use Symfony\Bundle\MakerBundle\ConsoleStyle;
 use Symfony\Bundle\MakerBundle\DependencyBuilder;
 use Symfony\Bundle\MakerBundle\Exception\RuntimeCommandException;
+use Symfony\Bundle\MakerBundle\FileManager;
 use Symfony\Bundle\MakerBundle\Generator;
 use Symfony\Bundle\MakerBundle\InputConfiguration;
 use Symfony\Bundle\MakerBundle\MakerInterface;
 use Symfony\Bundle\MakerBundle\Validator;
+use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Flex\Recipe;
 
 /**
  * Used as the Command class for the makers.
@@ -31,16 +33,16 @@ use Symfony\Flex\Recipe;
 final class MakerCommand extends Command
 {
     private $maker;
-    private $generator;
+    private $fileManager;
     private $inputConfig;
     /** @var ConsoleStyle */
     private $io;
     private $checkDependencies = true;
 
-    public function __construct(MakerInterface $maker, Generator $generator)
+    public function __construct(MakerInterface $maker, FileManager $fileManager)
     {
         $this->maker = $maker;
-        $this->generator = $generator;
+        $this->fileManager = $fileManager;
         $this->inputConfig = new InputConfiguration();
 
         parent::__construct();
@@ -54,16 +56,14 @@ final class MakerCommand extends Command
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
         $this->io = new ConsoleStyle($input, $output);
+        $this->fileManager->setIo($this->io);
 
         if ($this->checkDependencies) {
-            if (!class_exists(Recipe::class)) {
-                throw new RuntimeCommandException(sprintf('The generator commands require your app to use Symfony Flex & a Flex directory structure. See https://symfony.com/doc/current/setup/flex.html'));
-            }
-
             $dependencies = new DependencyBuilder();
             $this->maker->configureDependencies($dependencies);
-            if ($missingPackages = $dependencies->getMissingDependencies()) {
-                throw new RuntimeCommandException(sprintf("Missing package%s: to use the %s command, run: \n\ncomposer require %s", 1 === count($missingPackages) ? '' : 's', $this->getName(), implode(' ', $missingPackages)));
+
+            if ($missingPackagesMessage = $dependencies->getMissingPackagesMessage($this->getName())) {
+                throw new RuntimeCommandException($missingPackagesMessage);
             }
         }
     }
@@ -88,17 +88,27 @@ final class MakerCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->generator->setIO($this->io);
-        $params = $this->maker->getParameters($input);
-        $this->generator->generate($params, $this->maker->getFiles($params));
+        $generator = new Generator($this->fileManager, 'App\\');
 
-        $this->io->newLine();
-        $this->io->writeln(' <bg=green;fg=white>          </>');
-        $this->io->writeln(' <bg=green;fg=white> Success! </>');
-        $this->io->writeln(' <bg=green;fg=white>          </>');
-        $this->io->newLine();
+        $this->maker->generate($input, $this->io, $generator);
 
-        $this->maker->writeNextStepsMessage($params, $this->io);
+        // sanity check for custom makers
+        if ($generator->hasPendingOperations()) {
+            throw new \LogicException('Make sure to call the writeChanges() method on the generator.');
+        }
+    }
+
+    public function setApplication(Application $application = null)
+    {
+        parent::setApplication($application);
+
+        if ($this->maker instanceof ApplicationAwareMakerInterface) {
+            if (null === $application) {
+                throw new \RuntimeException('Application cannot be null.');
+            }
+
+            $this->maker->setApplication($application);
+        }
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Symfony package.
+ * This file is part of the Symfony MakerBundle package.
  *
  * (c) Fabien Potencier <fabien@symfony.com>
  *
@@ -11,30 +11,29 @@
 
 namespace Symfony\Bundle\MakerBundle\Maker;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Doctrine\Common\Annotations\Annotation;
 use Symfony\Bundle\MakerBundle\ConsoleStyle;
 use Symfony\Bundle\MakerBundle\DependencyBuilder;
+use Symfony\Bundle\MakerBundle\FileManager;
+use Symfony\Bundle\MakerBundle\Generator;
 use Symfony\Bundle\MakerBundle\InputConfiguration;
-use Symfony\Bundle\MakerBundle\MakerInterface;
 use Symfony\Bundle\MakerBundle\Str;
-use Symfony\Bundle\MakerBundle\Validator;
 use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Routing\RouterInterface;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  * @author Ryan Weaver <weaverryan@gmail.com>
  */
-final class MakeController implements MakerInterface
+final class MakeController extends AbstractMaker
 {
-    private $router;
+    private $fileManager;
 
-    public function __construct(RouterInterface $router)
+    public function __construct(FileManager $fileManager)
     {
-        $this->router = $router;
+        $this->fileManager = $fileManager;
     }
 
     public static function getCommandName(): string
@@ -51,45 +50,49 @@ final class MakeController implements MakerInterface
         ;
     }
 
-    public function interact(InputInterface $input, ConsoleStyle $io, Command $command)
+    public function generate(InputInterface $input, ConsoleStyle $io, Generator $generator)
     {
-    }
+        $controllerClassNameDetails = $generator->createClassNameDetails(
+            $input->getArgument('controller-class'),
+            'Controller\\',
+            'Controller'
+        );
 
-    public function getParameters(InputInterface $input): array
-    {
-        $controllerClassName = Str::asClassName($input->getArgument('controller-class'), 'Controller');
-        Validator::validateClassName($controllerClassName);
+        $templateName = Str::asFilePath($controllerClassNameDetails->getRelativeNameWithoutSuffix()).'/index.html.twig';
+        $controllerPath = $generator->generateClass(
+            $controllerClassNameDetails->getFullName(),
+            'controller/Controller.tpl.php',
+            [
+                'route_path' => Str::asRoutePath($controllerClassNameDetails->getRelativeNameWithoutSuffix()),
+                'route_name' => Str::asRouteName($controllerClassNameDetails->getRelativeNameWithoutSuffix()),
+                'twig_installed' => $this->isTwigInstalled(),
+                'template_name' => $templateName,
+            ]
+        );
 
-        return [
-            'controller_class_name' => $controllerClassName,
-            'route_path' => Str::asRoutePath(str_replace('Controller', '', $controllerClassName)),
-            'route_name' => Str::asRouteName(str_replace('Controller', '', $controllerClassName)),
-        ];
-    }
-
-    public function getFiles(array $params): array
-    {
-        $skeletonFile = $this->isTwigInstalled() ? 'ControllerWithTwig.tpl.php' : 'Controller.tpl.php';
-
-        return [
-            __DIR__.'/../Resources/skeleton/controller/'.$skeletonFile => 'src/Controller/'.$params['controller_class_name'].'.php',
-        ];
-    }
-
-    public function writeNextStepsMessage(array $params, ConsoleStyle $io)
-    {
-        if (!count($this->router->getRouteCollection())) {
-            $io->text('<error> Warning! </> No routes configuration defined yet.');
-            $io->text('           You should probably uncomment the annotation routes in <comment>config/routes.yaml</>');
-            $io->newLine();
+        if ($this->isTwigInstalled()) {
+            $generator->generateFile(
+                'templates/'.$templateName,
+                'controller/twig_template.tpl.php',
+                [
+                    'base_layout_exists' => $this->fileManager->fileExists('templates/base.html.twig'),
+                    'controller_path' => $controllerPath,
+                ]
+            );
         }
+
+        $generator->writeChanges();
+
+        $this->writeSuccessMessage($io);
         $io->text('Next: Open your new controller class and add some pages!');
     }
 
     public function configureDependencies(DependencyBuilder $dependencies)
     {
         $dependencies->addClassDependency(
-            Route::class,
+            // we only need doctrine/annotations, which contains
+            // the recipe that loads annotation routes
+            Annotation::class,
             'annotations'
         );
     }
