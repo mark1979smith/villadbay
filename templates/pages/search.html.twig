@@ -1,15 +1,10 @@
-{% extends 'base.html.twig' %}
+{% extends 'pages/page.html.twig' %}
 {% set search_link_text = 'Search different dates' %}
-{% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
 {% block body %}
+    {{ parent() }}
     <div class="container">
         <div class="row">
             <div class="col">
-                <h1 class="display-3">Search Availability</h1>
-                <p class="lead">With it's spacious feel and luxurious Queen bed, our Executive room is perfect if you
-                    like to stretch out and relax. There is a comfortable seating area, along with luxurious bedding
-                    that will guarantee you a great night’s sleep.</p>
-
                 {% for message in app.flashes('notice') %}
                     <div class="alert alert-info" role="alert">
                         {{ message }}
@@ -32,21 +27,6 @@
                     {% endif %}
                 {% endif %}
 
-                <div id="search_form"
-                     class="jumbotron{% if searchData is defined and searchData.isAvailable() != false %} d-none{% endif %}">
-                    {{ form_start(form) }}
-
-                    {{ form_errors(form) }}
-
-                    {{ form_row(form.date_start) }}
-                    {{ form_row(form.date_end) }}
-                    {{ form_row(form.adult_count) }}
-                    {{ form_row(form.child_count) }}
-                    {{ form_row(form.search) }}
-
-                    {{ form_end(form) }}
-
-                </div>
             </div>
         </div>
     </div>
