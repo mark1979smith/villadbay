@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Symfony MakerBundle package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Symfony\Bundle\MakerBundle\DependencyInjection\CompilerPass;
 
 use Symfony\Bundle\MakerBundle\Command\MakerCommand;
@@ -28,7 +37,7 @@ class MakeCommandRegistrationPass implements CompilerPassInterface
                 MakerCommand::class
             )->setArguments([
                 new Reference($id),
-                new Reference('maker.generator'),
+                new Reference('maker.file_manager'),
             ])->addTag('console.command', ['command' => $class::getCommandName()]);
         }
     }

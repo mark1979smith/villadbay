@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Symfony package.
+ * This file is part of the Symfony MakerBundle package.
  *
  * (c) Fabien Potencier <fabien@symfony.com>
  *
@@ -13,10 +13,8 @@ namespace Symfony\Bundle\MakerBundle\Maker;
 
 use Symfony\Bundle\MakerBundle\ConsoleStyle;
 use Symfony\Bundle\MakerBundle\DependencyBuilder;
+use Symfony\Bundle\MakerBundle\Generator;
 use Symfony\Bundle\MakerBundle\InputConfiguration;
-use Symfony\Bundle\MakerBundle\MakerInterface;
-use Symfony\Bundle\MakerBundle\Str;
-use Symfony\Bundle\MakerBundle\Validator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -26,7 +24,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  * @author Ryan Weaver <weaverryan@gmail.com>
  */
-final class MakeVoter implements MakerInterface
+final class MakeVoter extends AbstractMaker
 {
     public static function getCommandName(): string
     {
@@ -42,29 +40,24 @@ final class MakeVoter implements MakerInterface
         ;
     }
 
-    public function interact(InputInterface $input, ConsoleStyle $io, Command $command)
+    public function generate(InputInterface $input, ConsoleStyle $io, Generator $generator)
     {
-    }
+        $voterClassNameDetails = $generator->createClassNameDetails(
+            $input->getArgument('name'),
+            'Security\\Voter\\',
+            'Voter'
+        );
 
-    public function getParameters(InputInterface $input): array
-    {
-        $voterClassName = Str::asClassName($input->getArgument('name'), 'Voter');
-        Validator::validateClassName($voterClassName);
+        $generator->generateClass(
+            $voterClassNameDetails->getFullName(),
+            'security/Voter.tpl.php',
+            []
+        );
 
-        return [
-            'voter_class_name' => $voterClassName,
-        ];
-    }
+        $generator->writeChanges();
 
-    public function getFiles(array $params): array
-    {
-        return [
-            __DIR__.'/../Resources/skeleton/security/Voter.tpl.php' => 'src/Security/Voter/'.$params['voter_class_name'].'.php',
-        ];
-    }
+        $this->writeSuccessMessage($io);
 
-    public function writeNextStepsMessage(array $params, ConsoleStyle $io)
-    {
         $io->text([
             'Next: Open your voter and add your logic.',
             'Find the documentation at <fg=yellow>https://symfony.com/doc/current/security/voters.html</>',

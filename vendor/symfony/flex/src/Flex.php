@@ -11,7 +11,6 @@
 
 namespace Symfony\Flex;
 
-use Composer\Command\CreateProjectCommand;
 use Composer\Composer;
 use Composer\Console\Application;
 use Composer\DependencyResolver\Operation\InstallOperation;
@@ -66,7 +65,7 @@ class Flex implements PluginInterface, EventSubscriberInterface
         'outdated' => true,
         'require' => true,
         'update' => true,
-        'install' =>true,
+        'install' => true,
     ];
     private static $aliasResolveCommands = [
         'require' => true,
@@ -197,25 +196,27 @@ class Flex implements PluginInterface, EventSubscriberInterface
 
     public function record(PackageEvent $event)
     {
+        if (!$this->shouldRecordOperation($event)) {
+            return;
+        }
+
         $operation = $event->getOperation();
-        if ($this->shouldRecordOperation($operation)) {
-            if ($operation instanceof InstallOperation && in_array($packageName = $operation->getPackage()->getName(), ['symfony/framework-bundle', 'symfony/flex'])) {
-                if ('symfony/flex' === $packageName) {
-                    array_unshift($this->operations, $operation);
-                } else {
-                    if ($this->operations && $this->operations[0] instanceof InstallOperation && 'symfony/flex' === $this->operations[0]->getPackage()->getName()) {
-                        // framework-bundle should be *after* flex
-                        $flexOperation = $this->operations[0];
-                        unset($this->operations[0]);
-                        array_unshift($this->operations, $operation);
-                        array_unshift($this->operations, $flexOperation);
-                    } else {
-                        array_unshift($this->operations, $operation);
-                    }
-                }
+        if ($operation instanceof InstallOperation && in_array($packageName = $operation->getPackage()->getName(), ['symfony/framework-bundle', 'symfony/flex'])) {
+            if ('symfony/flex' === $packageName) {
+                array_unshift($this->operations, $operation);
             } else {
-                $this->operations[] = $operation;
+                if ($this->operations && $this->operations[0] instanceof InstallOperation && 'symfony/flex' === $this->operations[0]->getPackage()->getName()) {
+                    // framework-bundle should be *after* flex
+                    $flexOperation = $this->operations[0];
+                    unset($this->operations[0]);
+                    array_unshift($this->operations, $operation);
+                    array_unshift($this->operations, $flexOperation);
+                } else {
+                    array_unshift($this->operations, $operation);
+                }
             }
+        } else {
+            $this->operations[] = $operation;
         }
     }
 
@@ -263,13 +264,15 @@ class Flex implements PluginInterface, EventSubscriberInterface
             if ('install' === $recipe->getJob() && !$installContribs && $recipe->isContrib()) {
                 $warning = $this->io->isInteractive() ? 'WARNING' : 'IGNORING';
                 $this->io->writeError(sprintf('  - <warning> %s </> %s', $warning, $this->formatOrigin($recipe->getOrigin())));
-                $question = '    The recipe for this package comes from the "contrib" repository, which is open to community contributions.
+                $question = sprintf('    The recipe for this package comes from the "contrib" repository, which is open to community contributions.
+    Review the recipe at %s
+
     Do you want to execute this recipe?
     [<comment>y</>] Yes
     [<comment>n</>] No
     [<comment>a</>] Yes for all packages, only for the current installation session
     [<comment>p</>] Yes permanently, never ask again for this project
-    (defaults to <comment>n</>): ';
+    (defaults to <comment>n</>): ', $recipe->getURL());
                 $answer = $this->io->askAndValidate(
                     $question,
                     function ($value) {
@@ -280,6 +283,7 @@ class Flex implements PluginInterface, EventSubscriberInterface
                         if (!in_array($value, ['y', 'n', 'a', 'p'])) {
                             throw new \InvalidArgumentException('Invalid choice');
                         }
+
                         return $value;
                     },
                     null,
@@ -417,7 +421,9 @@ class Flex implements PluginInterface, EventSubscriberInterface
 
         $downloads = [];
         $cacheDir = rtrim($this->config->get('cache-files-dir'), '\/').DIRECTORY_SEPARATOR;
-        $getCacheKey = function (PackageInterface $package, $processedUrl) { return $this->getCacheKey($package, $processedUrl); };
+        $getCacheKey = function (PackageInterface $package, $processedUrl) {
+            return $this->getCacheKey($package, $processedUrl);
+        };
         $getCacheKey = \Closure::bind($getCacheKey, new FileDownloader($this->io, $this->config), FileDownloader::class);
 
         foreach ($event->getOperations() as $op) {
@@ -570,12 +576,22 @@ class Flex implements PluginInterface, EventSubscriberInterface
         return sprintf('<info>%s</> (<comment>>=%s</>): From %s', $matches[1], $matches[2], 'auto-generated recipe' === $matches[3] ? '<comment>'.$matches[3].'</>' : $matches[3]);
     }
 
-    private function shouldRecordOperation(OperationInterface $operation): bool
+    private function shouldRecordOperation(PackageEvent $event): bool
     {
+        $operation = $event->getOperation();
         if ($operation instanceof UpdateOperation) {
             $package = $operation->getTargetPackage();
         } else {
             $package = $operation->getPackage();
+        }
+
+        // when Composer runs with --no-dev, ignore uninstall operations on packages from require-dev
+        if (!$event->isDevMode() && $operation instanceof UninstallOperation) {
+            foreach ($event->getComposer()->getLocker()->getLockData()['packages-dev'] as $p) {
+                if ($package->getName() === $p['name']) {
+                    return false;
+                }
+            }
         }
 
         // FIXME: getNames() can return n names
@@ -596,7 +612,7 @@ class Flex implements PluginInterface, EventSubscriberInterface
         $repos = [];
 
         foreach ($this->composer->getPackage()->getRepositories() as $name => $repo) {
-            if (!isset($repo['type']) || 'composer' !==  $repo['type'] || !empty($repo['force-lazy-providers'])) {
+            if (!isset($repo['type']) || 'composer' !== $repo['type'] || !empty($repo['force-lazy-providers'])) {
                 continue;
             }
 

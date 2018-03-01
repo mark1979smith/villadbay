@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Symfony package.
+ * This file is part of the Symfony MakerBundle package.
  *
  * (c) Fabien Potencier <fabien@symfony.com>
  *
@@ -11,13 +11,13 @@
 
 namespace Symfony\Bundle\MakerBundle\Exception;
 
-use Symfony\Component\Console\Exception\RuntimeException;
+use Symfony\Component\Console\Exception\ExceptionInterface;
 
 /**
  * An exception whose output is displayed as a clean error.
  *
  * @author Ryan Weaver <ryan@knpuniversity.com>
  */
-final class RuntimeCommandException extends RuntimeException
+final class RuntimeCommandException extends \RuntimeException implements ExceptionInterface
 {
 }

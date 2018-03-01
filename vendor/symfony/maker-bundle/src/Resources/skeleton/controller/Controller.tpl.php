@@ -1,18 +1,26 @@
 <?= "<?php\n" ?>
 
-namespace App\Controller;
+namespace <?= $namespace; ?>;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Response;
 
-class <?= $controller_class_name ?> extends Controller
+class <?= $class_name; ?> extends Controller
 {
     /**
      * @Route("<?= $route_path ?>", name="<?= $route_name ?>")
      */
     public function index()
     {
-        return new Response('Welcome to your new controller!');
+<?php if ($twig_installed) { ?>
+        return $this->render('<?= $template_name ?>', [
+            'controller_name' => '<?= $class_name ?>',
+        ]);
+<?php } else { ?>
+        return $this->json([
+            'message' => 'Welcome to your new controller!',
+            'path' => '<?= $relative_path; ?>',
+        ]);
+<?php } ?>
     }
 }

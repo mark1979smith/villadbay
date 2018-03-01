@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Symfony package.
+ * This file is part of the Symfony MakerBundle package.
  *
  * (c) Fabien Potencier <fabien@symfony.com>
  *
@@ -13,8 +13,8 @@ namespace Symfony\Bundle\MakerBundle\Maker;
 
 use Symfony\Bundle\MakerBundle\ConsoleStyle;
 use Symfony\Bundle\MakerBundle\DependencyBuilder;
+use Symfony\Bundle\MakerBundle\Generator;
 use Symfony\Bundle\MakerBundle\InputConfiguration;
-use Symfony\Bundle\MakerBundle\MakerInterface;
 use Symfony\Bundle\MakerBundle\Str;
 use Symfony\Bundle\MakerBundle\Validator;
 use Symfony\Component\Console\Command\Command;
@@ -26,7 +26,7 @@ use Symfony\Component\Validator\Validation;
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  * @author Ryan Weaver <weaverryan@gmail.com>
  */
-final class MakeValidator implements MakerInterface
+final class MakeValidator extends AbstractMaker
 {
     public static function getCommandName(): string
     {
@@ -42,32 +42,34 @@ final class MakeValidator implements MakerInterface
         ;
     }
 
-    public function interact(InputInterface $input, ConsoleStyle $io, Command $command)
+    public function generate(InputInterface $input, ConsoleStyle $io, Generator $generator)
     {
-    }
+        $validatorClassNameDetails = $generator->createClassNameDetails(
+            $input->getArgument('name'),
+            'Validator\\',
+            'Validator'
+        );
 
-    public function getParameters(InputInterface $input): array
-    {
-        $validatorClassName = Str::asClassName($input->getArgument('name'), 'Validator');
-        Validator::validateClassName($validatorClassName);
-        $constraintClassName = Str::removeSuffix($validatorClassName, 'Validator');
+        $constraintFullClassName = Str::removeSuffix($validatorClassNameDetails->getFullName(), 'Validator');
 
-        return [
-            'validator_class_name' => $validatorClassName,
-            'constraint_class_name' => $constraintClassName,
-        ];
-    }
+        $generator->generateClass(
+            $validatorClassNameDetails->getFullName(),
+            'validator/Validator.tpl.php',
+            [
+                'constraint_class_name' => $constraintFullClassName,
+            ]
+        );
 
-    public function getFiles(array $params): array
-    {
-        return [
-            __DIR__.'/../Resources/skeleton/validator/Validator.tpl.php' => 'src/Validator/Constraints/'.$params['validator_class_name'].'.php',
-            __DIR__.'/../Resources/skeleton/validator/Constraint.tpl.php' => 'src/Validator/Constraints/'.$params['constraint_class_name'].'.php',
-        ];
-    }
+        $generator->generateClass(
+            $constraintFullClassName,
+            'validator/Constraint.tpl.php',
+            []
+        );
 
-    public function writeNextStepsMessage(array $params, ConsoleStyle $io)
-    {
+        $generator->writeChanges();
+
+        $this->writeSuccessMessage($io);
+
         $io->text([
             'Next: Open your new constraint & validators and add your logic.',
             'Find the documentation at <fg=yellow>http://symfony.com/doc/current/validation/custom_constraint.html</>',

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Symfony package.
+ * This file is part of the Symfony MakerBundle package.
  *
  * (c) Fabien Potencier <fabien@symfony.com>
  *
@@ -13,8 +13,8 @@ namespace Symfony\Bundle\MakerBundle\Maker;
 
 use Symfony\Bundle\MakerBundle\ConsoleStyle;
 use Symfony\Bundle\MakerBundle\DependencyBuilder;
+use Symfony\Bundle\MakerBundle\Generator;
 use Symfony\Bundle\MakerBundle\InputConfiguration;
-use Symfony\Bundle\MakerBundle\MakerInterface;
 use Symfony\Bundle\MakerBundle\Str;
 use Symfony\Bundle\MakerBundle\Validator;
 use Symfony\Component\Console\Command\Command;
@@ -27,7 +27,7 @@ use Symfony\Component\Validator\Validation;
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  * @author Ryan Weaver <weaverryan@gmail.com>
  */
-final class MakeForm implements MakerInterface
+final class MakeForm extends AbstractMaker
 {
     public static function getCommandName(): string
     {
@@ -43,31 +43,33 @@ final class MakeForm implements MakerInterface
         ;
     }
 
-    public function interact(InputInterface $input, ConsoleStyle $io, Command $command)
+    public function generate(InputInterface $input, ConsoleStyle $io, Generator $generator)
     {
-    }
+        $formClassNameDetails = $generator->createClassNameDetails(
+            $input->getArgument('name'),
+            'Form\\',
+            'Type'
+        );
 
-    public function getParameters(InputInterface $input): array
-    {
-        $formClassName = Str::asClassName($input->getArgument('name'), 'Type');
-        Validator::validateClassName($formClassName);
-        $entityClassName = Str::removeSuffix($formClassName, 'Type');
+        $entityClassNameDetails = $generator->createClassNameDetails(
+            $formClassNameDetails->getRelativeNameWithoutSuffix(),
+            'Entity\\'
+        );
 
-        return [
-            'form_class_name' => $formClassName,
-            'entity_class_name' => $entityClassName,
-        ];
-    }
+        $generator->generateClass(
+            $formClassNameDetails->getFullName(),
+            'form/Type.tpl.php',
+            [
+                'entity_class_exists' => class_exists($entityClassNameDetails->getFullName()),
+                'entity_full_class_name' => $entityClassNameDetails->getFullName(),
+                'entity_class_name' => $entityClassNameDetails->getShortName(),
+            ]
+        );
 
-    public function getFiles(array $params): array
-    {
-        return [
-            __DIR__.'/../Resources/skeleton/form/Type.tpl.php' => 'src/Form/'.$params['form_class_name'].'.php',
-        ];
-    }
+        $generator->writeChanges();
 
-    public function writeNextStepsMessage(array $params, ConsoleStyle $io)
-    {
+        $this->writeSuccessMessage($io);
+
         $io->text([
             'Next: Add fields to your form and start using it.',
             'Find the documentation at <fg=yellow>https://symfony.com/doc/current/forms.html</>',
