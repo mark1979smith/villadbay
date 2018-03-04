@@ -27,9 +27,9 @@ RUN CURRENT_DEPLOYMENT_KEY_ID=$( \
     ssh-keyscan github.com >> ~/.ssh/known_hosts && \
     # Create New Deployment Key
     printf "%s" '{"title": "Villa DBay Deploy Key (Write) ' >> .create-deployment-key.json && \
-    echo `date` >> .create-deployment-key.json && \
+    printf "%s" "$(echo `date`)" >> .create-deployment-key.json && \
     printf "%s" '", "key":"' >> .create-deployment-key.json && \
-    cat ~/.ssh/id_rsa.pub | tee >> .create-deployment-key.json && \
+    printf "%s" "$(cat ~/.ssh/id_rsa.pub | tee)" >> .create-deployment-key.json && \
     printf "%s"  '", "read_only": false}' >> .create-deployment-key.json && \
     curl -i -X POST -H "$(cat .git.token)" -d "$(cat .create-deployment-key.json)" https://api.github.com/repos/mark1979smith/villadbay/keys && \
     # Remove Old Deployment Key
