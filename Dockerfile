@@ -2,6 +2,12 @@ FROM zfce/base-application:latest
 
 ENV DEV_MODE false
 
+# CUSTOM SOFTWARE REQS
+RUN  apt-get update && \
+        apt-get install -y libmagickwand-dev --no-install-recommends && \
+        pecl install imagick && \
+        docker-php-ext-enable imagick
+
 # Create custom PHP settings
 RUN echo "ZGF0ZS50aW1lem9uZSA9IEF1c3RyYWxpYS9CcmlzYmFuZQ==" | base64 --decode >> /usr/local/etc/php/conf.d/custom.ini && \
     # EDIT vhost
