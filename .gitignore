@@ -1,6 +1,7 @@
 .idea/
 composer.phar
 vendor/ocramius/package-versions/src/PackageVersions/Versions.php
+vendor/autoload.php
 
 ###> symfony/framework-bundle ###
 .env
