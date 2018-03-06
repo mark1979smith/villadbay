@@ -56,11 +56,8 @@ RUN rm -rf html && \
     /usr/local/bin/php -r "if (hash_file('SHA384', 'composer-setup.php') === trim(file_get_contents('composer-installer.sig'))) { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \
     /usr/local/bin/php composer-setup.php && \
     /usr/local/bin/php -r "unlink('composer-setup.php');" && \
-    /usr/local/bin/php -r "unlink('composer-installer.sig');"
-
-WORKDIR /var/www/vendor
-
-RUN /usr/local/bin/php composer.phar update -n && \
+    /usr/local/bin/php -r "unlink('composer-installer.sig');" && \
+    /usr/local/bin/php composer.phar update -n && \
     git add -A && \
     git commit -m "[AUTO] Updates to composer installation" && \
     git push
