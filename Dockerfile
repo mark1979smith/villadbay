@@ -57,10 +57,17 @@ RUN rm -rf html && \
     /usr/local/bin/php composer-setup.php && \
     /usr/local/bin/php -r "unlink('composer-setup.php');" && \
     /usr/local/bin/php -r "unlink('composer-installer.sig');" && \
-    /usr/local/bin/php composer.phar update -n && \
-    git add -A && \
-    git commit -m "[AUTO] Updates to composer installation" && \
-    git push
+    /usr/local/bin/php composer.phar update -n
+
+RUN GIT_CHANGES=$( \
+        git status -s \
+    ) && \
+    if [ $GIT_CHANGES != ""] \
+    then \
+        git add -A && \
+        git commit -m "[AUTO] Updates to composer installation" && \
+        git push
+    endif
 
 # Switch back to ROOT
 USER root
