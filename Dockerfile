@@ -62,7 +62,7 @@ RUN rm -rf html && \
 RUN GIT_CHANGES=$( \
         git status -s \
     ) && \
-    if [ $GIT_CHANGES != ""]; then \
+    if [ ! -z "$GIT_CHANGES" ] ; then \
         git add -A && \
         git commit -m "[AUTO] Updates to composer installation" && \
         git push; \
