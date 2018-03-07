@@ -67,7 +67,7 @@ RUN GIT_CHANGES=$( \
         git add -A && \
         git commit -m "[AUTO] Updates to composer installation" && \
         git push \
-    endif
+    fi
 
 # Switch back to ROOT
 USER root
