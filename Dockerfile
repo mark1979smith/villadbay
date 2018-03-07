@@ -65,7 +65,7 @@ RUN GIT_CHANGES=$( \
     if [ $GIT_CHANGES != ""]; then \
         git add -A && \
         git commit -m "[AUTO] Updates to composer installation" && \
-        git push \
+        git push; \
     fi
 
 # Switch back to ROOT
