@@ -1,6 +1,16 @@
 FROM zfce/base-application:latest
 
 ENV DEV_MODE false
+ENV DATABASE_URL ''
+ENV REDIS_HOST 'redis'
+ENV REDIS_PORT '6379'
+ENV AWS_S3_VERSION 'latest'
+ENV AWS_S3_REGION 'ap-southeast-2'
+ENV AWS_S3_BUCKET 'villadbay'
+ENV AWS_ACCESS_KEY_ID 'AKIAJJJOH43PYYUNHUDQ'
+ENV AWS_SECRET_ACCESS_KEY ''
+ENV APP_ENV 'prod'
+ENV APP_DEBUG 'false'
 
 # Create custom PHP settings
 RUN echo "ZGF0ZS50aW1lem9uZSA9IEF1c3RyYWxpYS9CcmlzYmFuZQ==" | base64 --decode >> /usr/local/etc/php/conf.d/custom.ini && \
@@ -39,7 +49,7 @@ RUN CURRENT_DEPLOYMENT_KEY_ID=$( \
     rm -f .git.token
 
 WORKDIR /var/www
-    
+
 # RUN COMPOSER to generate parameters.yml file
 RUN rm -rf html && \
     git clone git@github.com:mark1979smith/villadbay.git . && \
