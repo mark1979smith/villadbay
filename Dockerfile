@@ -25,13 +25,7 @@ USER deployuser
 
 WORKDIR /tmp
 
-RUN CURRENT_DEPLOYMENT_KEY_ID=$( \
-        curl -i -H "$(cat .git.token)" https://api.github.com/repos/mark1979smith/villadbay/keys | \
-            grep "\"id\":" |  \
-            awk '{print $2}' |  \
-            sed s/,//g \
-    ) && \
-    ssh-keygen -t rsa -N "" -b 4096 -C "mark1979smith@googlemail.com" -f ~/.ssh/id_rsa && \
+RUN ssh-keygen -t rsa -N "" -b 4096 -C "mark1979smith@googlemail.com" -f ~/.ssh/id_rsa && \
     eval $(ssh-agent -s) && \
     ssh-add ~/.ssh/id_rsa && \
     ssh-keyscan github.com >> ~/.ssh/known_hosts && \
@@ -41,12 +35,7 @@ RUN CURRENT_DEPLOYMENT_KEY_ID=$( \
     printf "%s" '", "key":"' >> .create-deployment-key.json && \
     cat ~/.ssh/id_rsa.pub | tee >> .create-deployment-key.json && \
     printf "%s"  '", "read_only": false}' >> .create-deployment-key.json && \
-    curl -i -X POST -H "$(cat .git.token)" -d "$(cat .create-deployment-key.json)" https://api.github.com/repos/mark1979smith/villadbay/keys > /dev/null && \
-    # Remove Old Deployment Key
-    echo "Removing Deployment Key Id: $CURRENT_DEPLOYMENT_KEY_ID" && \
-    curl -i -X DELETE -H "$(cat .git.token)" https://api.github.com/repos/mark1979smith/villadbay/keys/$CURRENT_DEPLOYMENT_KEY_ID && \
-    rm -f .create-deployment-key.json && \
-    rm -f .git.token
+    curl -i -X POST -H "$(cat .git.token)" -d "$(cat .create-deployment-key.json)" https://api.github.com/repos/mark1979smith/villadbay/keys > /dev/null
 
 WORKDIR /var/www
 
@@ -67,5 +56,20 @@ RUN rm -rf html && \
     git commit -m "[AUTO] Updates to composer installation" && \
     git push
 
+WORKDIR /tmp
+
+RUN CURRENT_DEPLOYMENT_KEY_ID=$( \
+        curl -i -H "$(cat .git.token)" https://api.github.com/repos/mark1979smith/villadbay/keys | \
+            grep "\"id\":" |  \
+            awk '{print $2}' |  \
+            sed s/,//g \
+    ) && \
+    # Remove Old Deployment Key
+    echo "Removing Deployment Key Id: $CURRENT_DEPLOYMENT_KEY_ID" && \
+    curl -i -X DELETE -H "$(cat .git.token)" https://api.github.com/repos/mark1979smith/villadbay/keys/$CURRENT_DEPLOYMENT_KEY_ID && \
+    rm -f .create-deployment-key.json && \
+    rm -f .git.token
+
 # Switch back to ROOT
 USER root
+
