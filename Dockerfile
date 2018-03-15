@@ -51,10 +51,16 @@ RUN rm -rf html && \
     /usr/local/bin/php -r "unlink('composer-setup.php');" && \
     /usr/local/bin/php -r "unlink('composer-installer.sig');" && \
     rm -rf /var/www/vendor && \
-    /usr/local/bin/php composer.phar install -n && \
-    git add -A && \
-    git commit -m "[AUTO] Updates to composer installation" && \
-    git push
+    /usr/local/bin/php composer.phar install -n
+    
+RUN GIT_CHANGES=$( \
+        git status -s \
+    ) && \
+    if [ ! -z "$GIT_CHANGES" ] ; then \
+        git add -A && \
+        git commit -m "[AUTO] Updates to composer installation" && \
+        git push; \
+    fi
 
 WORKDIR /tmp
 
