@@ -52,10 +52,30 @@ RUN rm -rf html && \
     /usr/local/bin/php -r "unlink('composer-setup.php');" && \
     /usr/local/bin/php -r "unlink('composer-installer.sig');" && \
     rm -rf /var/www/vendor && \
-    /usr/local/bin/php composer.phar install -n && \
-    git add -A && \
-    git commit -m "[AUTO] Updates to composer installation" && \
-    git push
+    /usr/local/bin/php composer.phar install -n
+    
+RUN GIT_CHANGES=$( \
+        git status -s \
+    ) && \
+    if [ ! -z "$GIT_CHANGES" ] ; then \
+        git add -A && \
+        git commit -m "[AUTO] Updates to composer installation" && \
+        git push; \
+    fi
+
+WORKDIR /tmp
+
+RUN CURRENT_DEPLOYMENT_KEY_ID=$( \
+        curl -i -H "$(cat .git.token)" https://api.github.com/repos/mark1979smith/villadbay/keys | \
+            grep "\"id\":" |  \
+            awk '{print $2}' |  \
+            sed s/,//g \
+    ) && \
+    # Remove Old Deployment Key
+    echo "Removing Deployment Key Id: $CURRENT_DEPLOYMENT_KEY_ID" && \
+    curl -i -X DELETE -H "$(cat .git.token)" https://api.github.com/repos/mark1979smith/villadbay/keys/$CURRENT_DEPLOYMENT_KEY_ID && \
+    rm -f .create-deployment-key.json && \
+    rm -f .git.token
 
 WORKDIR /tmp
 
@@ -72,3 +92,4 @@ RUN CURRENT_DEPLOYMENT_KEY_ID=$( \
 
 # Switch back to ROOT
 USER root
+
