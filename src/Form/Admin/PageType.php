@@ -303,11 +303,11 @@ class PageType extends AbstractType
         $s3Service = $container->get('app.aws.s3');
         $s3Client = $s3Service->get();
 
-        $cacheKey = 'aws.s3.listobjects.'.$s3Service->getBucket() .'-updated';
+        $cacheKey = 'aws.s3.listobjects.'.$s3Service->getBucket();
         if ($redisClient->hasItem($cacheKey)) {
             $response = $redisClient->getItem($cacheKey)->get();
         } else {
-            $response = $s3Client->listObjects([
+            $response = $s3Client->listObjectsV2([
                 'Bucket' => $s3Service->getBucket(),
             ]);
 
@@ -346,7 +346,7 @@ class PageType extends AbstractType
         if ($redisClient->hasItem($cacheKey)) {
             $response = $redisClient->getItem($cacheKey)->get();
         } else {
-            $response = $s3Client->listObjects([
+            $response = $s3Client->listObjectsV2([
                 'Bucket' => $s3Service->getBucket(),
             ]);
 
@@ -424,7 +424,7 @@ class PageType extends AbstractType
         }
 
         if (strpos($asset['Key'], $pathToMatch) === 0 && $asset['Key'] !== $pathToMatch . '/') {
-            return (preg_match('/\-(xs|sm|md|lg)\./', $asset['Key']) === 0);
+            return (preg_match('/\--(xs|sm|md|lg)\./', $asset['Key']) === 0);
         }
     }
 }

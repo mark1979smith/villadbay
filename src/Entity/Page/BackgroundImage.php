@@ -21,7 +21,14 @@ class BackgroundImage
         background-size: cover;
         -o-background-size: cover;
     }
-     @media (max-width: 991px) {
+    
+    @media (max-width: 1199px) {
+        body {
+            background-image: url(\'https://d3orc742w48r4f.cloudfront.net/images/backgrounds/%s\');
+        }
+    }
+
+    @media (max-width: 991px) {
         body {
             background-image: url(\'https://d3orc742w48r4f.cloudfront.net/images/backgrounds/%s\');
         }
@@ -33,30 +40,24 @@ class BackgroundImage
         }
     }
 
-    @media (max-width: 576px) {
+    @media (max-width: 575px) {
         body {
             background-image: url(\'https://d3orc742w48r4f.cloudfront.net/images/backgrounds/%s\');
         }
-
-        .display-1, .display-2, .display-3, .display-4, .display-5 {
-            font-size: x-large;
-            font-weight: bold;
-        }
-    }
-    ';
-
+    }';
 
 
     private $backgroundImage;
 
-    public function __toString()
+    public function __toStyles()
     {
         return sprintf(
             $this->getInlineStyleTemplate(),
             $this->getBackgroundImage(),
-            'lg/'.$this->getBackgroundImage(),
-            'md/'.$this->getBackgroundImage(),
-            'sm/'.$this->getBackgroundImage()
+            str_replace('.', '--lg.', $this->getBackgroundImage()),
+            str_replace('.', '--md.', $this->getBackgroundImage()),
+            str_replace('.', '--sm.', $this->getBackgroundImage()),
+            str_replace('.', '--xs.', $this->getBackgroundImage())
         );
     }
 

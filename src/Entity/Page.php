@@ -182,6 +182,7 @@ class Page
 
     public function __toString()
     {
+
         $html = '';
         foreach ($this->getData()['display_order'] as $key => $order) {
             $keyParts = explode('--', $key);
@@ -192,12 +193,15 @@ class Page
                 }
             } elseif (!preg_match('/^text_heading_/', $key)) {
                 if (stristr($key, '--')) {
-                    if (preg_match('/^</', $this->getData()[$keyParts[0]][$keyParts[1]])) {
-                        $html .= $this->getData()[$keyParts[0]][$keyParts[1]];
-                        continue;
-                    } elseif (preg_match('/\-(form|carousel)$/', $this->getData()[$keyParts[0]][$keyParts[1]])) {
-                        $html .= '#'. $this->getData()[$keyParts[0]][$keyParts[1]] . '#';
-                        continue;
+                    /** @var object|string $object */
+                    $object = $this->getData()[$keyParts[0]][$keyParts[1]];
+                    if (is_object($object)) {
+                        if (method_exists($object, '__toString')) {
+                            $html .= $object->__toString();
+                            continue;
+                        }
+                    } else {
+                        $html .= '#' . $object . '#';
                     }
                 }
             }
@@ -211,17 +215,23 @@ class Page
     {
         $styles = [];
         foreach ($this->getData()['display_order'] as $key => $order) {
-            if (preg_match('/^background_image/', $key)) {
-                if (stristr($key, '--')) {
-                    $keyParts = explode('--', $key);
-                    $styles[] = $this->getData()[$keyParts[0]][$keyParts[1]]->__toString();
+            if (stristr($key, '--')) {
+                $keyParts = explode('--', $key);
+                $object = $this->getData()[$keyParts[0]][$keyParts[1]];
+                if (is_object($object) && method_exists($object, '__toStyles')) {
+                    $styles[] = $object->__toStyles();
                 }
             }
         }
 
-        return '<style type="text/css">' .
-            implode('', $styles) .
-            '</style>';
+        if (count($styles)) {
+            return '<style type="text/css">' .
+                implode('', $styles) .
+                '</style>';
+        } else {
+            return '';
+        }
     }
 
 }
+

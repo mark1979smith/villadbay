@@ -1,6 +1,16 @@
 FROM zfce/base-application:latest
 
 ENV DEV_MODE false
+ENV DATABASE_URL ''
+ENV REDIS_HOST 'redis'
+ENV REDIS_PORT '6379'
+ENV AWS_S3_VERSION 'latest'
+ENV AWS_S3_REGION 'ap-southeast-2'
+ENV AWS_S3_BUCKET 'villadbay'
+ENV AWS_ACCESS_KEY_ID 'AKIAJJJOH43PYYUNHUDQ'
+ENV AWS_SECRET_ACCESS_KEY ''
+ENV APP_ENV 'prod'
+ENV APP_DEBUG 'false'
 
 # Create custom PHP settings
 RUN echo "ZGF0ZS50aW1lem9uZSA9IEF1c3RyYWxpYS9CcmlzYmFuZQ==" | base64 --decode >> /usr/local/etc/php/conf.d/custom.ini && \
@@ -15,31 +25,21 @@ USER deployuser
 
 WORKDIR /tmp
 
-RUN CURRENT_DEPLOYMENT_KEY_ID=$( \
-        curl -i -H "$(cat .git.token)" https://api.github.com/repos/mark1979smith/villadbay/keys | \
-            grep "\"id\":" |  \
-            awk '{print $2}' |  \
-            sed s/,//g \
-    ) && \
-    ssh-keygen -t rsa -N "" -b 4096 -C "mark1979smith@googlemail.com" -f ~/.ssh/id_rsa && \
+RUN ssh-keygen -t rsa -N "" -b 4096 -C "mark1979smith@googlemail.com" -f ~/.ssh/id_rsa && \
     eval $(ssh-agent -s) && \
     ssh-add ~/.ssh/id_rsa && \
     ssh-keyscan github.com >> ~/.ssh/known_hosts && \
     # Create New Deployment Key
-    printf "%s" '{"title": "Villa DBay Deploy Key (Write) ' >> .create-deployment-key.json && \
-    echo `date` >> .create-deployment-key.json && \
+    printf "%s" '{"title": "Villa DBay Deploy Key (Write) ' > .create-deployment-key.json && \
+    printf "%s" "$(echo `date`)" >> .create-deployment-key.json && \
     printf "%s" '", "key":"' >> .create-deployment-key.json && \
-    cat ~/.ssh/id_rsa.pub | tee >> .create-deployment-key.json && \
+    printf "%s" "$(cat ~/.ssh/id_rsa.pub | tee)" >> .create-deployment-key.json && \
     printf "%s"  '", "read_only": false}' >> .create-deployment-key.json && \
-    curl -i -X POST -H "$(cat .git.token)" -d "$(cat .create-deployment-key.json)" https://api.github.com/repos/mark1979smith/villadbay/keys > /dev/null && \
-    # Remove Old Deployment Key
-    echo "Removing Deployment Key Id: $CURRENT_DEPLOYMENT_KEY_ID" && \
-    curl -i -X DELETE -H "$(cat .git.token)" https://api.github.com/repos/mark1979smith/villadbay/keys/$CURRENT_DEPLOYMENT_KEY_ID && \
-    rm -f .create-deployment-key.json && \
-    rm -f .git.token
+    curl -i -X POST -H "$(cat .git.token)" -d "$(cat .create-deployment-key.json)" https://api.github.com/repos/mark1979smith/villadbay/keys > /dev/null &&
+    rm -f .create-deployment-key.json
 
 WORKDIR /var/www
-    
+
 # RUN COMPOSER to generate parameters.yml file
 RUN rm -rf html && \
     git clone git@github.com:mark1979smith/villadbay.git . && \
@@ -56,6 +56,19 @@ RUN rm -rf html && \
     git add -A && \
     git commit -m "[AUTO] Updates to composer installation" && \
     git push
+
+WORKDIR /tmp
+
+RUN CURRENT_DEPLOYMENT_KEY_ID=$( \
+        curl -i -H "$(cat .git.token)" https://api.github.com/repos/mark1979smith/villadbay/keys | \
+            grep "\"id\":" |  \
+            awk '{print $2}' |  \
+            sed s/,//g \
+    ) && \
+    # Remove Old Deployment Key
+    echo "Removing Deployment Key Id: $CURRENT_DEPLOYMENT_KEY_ID" && \
+    curl -i -X DELETE -H "$(cat .git.token)" https://api.github.com/repos/mark1979smith/villadbay/keys/$CURRENT_DEPLOYMENT_KEY_ID && \
+    rm -f .git.token
 
 # Switch back to ROOT
 USER root

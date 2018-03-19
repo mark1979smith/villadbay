@@ -1,0 +1,24 @@
+{% extends 'admin.html.twig' %}
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1 class="display-3">Upload new image</h1>
+
+            <div class="jumbotron">
+                <p></p>
+                {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+                {% if form.file is defined %}
+                    {{ form_row(form.file) }}
+                    <p class="text-muted">{{ form.file.vars.attr.description }}</p>
+                {% endif %}
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
