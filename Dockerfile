@@ -41,8 +41,10 @@ RUN ssh-keygen -t rsa -N "" -b 4096 -C "mark1979smith@googlemail.com" -f ~/.ssh/
 WORKDIR /var/www
 
 # RUN COMPOSER to generate parameters.yml file
-RUN rm -rf html && \
-    git clone git@github.com:mark1979smith/villadbay.git . && \
+RUN rm -rf html
+
+RUN if [ -z $BRANCH ]; then BRANCH=master; fi; && \
+    git clone --branch "$BRANCH" git@github.com:mark1979smith/villadbay.git . && \
     git config user.email "hosting@marksmith.email" && \
     git config user.name "Mark Smith" && \
     /usr/local/bin/php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
