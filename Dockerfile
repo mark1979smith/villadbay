@@ -76,17 +76,6 @@ RUN CURRENT_DEPLOYMENT_KEY_ID=$( \
     curl -i -X DELETE -H "$(cat .git.token)" https://api.github.com/repos/mark1979smith/villadbay/keys/$CURRENT_DEPLOYMENT_KEY_ID && \
     rm -f .git.token
 
-RUN CURRENT_DEPLOYMENT_KEY_ID=$( \
-        curl -i -H "$(cat .git.token)" https://api.github.com/repos/mark1979smith/villadbay/keys | \
-            grep "\"id\":" |  \
-            awk '{print $2}' |  \
-            sed s/,//g \
-    ) && \
-    # Remove Old Deployment Key
-    echo "Removing Deployment Key Id: $CURRENT_DEPLOYMENT_KEY_ID" && \
-    curl -i -X DELETE -H "$(cat .git.token)" https://api.github.com/repos/mark1979smith/villadbay/keys/$CURRENT_DEPLOYMENT_KEY_ID && \
-    rm -f .git.token
-
 WORKDIR /var/www
 
 # Switch back to ROOT
