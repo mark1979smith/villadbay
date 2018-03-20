@@ -12,6 +12,8 @@ ENV AWS_SECRET_ACCESS_KEY ''
 ENV APP_ENV 'prod'
 ENV APP_DEBUG 'false'
 
+RUN echo "$BRACH"
+
 # Create custom PHP settings
 RUN echo "ZGF0ZS50aW1lem9uZSA9IEF1c3RyYWxpYS9CcmlzYmFuZQ==" | base64 --decode >> /usr/local/etc/php/conf.d/custom.ini && \
     # EDIT vhost
