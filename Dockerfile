@@ -42,6 +42,7 @@ WORKDIR /var/www
 
 # RUN COMPOSER to generate parameters.yml file
 RUN if [ -z $SOURCE_BRANCH ]; then SOURCE_BRANCH=master; fi; \
+    echo "$SOURCE_BRANCH" && \
     rm -rf html && \
     git clone --branch "$SOURCE_BRANCH" git@github.com:mark1979smith/villadbay.git . && \
     git config user.email "hosting@marksmith.email" && \
