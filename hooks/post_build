@@ -1,0 +1,3 @@
+#!/bin/bash
+echo "==> POST BUILD - $SOURCE_BRANCH";
+git fetch && git checkout "$SOURCE_BRANCH"
