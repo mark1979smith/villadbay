@@ -60,9 +60,15 @@ RUN /usr/local/bin/php -r "copy('https://getcomposer.org/installer', 'composer-s
     /usr/local/bin/php -r "if (hash_file('SHA384', 'composer-setup.php') === trim(file_get_contents('composer-installer.sig'))) { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \
     /usr/local/bin/php composer-setup.php && \
     /usr/local/bin/php -r "unlink('composer-setup.php');" && \
-    /usr/local/bin/php -r "unlink('composer-installer.sig');" && \
-    rm -rf /var/www/vendor && \
-    /usr/local/bin/php composer.phar install -n
+    /usr/local/bin/php -r "unlink('composer-installer.sig');"
+    
+USER root
+
+RUN rm -rf /var/www/vendor 
+
+USER deloyuser
+
+RUN /usr/local/bin/php composer.phar install -n
 
 #RUN GIT_CHANGES=$( \
 #        git status -s \
