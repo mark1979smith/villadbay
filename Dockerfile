@@ -50,7 +50,7 @@ COPY . /var/www
 
 
 # RUN COMPOSER to generate parameters.yml file
-#RUN 
+#RUN
 #rm -rf html && \
 #    git clone git@github.com:mark1979smith/villadbay.git . && \
 #    git config user.email "hosting@marksmith.email" && \
@@ -61,12 +61,12 @@ RUN /usr/local/bin/php -r "copy('https://getcomposer.org/installer', 'composer-s
     /usr/local/bin/php composer-setup.php && \
     /usr/local/bin/php -r "unlink('composer-setup.php');" && \
     /usr/local/bin/php -r "unlink('composer-installer.sig');"
-    
+
 USER root
 
-RUN rm -rf /var/www/vendor 
+RUN rm -rf /var/www/vendor
 
-USER deloyuser
+USER deployuser
 
 RUN /usr/local/bin/php composer.phar install -n
 
