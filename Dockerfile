@@ -46,7 +46,8 @@ RUN echo "ZGF0ZS50aW1lem9uZSA9IEF1c3RyYWxpYS9CcmlzYmFuZQ==" | base64 --decode >>
 
 WORKDIR /var/www
 
-COPY --chown deployuser:deploygroup . /var/www
+COPY . /var/www
+
 
 # RUN COMPOSER to generate parameters.yml file
 #RUN 
@@ -54,7 +55,8 @@ COPY --chown deployuser:deploygroup . /var/www
 #    git clone git@github.com:mark1979smith/villadbay.git . && \
 #    git config user.email "hosting@marksmith.email" && \
 #    git config user.name "Mark Smith" && \
-RUN    /usr/local/bin/php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
+RUN chown -R deployuser:deploygroup /var/www && \
+    /usr/local/bin/php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
     /usr/local/bin/php -r "copy('https://composer.github.io/installer.sig', 'composer-installer.sig');" && \
     /usr/local/bin/php -r "if (hash_file('SHA384', 'composer-setup.php') === trim(file_get_contents('composer-installer.sig'))) { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \
     /usr/local/bin/php composer-setup.php && \
