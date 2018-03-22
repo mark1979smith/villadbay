@@ -67,6 +67,7 @@ RUN GIT_CHANGES=$( \
         CURRENT_DEPLOYMENT_KEY_URL=$( \
             curl -X POST -H "$(cat /tmp/.git.token)" -d "$(cat /tmp/.create-deployment-key.json)" https://api.github.com/repos/mark1979smith/villadbay/keys | jq '.url' | sed s/\"//g \
         ) && \
+        git remote set-url origin git@github.com:mark1979smith/villadbay.git && \
         git fetch && \
         git add -A && \
         git commit -m "[AUTO] Updates to composer installation" && \
