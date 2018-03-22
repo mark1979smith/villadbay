@@ -1,17 +1,17 @@
 [
     {
         "name": "aws/aws-sdk-php",
-        "version": "3.52.26",
-        "version_normalized": "3.52.26.0",
+        "version": "3.52.30",
+        "version_normalized": "3.52.30.0",
         "source": {
             "type": "git",
             "url": "https://github.com/aws/aws-sdk-php.git",
-            "reference": "3aefee935e611e1ce959f0288cd160dc81d233a0"
+            "reference": "4d51b552026aefc060f2b4f3bd19e33c98088c9c"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/3aefee935e611e1ce959f0288cd160dc81d233a0",
-            "reference": "3aefee935e611e1ce959f0288cd160dc81d233a0",
+            "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/4d51b552026aefc060f2b4f3bd19e33c98088c9c",
+            "reference": "4d51b552026aefc060f2b4f3bd19e33c98088c9c",
             "shasum": ""
         },
         "require": {
@@ -42,7 +42,7 @@
             "ext-curl": "To send requests using cURL",
             "ext-openssl": "Allows working with CloudFront private distributions and verifying received SNS messages"
         },
-        "time": "2018-03-14T20:20:20+00:00",
+        "time": "2018-03-21T21:17:52+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1322,6 +1322,59 @@
         ]
     },
     {
+        "name": "nikic/php-parser",
+        "version": "v4.0.0",
+        "version_normalized": "4.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/nikic/PHP-Parser.git",
+            "reference": "9c18e3db49fa469f5feffe40dbd7b1ec2b61e41f"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/9c18e3db49fa469f5feffe40dbd7b1ec2b61e41f",
+            "reference": "9c18e3db49fa469f5feffe40dbd7b1ec2b61e41f",
+            "shasum": ""
+        },
+        "require": {
+            "ext-tokenizer": "*",
+            "php": ">=7.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "^6.5 || ^7.0"
+        },
+        "time": "2018-02-28T20:39:30+00:00",
+        "bin": [
+            "bin/php-parse"
+        ],
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "4.0-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "PhpParser\\": "lib/PhpParser"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "authors": [
+            {
+                "name": "Nikita Popov"
+            }
+        ],
+        "description": "A PHP parser written in PHP",
+        "keywords": [
+            "parser",
+            "php"
+        ]
+    },
+    {
         "name": "ocramius/package-versions",
         "version": "1.3.0",
         "version_normalized": "1.3.0.0",
@@ -2468,17 +2521,17 @@
     },
     {
         "name": "symfony/flex",
-        "version": "v1.0.71",
-        "version_normalized": "1.0.71.0",
+        "version": "v1.0.75",
+        "version_normalized": "1.0.75.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/flex.git",
-            "reference": "51d7ddce85ca8b73a1fc16771f607b7d56692dbd"
+            "reference": "3da0134564f59ffbd060db8f3406e9f3e78df64e"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/flex/zipball/51d7ddce85ca8b73a1fc16771f607b7d56692dbd",
-            "reference": "51d7ddce85ca8b73a1fc16771f607b7d56692dbd",
+            "url": "https://api.github.com/repos/symfony/flex/zipball/3da0134564f59ffbd060db8f3406e9f3e78df64e",
+            "reference": "3da0134564f59ffbd060db8f3406e9f3e78df64e",
             "shasum": ""
         },
         "require": {
@@ -2489,7 +2542,7 @@
             "composer/composer": "^1.0.2",
             "symfony/phpunit-bridge": "^3.2.8"
         },
-        "time": "2018-03-10T21:15:53+00:00",
+        "time": "2018-03-20T07:32:02+00:00",
         "type": "composer-plugin",
         "extra": {
             "branch-alias": {
@@ -3086,35 +3139,40 @@
     },
     {
         "name": "symfony/maker-bundle",
-        "version": "v1.2.0",
-        "version_normalized": "1.2.0.0",
+        "version": "v1.3.1",
+        "version_normalized": "1.3.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/maker-bundle.git",
-            "reference": "9db72995231c12c701249f07743c0591ccf70e73"
+            "reference": "c936864823ac60508e37d8fb1d9bc6a02d03ffa7"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/maker-bundle/zipball/9db72995231c12c701249f07743c0591ccf70e73",
-            "reference": "9db72995231c12c701249f07743c0591ccf70e73",
+            "url": "https://api.github.com/repos/symfony/maker-bundle/zipball/c936864823ac60508e37d8fb1d9bc6a02d03ffa7",
+            "reference": "c936864823ac60508e37d8fb1d9bc6a02d03ffa7",
             "shasum": ""
         },
         "require": {
-            "php": "^7.0.8",
+            "doctrine/inflector": "^1.2",
+            "nikic/php-parser": "^4.0",
+            "php": "^7.1.3",
             "symfony/config": "^3.4|^4.0",
             "symfony/console": "^3.4|^4.0",
             "symfony/dependency-injection": "^3.4|^4.0",
             "symfony/filesystem": "^3.4|^4.0",
+            "symfony/finder": "^3.4|^4.0",
             "symfony/framework-bundle": "^3.4|^4.0",
             "symfony/http-kernel": "^3.4|^4.0"
         },
         "require-dev": {
             "allocine/twigcs": "^3.0",
+            "doctrine/doctrine-bundle": "^1.8",
+            "doctrine/orm": "^2.6",
             "friendsofphp/php-cs-fixer": "^2.8",
             "symfony/phpunit-bridge": "^3.4|^4.0",
             "symfony/process": "^3.4|^4.0"
         },
-        "time": "2018-03-14T01:02:47+00:00",
+        "time": "2018-03-21T13:40:46+00:00",
         "type": "symfony-bundle",
         "extra": {
             "branch-alias": {
@@ -4423,17 +4481,17 @@
     },
     {
         "name": "twig/twig",
-        "version": "v2.4.6",
-        "version_normalized": "2.4.6.0",
+        "version": "v2.4.7",
+        "version_normalized": "2.4.7.0",
         "source": {
             "type": "git",
             "url": "https://github.com/twigphp/Twig.git",
-            "reference": "d2117ec118c1ff3d28ccddca8212d82787a4809f"
+            "reference": "69aacd44dbbaa3199d5afb68605c996d577896fc"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/twigphp/Twig/zipball/d2117ec118c1ff3d28ccddca8212d82787a4809f",
-            "reference": "d2117ec118c1ff3d28ccddca8212d82787a4809f",
+            "url": "https://api.github.com/repos/twigphp/Twig/zipball/69aacd44dbbaa3199d5afb68605c996d577896fc",
+            "reference": "69aacd44dbbaa3199d5afb68605c996d577896fc",
             "shasum": ""
         },
         "require": {
@@ -4442,10 +4500,10 @@
         },
         "require-dev": {
             "psr/container": "^1.0",
-            "symfony/debug": "~2.7",
-            "symfony/phpunit-bridge": "~3.3@dev"
+            "symfony/debug": "^2.7",
+            "symfony/phpunit-bridge": "^3.3"
         },
-        "time": "2018-03-03T16:23:01+00:00",
+        "time": "2018-03-20T04:31:17+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
