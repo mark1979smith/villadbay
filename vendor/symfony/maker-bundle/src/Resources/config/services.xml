@@ -9,6 +9,11 @@
 
             <service id="maker.file_manager" class="Symfony\Bundle\MakerBundle\FileManager">
                 <argument type="service" id="filesystem" />
+                <argument type="service" id="maker.autoloader_util" />
+                <argument>%kernel.project_dir%</argument>
+            </service>
+
+            <service id="maker.autoloader_util" class="Symfony\Bundle\MakerBundle\Util\AutoloaderUtil">
                 <argument>%kernel.project_dir%</argument>
             </service>
 
@@ -18,6 +23,10 @@
 
             <service id="maker.console_error_listener" class="Symfony\Bundle\MakerBundle\Event\ConsoleErrorSubscriber">
                 <tag name="kernel.event_subscriber" />
+            </service>
+
+            <service id="maker.doctrine_entity_helper" class="Symfony\Bundle\MakerBundle\Doctrine\DoctrineEntityHelper">
+                <argument type="service" id="doctrine" on-invalid="ignore"/>
             </service>
         </services>
 </container>
