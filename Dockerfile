@@ -14,7 +14,7 @@ ENV APP_DEBUG 'false'
 
 # CUSTOM SOFTWARE REQS
 RUN  apt-get update && \
-        apt-get install -y libmagickwand-dev --no-install-recommends && \
+        apt-get install -y libmagickwand-dev --no-install-recommends jq && \
         pecl install imagick && \
         docker-php-ext-enable imagick
 
@@ -27,83 +27,56 @@ RUN echo "ZGF0ZS50aW1lem9uZSA9IEF1c3RyYWxpYS9CcmlzYmFuZQ==" | base64 --decode >>
     dpkg-reconfigure -f noninteractive tzdata && \
     rm -rf /var/www/html
 
-# Change owner to avoid running as root
-USER deployuser
-
-#WORKDIR /tmp
-
-#RUN ssh-keygen -t rsa -N "" -b 4096 -C "mark1979smith@googlemail.com" -f ~/.ssh/id_rsa && \
-#    eval $(ssh-agent -s) && \
-#    ssh-add ~/.ssh/id_rsa && \
-#    ssh-keyscan github.com >> ~/.ssh/known_hosts && \
-#    # Create New Deployment Key
-#    printf "%s" '{"title": "Villa DBay Deploy Key (Write) ' >> .create-deployment-key.json && \
-#    printf "%s" "$(echo `date`)" >> .create-deployment-key.json && \
-#    printf "%s" '", "key":"' >> .create-deployment-key.json && \
-#    printf "%s" "$(cat ~/.ssh/id_rsa.pub | tee)" >> .create-deployment-key.json && \
-#    printf "%s"  '", "read_only": false}' >> .create-deployment-key.json && \
-#    curl -i -X POST -H "$(cat .git.token)" -d "$(cat .create-deployment-key.json)" https://api.github.com/repos/mark1979smith/villadbay/keys > /dev/null
-
 WORKDIR /var/www
 
 COPY . /var/www
 
-USER root
+RUN chown -R deployuser:deploygroup /var/www
 
-RUN chown -R deployuser:deploygroup /var/www && \
-    rm -rf /var/www/vendor
-
+# Change owner to avoid running as root
 USER deployuser
 
 # RUN COMPOSER to generate parameters.yml file
-
 RUN /usr/local/bin/php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
     /usr/local/bin/php -r "copy('https://composer.github.io/installer.sig', 'composer-installer.sig');" && \
     /usr/local/bin/php -r "if (hash_file('SHA384', 'composer-setup.php') === trim(file_get_contents('composer-installer.sig'))) { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \
     /usr/local/bin/php composer-setup.php && \
     /usr/local/bin/php -r "unlink('composer-setup.php');" && \
     /usr/local/bin/php -r "unlink('composer-installer.sig');" && \
-	/usr/local/bin/php composer.phar install -n
+    /usr/local/bin/php composer.phar update -n
+
+RUN ssh-keygen -t rsa -N "" -b 4096 -C "hosting@marksmith.email" -f ~/.ssh/id_rsa && \
+    eval $(ssh-agent -s) && \
+    ssh-add ~/.ssh/id_rsa && \
+    ssh-keyscan github.com >> ~/.ssh/known_hosts
 
 RUN GIT_CHANGES=$( \
         git status -s \
     ) && \
     if [ ! -z "$GIT_CHANGES" ] ; then \
-		git config user.email "hosting@marksmith.email" && \
-		git config user.name "Mark Smith" && \
-		git config push.default "current" && \
-		git config core.fileMode "false" && \
-		ssh-keygen -t rsa -N "" -b 4096 -C "mark1979smith@googlemail.com" -f ~/.ssh/id_rsa && \
-		eval $(ssh-agent -s) && \
-		ssh-add ~/.ssh/id_rsa && \
-		ssh-keyscan github.com >> ~/.ssh/known_hosts && \
-		# Create New Deployment Key
-		printf "%s" '{"title": "Villa DBay Deploy Key (Write) ' > .create-deployment-key.json && \
-		printf "%s" "$(echo `date`)" >> .create-deployment-key.json && \
-		printf "%s" '", "key":"' >> .create-deployment-key.json && \
-		printf "%s" "$(cat ~/.ssh/id_rsa.pub | tee)" >> .create-deployment-key.json && \
-		printf "%s"  '", "read_only": false}' >> .create-deployment-key.json && \
-		CURRENT_DEPLOYMENT_KEY_RESPONSE=$( \
-			curl -i -X POST -H "$(cat /tmp/.git.token)" -d "$(cat .create-deployment-key.json)" https://api.github.com/repos/mark1979smith/villadbay/keys \
-		) && \
-		git add -A && \
+        git config user.email "hosting@marksmith.email" && \
+        git config user.name "Mark Smith" && \
+        git config push.default "simple" && \
+        git config core.fileMode "false" && \
+        # Create New Deployment Key
+        printf "%s" '{"title": "Villa DBay Deploy Key (Write) ' > /tmp/.create-deployment-key.json && \
+        printf "%s" "$(echo `date`)" >> /tmp/.create-deployment-key.json && \
+        printf "%s" '", "key":"' >> /tmp/.create-deployment-key.json && \
+        printf "%s" "$(cat ~/.ssh/id_rsa.pub | tee)" >> /tmp/.create-deployment-key.json && \
+        printf "%s"  '", "read_only": false}' >> /tmp/.create-deployment-key.json && \
+        CURRENT_DEPLOYMENT_KEY_URL=$( \
+            curl -X POST -H "$(cat /tmp/.git.token)" -d "$(cat /tmp/.create-deployment-key.json)" https://api.github.com/repos/mark1979smith/villadbay/keys | jq '.url' | sed s/\"//g \
+        ) && \
+        git fetch && \
+        git add -A && \
         git commit -m "[AUTO] Updates to composer installation" && \
-        git push && \
-		CURRENT_DEPLOYMENT_KEY_URL=$( \
-			"$CURRENT_DEPLOYMENT_KEY_RESPONSE" | \
-				grep "\"url\":" |  \
-				awk '{print $3}' |  \
-				sed s/\"//g \
-				sed s/,//g \
-		)  && \
-		# Remove Old Deployment Key
-		echo "Removing Deployment Key: $CURRENT_DEPLOYMENT_KEY_URL" && \
-		curl -i -X DELETE -H "$(cat /tmp/.git.token)" $CURRENT_DEPLOYMENT_KEY_URL && \
-		rm -f .create-deployment-key.json && \
-		rm -f /tmp/.git.token; \
+        git push -f && \
+        # Remove Old Deployment Key
+        echo "Removing Deployment Key: $CURRENT_DEPLOYMENT_KEY_URL" && \
+        curl -X DELETE -H "$(cat /tmp/.git.token)" $CURRENT_DEPLOYMENT_KEY_URL && \
+        rm -f /tmp/.create-deployment-key.json && \
+        rm -f /tmp/.git.token; \
     fi
-
-#WORKDIR /tmp
 
 # Switch back to ROOT
 USER root
