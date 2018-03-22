@@ -45,7 +45,7 @@ RUN /usr/local/bin/php -r "copy('https://getcomposer.org/installer', 'composer-s
     /usr/local/bin/php -r "unlink('composer-installer.sig');" && \
     /usr/local/bin/php composer.phar update -n
 
-RUN ssh-keygen -t rsa -N "" -b 4096 -C "hosting@marksmith.email" -f ~/.ssh/id_rsa && \
+RUN ssh-keygen -t rsa -N "" -b 4096 -C "mark1979smith@googlemail.com" -f ~/.ssh/id_rsa && \
     eval $(ssh-agent -s) && \
     ssh-add ~/.ssh/id_rsa && \
     ssh-keyscan github.com >> ~/.ssh/known_hosts
