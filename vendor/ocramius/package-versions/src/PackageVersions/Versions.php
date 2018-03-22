@@ -10,6 +10,7 @@ namespace PackageVersions;
  */
 final class Versions
 {
+    const ROOT_PACKAGE_NAME = '__root__';
     const VERSIONS = array (
   'aws/aws-sdk-php' => '3.52.19@d64c6f8715dacfba6276dd43c4bc5f0002d660a5',
   'doctrine/annotations' => 'v1.6.0@c7f2050c68a9ab0bdb0f98567ec08d80ea7d24d5',
@@ -81,7 +82,11 @@ final class Versions
   'symfony/thanks' => 'v1.0.6@9474ce305253c2f0bc20322ff8e9973cf25c9a94',
   'symfony/var-dumper' => 'v4.0.4@6d63cc74f3e2d4961411ccb77389a00332653104',
   'symfony/web-profiler-bundle' => 'v4.0.4@2074348dba4b49ea86d7ee7eaf1b4fcacc887120',
-  '__root__' => 'dev-master@865fd8f54f73ad1ea29be585ca197351e0230cc7',
+  'symfony/polyfill-iconv' => '*@9ddb371a464259a591ea5581da515ac5190cd7af',
+  'symfony/polyfill-php71' => '*@9ddb371a464259a591ea5581da515ac5190cd7af',
+  'symfony/polyfill-php70' => '*@9ddb371a464259a591ea5581da515ac5190cd7af',
+  'symfony/polyfill-php56' => '*@9ddb371a464259a591ea5581da515ac5190cd7af',
+  '__root__' => 'dev-image-manager@9ddb371a464259a591ea5581da515ac5190cd7af',
 );
 
     private function __construct()
@@ -93,12 +98,12 @@ final class Versions
      */
     public static function getVersion(string $packageName) : string
     {
-        if (! isset(self::VERSIONS[$packageName])) {
-            throw new \OutOfBoundsException(
-                'Required package "' . $packageName . '" is not installed: cannot detect its version'
-            );
+        if (isset(self::VERSIONS[$packageName])) {
+            return self::VERSIONS[$packageName];
         }
 
-        return self::VERSIONS[$packageName];
+        throw new \OutOfBoundsException(
+            'Required package "' . $packageName . '" is not installed: cannot detect its version'
+        );
     }
 }
