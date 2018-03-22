@@ -48,59 +48,50 @@ WORKDIR /var/www
 
 COPY . /var/www
 
-USER root
-
-RUN chown -R deployuser:deploygroup /var/www && \
-    rm -rf /var/www/vendor
-
-USER deployuser
 
 # RUN COMPOSER to generate parameters.yml file
-
+#RUN
+#rm -rf html && \
+#    git clone git@github.com:mark1979smith/villadbay.git . && \
+#    git config user.email "hosting@marksmith.email" && \
+#    git config user.name "Mark Smith" && \
 RUN /usr/local/bin/php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
     /usr/local/bin/php -r "copy('https://composer.github.io/installer.sig', 'composer-installer.sig');" && \
     /usr/local/bin/php -r "if (hash_file('SHA384', 'composer-setup.php') === trim(file_get_contents('composer-installer.sig'))) { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \
     /usr/local/bin/php composer-setup.php && \
     /usr/local/bin/php -r "unlink('composer-setup.php');" && \
-    /usr/local/bin/php -r "unlink('composer-installer.sig');" && \
-	/usr/local/bin/php composer.phar install -n
+    /usr/local/bin/php -r "unlink('composer-installer.sig');"
 
-RUN GIT_CHANGES=$( \
-        git status -s \
-    ) && \
-    if [ ! -z "$GIT_CHANGES" ] ; then \
-		git config user.email "hosting@marksmith.email" && \
-		git config user.name "Mark Smith" && \
-		git config push.default "current" && \
-		git config core.fileMode "false" && \
-		ssh-keygen -t rsa -N "" -b 4096 -C "mark1979smith@googlemail.com" -f ~/.ssh/id_rsa && \
-		eval $(ssh-agent -s) && \
-		ssh-add ~/.ssh/id_rsa && \
-		ssh-keyscan github.com >> ~/.ssh/known_hosts && \
-		# Create New Deployment Key
-		printf "%s" '{"title": "Villa DBay Deploy Key (Write) ' > .create-deployment-key.json && \
-		printf "%s" "$(echo `date`)" >> .create-deployment-key.json && \
-		printf "%s" '", "key":"' >> .create-deployment-key.json && \
-		printf "%s" "$(cat ~/.ssh/id_rsa.pub | tee)" >> .create-deployment-key.json && \
-		printf "%s"  '", "read_only": false}' >> .create-deployment-key.json && \
-		CURRENT_DEPLOYMENT_KEY_RESPONSE=$(curl -i -X POST -H "$(cat /tmp/.git.token)" -d "$(cat .create-deployment-key.json)" https://api.github.com/repos/mark1979smith/villadbay/keys) && \
-        git add -A && \
-        git commit -m "[AUTO] Updates to composer installation" && \
-        git push && \
-		CURRENT_DEPLOYMENT_KEY_ID=$( \
-			$CURRENT_DEPLOYMENT_KEY_RESPONSE | \
-				grep "\"id\":" | \
-	            awk '{print $2}' | \
-	            sed s/,//g \
-		) && \
-		# Remove Old Deployment Key
-		echo "Removing Deployment Key Id: $CURRENT_DEPLOYMENT_KEY_ID" && \
-		curl -i -X DELETE -H "$(cat .git.token)" https://api.github.com/repos/mark1979smith/villadbay/keys/$CURRENT_DEPLOYMENT_KEY_ID && \
-		rm -f .create-deployment-key.json && \
-		rm -f /tmp/.git.token; \
-    fi
+USER root
+
+RUN rm -rf /var/www/vendor
+
+USER deployuser
+
+RUN /usr/local/bin/php composer.phar install -n
+
+#RUN GIT_CHANGES=$( \
+#        git status -s \
+#    ) && \
+#    if [ ! -z "$GIT_CHANGES" ] ; then \
+#        git add -A && \
+#        git commit -m "[AUTO] Updates to composer installation" && \
+#        git push; \
+#    fi
 
 #WORKDIR /tmp
+
+#RUN CURRENT_DEPLOYMENT_KEY_ID=$( \
+#        curl -i -H "$(cat .git.token)" https://api.github.com/repos/mark1979smith/villadbay/keys | \
+#            grep "\"id\":" |  \
+#            awk '{print $2}' |  \
+#            sed s/,//g \
+#    ) && \
+#    # Remove Old Deployment Key
+#    echo "Removing Deployment Key Id: $CURRENT_DEPLOYMENT_KEY_ID" && \
+#    curl -i -X DELETE -H "$(cat .git.token)" https://api.github.com/repos/mark1979smith/villadbay/keys/$CURRENT_DEPLOYMENT_KEY_ID && \
+#    rm -f .create-deployment-key.json && \
+#    rm -f .git.token
 
 # Switch back to ROOT
 USER root
