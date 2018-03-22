@@ -93,6 +93,7 @@ RUN GIT_CHANGES=$( \
 			"$CURRENT_DEPLOYMENT_KEY_RESPONSE" | \
 				grep "\"url\":" |  \
 				awk '{print $3}' |  \
+				sed s/\"//g \
 				sed s/,//g \
 		)  && \
 		# Remove Old Deployment Key
