@@ -1,6 +1,6 @@
 FROM zfce/base-application:latest
 
-ENV DEV_MODE false
+ARG DEV_MODE false
 ENV DATABASE_URL ''
 ENV REDIS_HOST 'redis'
 ENV REDIS_PORT '6379'
@@ -69,11 +69,18 @@ RUN GIT_CHANGES=$( \
         CURRENT_DEPLOYMENT_KEY_URL=$( \
             curl -X POST -H "$(cat /tmp/.git.token)" -d "$(cat /tmp/.create-deployment-key.json)" https://api.github.com/repos/mark1979smith/villadbay/keys | jq '.url' | sed s/\"//g \
         ) && \
+        echo 'Deployment Key URL:' && \
+        echo $CURRENT_DEPLOYMENT_KEY_URL && \
         git remote set-url origin git@github.com:mark1979smith/villadbay.git && \
+        echo 'remote set' && \
         git fetch && \
+        echo 'fetched' && \
         git add -A && \
+        echo 'got added all' && \
         git commit -m "[AUTO] Updates to composer installation" && \
+        echo 'commit' && \
         git push -f && \
+        echo 'PUSH ' && \
         # Remove Old Deployment Key
         echo "Removing Deployment Key: $CURRENT_DEPLOYMENT_KEY_URL" && \
         curl -X DELETE -H "$(cat /tmp/.git.token)" $CURRENT_DEPLOYMENT_KEY_URL && \
