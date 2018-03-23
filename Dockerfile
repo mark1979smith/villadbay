@@ -53,7 +53,7 @@ RUN ssh-keygen -t rsa -N "" -b 4096 -C "mark1979smith@googlemail.com" -f ~/.ssh/
 RUN GIT_CHANGES=$( \
         git status -s \
     ) && \
-    if [ ! -z "$GIT_CHANGES" ] ; then \
+     if [ ${#GIT_CHANGES} -gt 0 ]; then \
         git config user.email "hosting@marksmith.email" && \
         git config user.name "Mark Smith" && \
         git config push.default "simple" && \
