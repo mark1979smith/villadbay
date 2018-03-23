@@ -15,7 +15,7 @@ ENV APP_DEBUG 'false'
 # CUSTOM SOFTWARE REQS
 RUN  apt-get update && \
         apt-get install -y libmagickwand-dev --no-install-recommends && \
-        apt-get install jq && \
+        apt-get install -y jq && \
         pecl install imagick && \
         docker-php-ext-enable imagick
 
