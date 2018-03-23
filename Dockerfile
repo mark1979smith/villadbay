@@ -55,6 +55,7 @@ RUN GIT_CHANGES=$( \
         git status -s \
     ) && \
      if [ ${#GIT_CHANGES} -gt 0 ]; then \
+        echo $GIT_CHANGES && \
         git config user.email "hosting@marksmith.email" && \
         git config user.name "Mark Smith" && \
         git config push.default "simple" && \
