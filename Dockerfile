@@ -1,6 +1,6 @@
 FROM zfce/base-application:latest
 
-ARG DEV_MODE false
+ENV DEV_MODE false
 ENV DATABASE_URL ''
 ENV REDIS_HOST 'redis'
 ENV REDIS_PORT '6379'
