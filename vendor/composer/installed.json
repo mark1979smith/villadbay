@@ -1,17 +1,17 @@
 [
     {
         "name": "aws/aws-sdk-php",
-        "version": "3.52.31",
-        "version_normalized": "3.52.31.0",
+        "version": "3.52.32",
+        "version_normalized": "3.52.32.0",
         "source": {
             "type": "git",
             "url": "https://github.com/aws/aws-sdk-php.git",
-            "reference": "8a886aeb1475825b324ebeefce2fb0730be649a5"
+            "reference": "c10b8f60a5da9ad4d7fa9f890186632a4c025d1b"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/8a886aeb1475825b324ebeefce2fb0730be649a5",
-            "reference": "8a886aeb1475825b324ebeefce2fb0730be649a5",
+            "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/c10b8f60a5da9ad4d7fa9f890186632a4c025d1b",
+            "reference": "c10b8f60a5da9ad4d7fa9f890186632a4c025d1b",
             "shasum": ""
         },
         "require": {
@@ -42,7 +42,7 @@
             "ext-curl": "To send requests using cURL",
             "ext-openssl": "Allows working with CloudFront private distributions and verifying received SNS messages"
         },
-        "time": "2018-03-22T22:05:02+00:00",
+        "time": "2018-03-23T18:04:27+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2521,17 +2521,17 @@
     },
     {
         "name": "symfony/flex",
-        "version": "v1.0.75",
-        "version_normalized": "1.0.75.0",
+        "version": "v1.0.76",
+        "version_normalized": "1.0.76.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/flex.git",
-            "reference": "3da0134564f59ffbd060db8f3406e9f3e78df64e"
+            "reference": "202c981673b255a41bac4076cb82629a0b8481cb"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/flex/zipball/3da0134564f59ffbd060db8f3406e9f3e78df64e",
-            "reference": "3da0134564f59ffbd060db8f3406e9f3e78df64e",
+            "url": "https://api.github.com/repos/symfony/flex/zipball/202c981673b255a41bac4076cb82629a0b8481cb",
+            "reference": "202c981673b255a41bac4076cb82629a0b8481cb",
             "shasum": ""
         },
         "require": {
@@ -2542,7 +2542,7 @@
             "composer/composer": "^1.0.2",
             "symfony/phpunit-bridge": "^3.2.8"
         },
-        "time": "2018-03-20T07:32:02+00:00",
+        "time": "2018-03-23T16:30:50+00:00",
         "type": "composer-plugin",
         "extra": {
             "branch-alias": {
