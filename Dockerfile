@@ -14,7 +14,8 @@ ENV APP_DEBUG 'false'
 
 # CUSTOM SOFTWARE REQS
 RUN  apt-get update && \
-        apt-get install -y libmagickwand-dev --no-install-recommends jq && \
+        apt-get install -y libmagickwand-dev --no-install-recommends && \
+        apt-get install -y jq && \
         pecl install imagick && \
         docker-php-ext-enable imagick
 
@@ -46,18 +47,19 @@ RUN /usr/local/bin/php -r "copy('https://getcomposer.org/installer', 'composer-s
     /usr/local/bin/php composer.phar update -n
 
 RUN ssh-keygen -t rsa -N "" -b 4096 -C "mark1979smith@googlemail.com" -f ~/.ssh/id_rsa && \
-    eval $(ssh-agent -s) && \
+    eval "$(ssh-agent -s)" && \
     ssh-add ~/.ssh/id_rsa && \
     ssh-keyscan github.com >> ~/.ssh/known_hosts
 
 RUN GIT_CHANGES=$( \
         git status -s \
     ) && \
-    if [ ! -z "$GIT_CHANGES" ] ; then \
+     if [ ${#GIT_CHANGES} -gt 0 ]; then \
+        echo $GIT_CHANGES && \
         git config user.email "hosting@marksmith.email" && \
         git config user.name "Mark Smith" && \
         git config push.default "simple" && \
-        git config core.fileMode "false" && \
+#        git config core.fileMode "false" && \
         # Create New Deployment Key
         printf "%s" '{"title": "Villa DBay Deploy Key (Write) ' > /tmp/.create-deployment-key.json && \
         printf "%s" "$(echo `date`)" >> /tmp/.create-deployment-key.json && \
@@ -67,11 +69,18 @@ RUN GIT_CHANGES=$( \
         CURRENT_DEPLOYMENT_KEY_URL=$( \
             curl -X POST -H "$(cat /tmp/.git.token)" -d "$(cat /tmp/.create-deployment-key.json)" https://api.github.com/repos/mark1979smith/villadbay/keys | jq '.url' | sed s/\"//g \
         ) && \
+        echo 'Deployment Key URL:' && \
+        echo $CURRENT_DEPLOYMENT_KEY_URL && \
         git remote set-url origin git@github.com:mark1979smith/villadbay.git && \
-        git fetch && \
+        echo 'remote set' && \
+#        git fetch && \
+#        echo 'fetched' && \
         git add -A && \
+        echo 'git added all' && \
         git commit -m "[AUTO] Updates to composer installation" && \
-        git push -f && \
+        echo 'commit' && \
+        git push && \
+        echo 'PUSH ' && \
         # Remove Old Deployment Key
         echo "Removing Deployment Key: $CURRENT_DEPLOYMENT_KEY_URL" && \
         curl -X DELETE -H "$(cat /tmp/.git.token)" $CURRENT_DEPLOYMENT_KEY_URL && \
