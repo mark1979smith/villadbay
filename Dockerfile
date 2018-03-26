@@ -52,6 +52,16 @@ RUN GIT_CHANGES=$( \
     ) && \
      if [ ${#GIT_CHANGES} -gt 0 ]; then \
         echo $GIT_CHANGES && \
+        # GIT Permissions
+        git remote rm origin && \
+        git remote add origin git@github.com:mark1979smith/villadbay.git && \
+        ssh-keygen -t rsa -N "" -b 4096 -C "mark1979smith@googlemail.com" -f ~/.ssh/id_rsa && \
+        eval "$(ssh-agent -s)" && \
+        ssh-add ~/.ssh/id_rsa && \
+        ssh-keyscan github.com >> ~/.ssh/known_hosts && \
+        ssh -T git@github.com && \
+        echo 'remote set' && \
+        # GIT Config
         git config user.email "hosting@marksmith.email" && \
         git config user.name "Mark Smith" && \
         git config push.default "simple" && \
@@ -67,14 +77,6 @@ RUN GIT_CHANGES=$( \
         ) && \
         echo 'Deployment Key URL:' && \
         echo $CURRENT_DEPLOYMENT_KEY_URL && \
-        git remote rm origin && \
-        git remote add origin git@github.com:mark1979smith/villadbay.git && \
-        ssh-keygen -t rsa -N "" -b 4096 -C "mark1979smith@googlemail.com" -f ~/.ssh/id_rsa && \
-        eval "$(ssh-agent -s)" && \
-        ssh-add ~/.ssh/id_rsa && \
-        ssh-keyscan github.com >> ~/.ssh/known_hosts && \
-        ssh -T git@github.com && \
-        echo 'remote set' && \
 #        git fetch && \
 #        echo 'fetched' && \
         git add -A && \
