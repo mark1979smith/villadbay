@@ -46,10 +46,6 @@ RUN /usr/local/bin/php -r "copy('https://getcomposer.org/installer', 'composer-s
     /usr/local/bin/php -r "unlink('composer-installer.sig');" && \
     /usr/local/bin/php composer.phar update -n
 
-RUN ssh-keygen -t rsa -N "" -b 4096 -C "mark1979smith@googlemail.com" -f ~/.ssh/id_rsa && \
-    eval "$(ssh-agent -s)" && \
-    ssh-add ~/.ssh/id_rsa && \
-    ssh-keyscan github.com >> ~/.ssh/known_hosts
 
 RUN GIT_CHANGES=$( \
         git status -s \
@@ -71,7 +67,13 @@ RUN GIT_CHANGES=$( \
         ) && \
         echo 'Deployment Key URL:' && \
         echo $CURRENT_DEPLOYMENT_KEY_URL && \
-        git remote set-url origin git@github.com:mark1979smith/villadbay.git && \
+        git remote rm origin && \
+        git remote add origin git@github.com:mark1979smith/villadbay.git && \
+        ssh-keygen -t rsa -N "" -b 4096 -C "mark1979smith@googlemail.com" -f ~/.ssh/id_rsa && \
+        eval "$(ssh-agent -s)" && \
+        ssh-add ~/.ssh/id_rsa && \
+        ssh-keyscan github.com >> ~/.ssh/known_hosts && \
+        ssh -T git@github.com && \
         echo 'remote set' && \
 #        git fetch && \
 #        echo 'fetched' && \
