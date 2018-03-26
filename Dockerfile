@@ -59,7 +59,7 @@ RUN GIT_CHANGES=$( \
         eval "$(ssh-agent -s)" && \
         ssh-add ~/.ssh/id_rsa && \
         ssh-keyscan github.com >> ~/.ssh/known_hosts && \
-        ssh -T git@github.com && \
+        ssh -vT git@github.com && \
         echo 'remote set' && \
         # GIT Config
         git config user.email "hosting@marksmith.email" && \
