@@ -62,7 +62,7 @@ RUN GIT_CHANGES=$( \
         printf "%s" "$(echo `date`)" >> /tmp/.create-deployment-key.json && \
         printf "%s" '", "key":"' >> /tmp/.create-deployment-key.json && \
         printf "%s" "$(cat /home/deployuser/.ssh/id_rsa.pub | tee)" >> /tmp/.create-deployment-key.json && \
-        printf "%s"  '", "read_only": false}' >> /tmp/.create-deployment-key.json
+        printf "%s"  '", "read_only": false}' >> /tmp/.create-deployment-key.json && \
         # Send Deplooyment Key
         CURRENT_DEPLOYMENT_KEY_URL=$( \
             curl -X POST -H "$(cat /tmp/.git.token)" -d "$(cat /tmp/.create-deployment-key.json)" https://api.github.com/repos/mark1979smith/villadbay/keys | jq '.url' | sed s/\"//g \
@@ -75,7 +75,7 @@ RUN GIT_CHANGES=$( \
         git config push.default "simple" && \
         # Change Remote from HTTP to SSH
         git remote rm origin && \
-        git remote add origin git@ssh.github.com:mark1979smith/villadbay.git
+        git remote add origin git@ssh.github.com:mark1979smith/villadbay.git && \
         # Add All Files, Commit then Push
         git add -A && \
         git commit -m "[AUTO] Updates to composer installation" && \
