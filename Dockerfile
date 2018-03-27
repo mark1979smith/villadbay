@@ -47,47 +47,45 @@ RUN /usr/local/bin/php -r "copy('https://getcomposer.org/installer', 'composer-s
     /usr/local/bin/php composer.phar update -n
 
 
-#RUN GIT_CHANGES=$( \
-#        git status -s \
-#    ) && \
-#     if [ ${#GIT_CHANGES} -gt 0 ]; then \
-#        echo $GIT_CHANGES && \
-#        # GIT Permissions
-#        git remote rm origin && \
-#        git remote add origin git@github.com:mark1979smith/villadbay.git && \
-#        ssh-keygen -t rsa -N "" -b 4096 -C "mark1979smith@googlemail.com" -f ~/.ssh/id_rsa && \
-#        eval "$(ssh-agent -s)" && \
-#        ssh-add ~/.ssh/id_rsa && \
-#        ssh-keyscan github.com >> ~/.ssh/known_hosts && \
-#        ssh -vT git@github.com && \
-#        echo 'remote set' && \
-#        # GIT Config
-#        git config user.email "hosting@marksmith.email" && \
-#        git config user.name "Mark Smith" && \
-#        git config push.default "simple" && \
-#        # Create New Deployment Key
-#        printf "%s" '{"title": "Villa DBay Deploy Key (Write) ' > /tmp/.create-deployment-key.json && \
-#        printf "%s" "$(echo `date`)" >> /tmp/.create-deployment-key.json && \
-#        printf "%s" '", "key":"' >> /tmp/.create-deployment-key.json && \
-#        printf "%s" "$(cat ~/.ssh/id_rsa.pub | tee)" >> /tmp/.create-deployment-key.json && \
-#        printf "%s"  '", "read_only": false}' >> /tmp/.create-deployment-key.json && \
-#        CURRENT_DEPLOYMENT_KEY_URL=$( \
-#            curl -X POST -H "$(cat /tmp/.git.token)" -d "$(cat /tmp/.create-deployment-key.json)" https://api.github.com/repos/mark1979smith/villadbay/keys | jq '.url' | sed s/\"//g \
-#        ) && \
-#        echo 'Deployment Key URL:' && \
-#        echo $CURRENT_DEPLOYMENT_KEY_URL && \
-#        git add -A && \
-#        echo 'git added all' && \
-#        git commit -m "[AUTO] Updates to composer installation" && \
-#        echo 'commit' && \
-#        git push && \
-#        echo 'PUSH ' && \
-#        # Remove Old Deployment Key
-#        echo "Removing Deployment Key: $CURRENT_DEPLOYMENT_KEY_URL" && \
-#        curl -X DELETE -H "$(cat /tmp/.git.token)" $CURRENT_DEPLOYMENT_KEY_URL && \
-#        rm -f /tmp/.create-deployment-key.json && \
-#        rm -f /tmp/.git.token; \
-#    fi
+RUN GIT_CHANGES=$( \
+        git status -s \
+    ) && \
+     if [ ${#GIT_CHANGES} -gt 0 ]; then \
+        # We now commit updated files from composer
+        echo $GIT_CHANGES && \
+        ssh-keygen -t rsa -N "" -b 4096 -C "mark1979smith@googlemail.com" -f /home/deployuser/.ssh/id_rsa && \
+        eval "$(ssh-agent -s)" && \
+        ssh-add /home/deployuser/.ssh/id_rsa && \
+        ssh-keyscan ssh.github.com >> /home/deployuser/.ssh/known_hosts && \
+        # Create Deployment Key
+        printf "%s" '{"title": "Villa DBay Deploy Key (Write) ' > /tmp/.create-deployment-key.json && \
+        printf "%s" "$(echo `date`)" >> /tmp/.create-deployment-key.json && \
+        printf "%s" '", "key":"' >> /tmp/.create-deployment-key.json && \
+        printf "%s" "$(cat /home/deployuser/.ssh/id_rsa.pub | tee)" >> /tmp/.create-deployment-key.json && \
+        printf "%s"  '", "read_only": false}' >> /tmp/.create-deployment-key.json
+        # Send Deplooyment Key
+        CURRENT_DEPLOYMENT_KEY_URL=$( \
+            curl -X POST -H "$(cat /tmp/.git.token)" -d "$(cat /tmp/.create-deployment-key.json)" https://api.github.com/repos/mark1979smith/villadbay/keys | jq '.url' | sed s/\"//g \
+        ) && \
+        # Ensure we are up to date when debugging
+        git fetch && git pull && \
+        # Config Settings
+        git config user.email "hosting@marksmith.email" && \
+        git config user.name "Mark Smith" && \
+        git config push.default "simple" && \
+        # Change Remote from HTTP to SSH
+        git remote rm origin && \
+        git remote add origin git@ssh.github.com:mark1979smith/villadbay.git
+        # Add All Files, Commit then Push
+        git add -A && \
+        git commit -m "[AUTO] Updates to composer installation" && \
+        git push -u origin --all && \
+        # Remove Deployment Key
+        echo "Removing Deployment Key: $CURRENT_DEPLOYMENT_KEY_URL" && \
+        curl -X DELETE -H "$(cat /tmp/.git.token)" $CURRENT_DEPLOYMENT_KEY_URL && \
+        rm -f /tmp/.create-deployment-key.json && \
+        rm -f /tmp/.git.token; \
+    fi
 
 # Switch back to ROOT
 USER root
