@@ -115,7 +115,6 @@ class NodeTraverser implements NodeTraverserInterface
                     $return = $visitor->enterNode($subNode);
                     if (null !== $return) {
                         if ($return instanceof Node) {
-                            $this->ensureReplacementReasonable($subNode, $return);
                             $subNode = $return;
                         } elseif (self::DONT_TRAVERSE_CHILDREN === $return) {
                             $traverseChildren = false;
@@ -141,7 +140,6 @@ class NodeTraverser implements NodeTraverserInterface
                     $return = $visitor->leaveNode($subNode);
                     if (null !== $return) {
                         if ($return instanceof Node) {
-                            $this->ensureReplacementReasonable($subNode, $return);
                             $subNode = $return;
                         } elseif (self::STOP_TRAVERSAL === $return) {
                             $this->stopTraversal = true;
@@ -181,7 +179,6 @@ class NodeTraverser implements NodeTraverserInterface
                     $return = $visitor->enterNode($node);
                     if (null !== $return) {
                         if ($return instanceof Node) {
-                            $this->ensureReplacementReasonable($node, $return);
                             $node = $return;
                         } elseif (self::DONT_TRAVERSE_CHILDREN === $return) {
                             $traverseChildren = false;
@@ -207,7 +204,6 @@ class NodeTraverser implements NodeTraverserInterface
                     $return = $visitor->leaveNode($node);
                     if (null !== $return) {
                         if ($return instanceof Node) {
-                            $this->ensureReplacementReasonable($node, $return);
                             $node = $return;
                         } elseif (\is_array($return)) {
                             $doNodes[] = [$i, $return];
@@ -242,22 +238,5 @@ class NodeTraverser implements NodeTraverserInterface
         }
 
         return $nodes;
-    }
-
-    private function ensureReplacementReasonable($old, $new) {
-        if ($old instanceof Node\Stmt && $new instanceof Node\Expr) {
-            throw new \LogicException(
-                "Trying to replace statement ({$old->getType()}) " .
-                "with expression ({$new->getType()}). Are you missing a " .
-                "Stmt_Expression wrapper?"
-            );
-        }
-
-        if ($old instanceof Node\Expr && $new instanceof Node\Stmt) {
-            throw new \LogicException(
-                "Trying to replace expression ({$old->getType()}) " .
-                "with statement ({$new->getType()})"
-            );
-        }
     }
 }
