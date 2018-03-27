@@ -1,24 +1,7 @@
-Version 4.0.2-dev
+Version 4.0.1-dev
 -----------------
 
 Nothing yet.
-
-Version 4.0.1 (2018-03-25)
---------------------------
-
-### Added
-
-* [PHP 7.3] Added support for trailing commas in function calls.
-* [PHP 7.3] Added support for by-reference array destructuring. 
-* Added checks to node traverser to prevent replacing a statement with an expression or vice versa.
-  This should prevent common mistakes in the implementation of node visitors.
-* Added the following methods to `BuilderFactory`, to simplify creation of expressions:
-  * `funcCall()`
-  * `methodCall()`
-  * `staticCall()`
-  * `new()`
-  * `constFetch()`
-  * `classConstFetch()`
 
 Version 4.0.0 (2018-02-28)
 --------------------------
