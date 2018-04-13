@@ -145,13 +145,13 @@ class ImagesController extends Controller
     }
 
     /**
+     * @param                                                     $imageType
      * @param \Symfony\Component\HttpFoundation\File\UploadedFile $file
-     * @param string                                              $fileName Thumbnails will use this as a directory
-     *                                                                      followed by a child directory lg, md, sm,
-     *                                                                      xs
+     * @param string                                              $fileName Thumbnails will use this as a directory followed by a child directory lg, md, sm, xs
      * @param string                                              $fileNameExt
      *
      * @throws \ImagickException
+     * @throws \Psr\Cache\InvalidArgumentException
      */
     private function sendImageToAWS($imageType, $file, $fileName, $fileNameExt)
     {
@@ -241,20 +241,22 @@ class ImagesController extends Controller
         $imagick->setImageCompressionQuality(80);
 
         $s3Client->putObject([
-            'Bucket' => $s3Service->getBucket(),
-            'Key'    => 'images/' . $dirPrefix . '/' . $fileName .'.' . $fileNameExt,
-            'Body'   => $imagick->getImageBlob(),
-            'ACL'    => 'public-read',
+            'Bucket'        => $s3Service->getBucket(),
+            'Key'           => 'images/' . $dirPrefix . '/' . $fileName . '.' . $fileNameExt,
+            'Body'          => $imagick->getImageBlob(),
+            'ACL'           => 'public-read',
+            'Tagging' => 'available-on=' . getenv('APP_ENV', true),
         ]);
 
         if (isset($settings)) {
             foreach ($settings as $responsiveSizeClass => $thumbnailSettings) {
                 $imagick->scaleImage($thumbnailSettings['width'], $thumbnailSettings['rows'], $thumbnailSettings['bestfit']);
                 $s3Client->putObject([
-                    'Bucket' => $s3Service->getBucket(),
-                    'Key'    => 'images/' . $dirPrefix . '/' . $fileName . '--'. $responsiveSizeClass.'.' . $fileNameExt,
-                    'Body'   => $imagick->getImageBlob(),
-                    'ACL'    => 'public-read',
+                    'Bucket'  => $s3Service->getBucket(),
+                    'Key'     => 'images/' . $dirPrefix . '/' . $fileName . '--' . $responsiveSizeClass . '.' . $fileNameExt,
+                    'Body'    => $imagick->getImageBlob(),
+                    'ACL'     => 'public-read',
+                    'Tagging' => 'available-on=' . getenv('APP_ENV', true),
                 ]);
             }
         }
@@ -267,7 +269,7 @@ class ImagesController extends Controller
             'Bucket' => $s3Service->getBucket(),
         ]);
 
-        $cacheKey = 'aws.s3.listobjects.'.$s3Service->getBucket();
+        $cacheKey = 'aws.s3.listobjects.' . $s3Service->getBucket();
         $cacheItem = $redisClient->getItem($cacheKey);
         $cacheItem->set($response);
 
