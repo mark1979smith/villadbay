@@ -245,7 +245,6 @@ class ImagesController extends Controller
             'Key'           => 'images/' . $dirPrefix . '/' . $fileName . '.' . $fileNameExt,
             'Body'          => $imagick->getImageBlob(),
             'ACL'           => 'public-read',
-            'Tagging' => 'available-on=' . getenv('APP_ENV', true),
         ]);
 
         if (isset($settings)) {
@@ -256,7 +255,6 @@ class ImagesController extends Controller
                     'Key'     => 'images/' . $dirPrefix . '/' . $fileName . '--' . $responsiveSizeClass . '.' . $fileNameExt,
                     'Body'    => $imagick->getImageBlob(),
                     'ACL'     => 'public-read',
-                    'Tagging' => 'available-on=' . getenv('APP_ENV', true),
                 ]);
             }
         }
