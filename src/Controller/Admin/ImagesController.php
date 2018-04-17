@@ -99,7 +99,7 @@ class ImagesController extends Controller
                         ->add('file', FileType::class, [
                             'label' => 'Choose an image to upload',
                             'attr'  => [
-                                'description' => 'Requirements: Landscape images only with a minimum width of 1,200px and a minimum height of 900px.',
+                                'description' => 'Requirements: Landscape images only with a minimum width of 1,200px.',
                             ],
                         ]);
                     break;

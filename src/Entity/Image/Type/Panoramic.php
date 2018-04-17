@@ -19,7 +19,7 @@ class Panoramic
 {
     /**
      * @Assert\NotBlank(message="Please supply a file.")
-     * @Assert\Image(allowSquare=false,allowPortrait=false,minWidth=1200,minHeight=900)
+     * @Assert\Image(allowSquare=false,allowPortrait=false,minWidth=1200)
      */
     private $file;
 
