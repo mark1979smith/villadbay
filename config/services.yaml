@@ -30,6 +30,7 @@ services:
             $version: '%env(AWS_S3_VERSION)%'
             $region: '%env(AWS_S3_REGION)%'
             $bucket: '%env(AWS_S3_BUCKET)%'
+            $imageCdn: '%env(IMAGE_CDN)%'
 
     app.redis:
         class: App\Utils\Redis

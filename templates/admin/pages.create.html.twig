@@ -407,7 +407,7 @@
             $(ele).closest('.card').find(':radio[checked="checked"]').closest('label').addClass('active');
             $(ele).closest('.card').addClass('border-success');
             if ($(ele).closest('.card').find(':radio:checked').length) {
-                $(ele).closest('.panoramic_image').find('select').val($(ele).closest('.card').find(':radio:checked').val());
+                $(ele).closest('.form-group').find('select').val($(ele).closest('.card').find(':radio:checked').val());
             }
         }
 

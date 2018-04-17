@@ -303,7 +303,7 @@ class PageType extends AbstractType
         $s3Service = $container->get('app.aws.s3');
         $s3Client = $s3Service->get();
 
-        $cacheKey = 'aws.s3.listobjects.'.$s3Service->getBucket();
+        $cacheKey = 'aws.s3.listobjects.'.$s3Service->getBucket() . md5(time());
         if ($redisClient->hasItem($cacheKey)) {
             $response = $redisClient->getItem($cacheKey)->get();
         } else {
@@ -322,12 +322,11 @@ class PageType extends AbstractType
             if (is_iterable($response->get('Contents'))) {
                 foreach ($response->get('Contents') as $asset) {
                     if ($this->filterByPath($asset, 'images/backgrounds')) {
-                        $backgroundImages[] = str_replace('images/backgrounds/', '', $asset['Key']);
+                        $backgroundImages[] = $s3Service->getImageCdn() . DIRECTORY_SEPARATOR . $asset['Key'];
                     }
                 }
             }
         }
-
 
         return array_combine($backgroundImages, $backgroundImages);
     }
@@ -361,7 +360,7 @@ class PageType extends AbstractType
             if (is_iterable($response->get('Contents'))) {
                 foreach ($response->get('Contents') as $asset) {
                     if ($this->filterByPath($asset, 'images/pano')) {
-                        $panoImages[] = str_replace('images/pano/', '', $asset['Key']);
+                        $panoImages[] = $s3Service->getImageCdn() . DIRECTORY_SEPARATOR . $asset['Key'];
                     }
                 }
             }
@@ -377,7 +376,7 @@ class PageType extends AbstractType
 
         foreach ($panoImages as $panoImage) {
             $html .= '<div class="card text-center js--card-pano-image">'.
-                '<div class="card-body" style="background-position: center; background-size: cover; background-image: url(https://d3orc742w48r4f.cloudfront.net/images/pano/'. $panoImage .');"></div>' .
+                '<div class="card-body" style="background-position: center; background-size: cover; background-image: url('. $panoImage .');"></div>' .
                 '<div class="card-footer btn-group-toggle" data-toggle="buttons"><label class="btn btn-secondary"><input name="do-not-send[]" type="radio" autocomplete="off" value="'. $panoImage .'" /> Select</label></div>' .
                 '</div>';
         }
@@ -393,7 +392,7 @@ class PageType extends AbstractType
 
         foreach ($backgroundImages as $backgroundImage) {
             $html .= '<div class="card text-center js--card-pano-image">'.
-                '<div class="card-body" style="height: 100px; background-position: center; background-size: contain; background-repeat: no-repeat; background-image: url(https://d3orc742w48r4f.cloudfront.net/images/backgrounds/'. $backgroundImage .');"></div>' .
+                '<div class="card-body" style="height: 100px; background-position: center; background-size: contain; background-repeat: no-repeat; background-image: url('. $backgroundImage .');"></div>' .
                 '<div class="card-footer btn-group-toggle" data-toggle="buttons"><label class="btn btn-secondary"><input name="do-not-send[]" type="radio" autocomplete="off" value="'. $backgroundImage .'" /> Select</label></div>' .
                 '</div>';
         }

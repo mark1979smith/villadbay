@@ -22,11 +22,15 @@ class AwsS3Client
     /** @var  string */
     protected $bucket;
 
-    public function __construct($version, $region, $bucket)
+    /** @var string */
+    protected $imageCdn;
+
+    public function __construct($version, $region, $bucket, $imageCdn)
     {
         $this->setVersion($version);
         $this->setRegion($region);
         $this->setBucket($bucket);
+        $this->setImageCdn($imageCdn);
     }
 
     public function get()
@@ -95,6 +99,26 @@ class AwsS3Client
     public function setBucket(string $bucket): AwsS3Client
     {
         $this->bucket = $bucket;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getImageCdn(): string
+    {
+        return $this->imageCdn;
+    }
+
+    /**
+     * @param string $imageCdn
+     *
+     * @return AwsS3Client
+     */
+    public function setImageCdn(string $imageCdn): AwsS3Client
+    {
+        $this->imageCdn = $imageCdn;
 
         return $this;
     }

@@ -12,7 +12,7 @@ namespace App\Entity\Page;
 class BackgroundImage
 {
     private $inlineStyleTemplate = 'body {
-        background-image: url(\'https://d3orc742w48r4f.cloudfront.net/images/backgrounds/%s\');
+        background-image: url(\'%s\');
         background-repeat: no-repeat;
         background-position: center center;
         background-attachment: fixed;
@@ -24,25 +24,25 @@ class BackgroundImage
     
     @media (max-width: 1199px) {
         body {
-            background-image: url(\'https://d3orc742w48r4f.cloudfront.net/images/backgrounds/%s\');
+            background-image: url(\'%s\');
         }
     }
 
     @media (max-width: 991px) {
         body {
-            background-image: url(\'https://d3orc742w48r4f.cloudfront.net/images/backgrounds/%s\');
+            background-image: url(\'%s\');
         }
     }
 
     @media (max-width: 767px) {
         body {
-            background-image: url(\'https://d3orc742w48r4f.cloudfront.net/images/backgrounds/%s\');
+            background-image: url(\'%s\');
         }
     }
 
     @media (max-width: 575px) {
         body {
-            background-image: url(\'https://d3orc742w48r4f.cloudfront.net/images/backgrounds/%s\');
+            background-image: url(\'%s\');
         }
     }';
 
@@ -54,10 +54,10 @@ class BackgroundImage
         return sprintf(
             $this->getInlineStyleTemplate(),
             $this->getBackgroundImage(),
-            str_replace('.', '--lg.', $this->getBackgroundImage()),
-            str_replace('.', '--md.', $this->getBackgroundImage()),
-            str_replace('.', '--sm.', $this->getBackgroundImage()),
-            str_replace('.', '--xs.', $this->getBackgroundImage())
+            $this->getBackgroundImage('lg'),
+            $this->getBackgroundImage('md'),
+            $this->getBackgroundImage('sm'),
+            $this->getBackgroundImage('xs')
         );
     }
 
@@ -82,10 +82,18 @@ class BackgroundImage
     }
 
     /**
+     * If size is defined the filename is amended to suit.
+     *
+     * @param null|string $size
+     *
      * @return mixed
      */
-    public function getBackgroundImage()
+    public function getBackgroundImage($size = null)
     {
+        if (!is_null($size)) {
+            // Find last occurence of '.' and prepend with '--$size'
+            return substr_replace($this->backgroundImage, '--' . $size, strrpos($this->backgroundImage, '.'), 0);
+        }
         return $this->backgroundImage;
     }
 

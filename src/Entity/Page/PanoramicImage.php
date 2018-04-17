@@ -12,30 +12,30 @@ namespace App\Entity\Page;
 class PanoramicImage
 {
     /** @var string  */
-    private $template = "<div class=\"container-fluid\"><div class=\"row\"><div class=\"col img-fluid\" id=\"pano\" style=\"background-repeat: no-repeat; height: 320px; background-size: cover; background-position:center; background-image: url('https://d3orc742w48r4f.cloudfront.net/images/pano/%s');\"></div></div></div>";
+    private $template = "<div class=\"container-fluid\"><div class=\"row\"><div class=\"col img-fluid\" id=\"pano\" style=\"background-repeat: no-repeat; height: 320px; background-size: cover; background-position:center; background-image: url('%s');\"></div></div></div>";
 
     private $inlineStyleTemplate = '#pano {
-            background-image: url(\'https://d3orc742w48r4f.cloudfront.net/images/pano/%s\');
+            background-image: url(\'%s\');
             height: 320px !important;
         }
 
         @media (max-width: 991px) {
             #pano {
-                background-image: url(\'https://d3orc742w48r4f.cloudfront.net/images/pano/%s\');
+                background-image: url(\'%s\');
                 height: 381px !important;
             }
         }
 
         @media (max-width: 767px) {
             #pano {
-                background-image: url(\'https://d3orc742w48r4f.cloudfront.net/images/pano/%s\');
+                background-image: url(\'%s\');
                 height: 307px !important;
             }
         }
 
         @media (max-width: 576px) {
             #pano {
-                background-image: url(\'https://d3orc742w48r4f.cloudfront.net/images/pano/%s\');
+                background-image: url(\'%s\');
                 height: 230px !important;
             }
         }';
@@ -74,10 +74,18 @@ class PanoramicImage
     }
 
     /**
+     * If size is defined the filename is amended to suit.
+     *
+     * @param null|string $size
+     *
      * @return null|string
      */
-    public function getPanoramicImage(): ?string
+    public function getPanoramicImage($size = null): ?string
     {
+        if (!is_null($size)) {
+            // Find last occurence of '.' and prepend with '--$size'
+            return substr_replace($this->panoramicImage, '--' . $size, strrpos($this->panoramicImage, '.'), 0);
+        }
         return $this->panoramicImage;
     }
 
@@ -118,10 +126,10 @@ class PanoramicImage
         return sprintf(
             $this->getInlineStyleTemplate(),
             $this->getPanoramicImage(),
-            str_replace('.', '--lg.', $this->getPanoramicImage()),
-            str_replace('.', '--md.', $this->getPanoramicImage()),
-            str_replace('.', '--sm.', $this->getPanoramicImage()),
-            str_replace('.', '--xs.', $this->getPanoramicImage())
+            $this->getPanoramicImage('lg'),
+            $this->getPanoramicImage('md'),
+            $this->getPanoramicImage('sm'),
+            $this->getPanoramicImage('xs')
         );
     }
 }
