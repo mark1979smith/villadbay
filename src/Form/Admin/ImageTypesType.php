@@ -9,6 +9,7 @@
 namespace App\Form\Admin;
 
 
+use App\Component\ImageTypes;
 use App\Entity\Image\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -19,18 +20,16 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ImageTypesType extends AbstractType
 {
+    use ImageTypes;
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('value', ChoiceType::class, array(
-            'label'   => 'Select the type of image',
-            'choices' => [
-                'Background' => 'background',
-                'Carousel'   => 'carousel',
-                'Panoramic'  => 'panoramic',
-            ],
-            'placeholder' => 'Please select'
+            'label'       => 'Select the type of image',
+            'choices'     => $this->getImageTypes(),
+            'placeholder' => 'Please select',
         ))
-        ->add('next', SubmitType::class);
+            ->add('next', SubmitType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver)

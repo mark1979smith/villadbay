@@ -1,0 +1,7 @@
+{% extends 'admin.html.twig' %}
+
+{% block body %}
+    {% for label, imageType in imageTypes %}
+        {{ label }}: {{ imageType }}
+    {% endfor %}
+{% endblock %}

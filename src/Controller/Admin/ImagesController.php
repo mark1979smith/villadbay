@@ -8,6 +8,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Component\ImageTypes;
 use App\Entity\Image\Type;
 use App\Form\Admin\ImageTypesType;
 use Aws\S3\S3Client;
@@ -30,6 +31,8 @@ use Imagick;
  */
 class ImagesController extends Controller
 {
+    use ImageTypes;
+
     /**
      * @Route("/", name="admin-images")
      * @param \Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface $authorizationChecker
@@ -132,6 +135,22 @@ class ImagesController extends Controller
         }
 
         return $this->render('admin/images.create.html.twig', $twigData);
+    }
+
+    /**
+     * @Route("/list", name="admin-images-list")
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function list(Request $request)
+    {
+
+        $twigData = [];
+
+        $twigData['imageTypes'] = $this->getImageTypes();
+
+        return $this->render('admin/images.list.html.twig', $twigData);
     }
 
     /**
