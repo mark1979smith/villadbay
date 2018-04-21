@@ -1,7 +1,57 @@
 {% extends 'admin.html.twig' %}
-
+{% import "macro/filesize.html" as filesize %}
 {% block body %}
-    {% for label, imageType in imageTypes %}
-        {{ label }}: {{ imageType }}
-    {% endfor %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1 class="display-3">Manage images</h1>
+            </div>
+        </div>
+
+        {% for label, imageType in imageTypes %}
+            <div class="row">
+                <div class="col">
+                    <h2 class="display-4">{{ label }}</h2>
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Filename</th>
+                            <th scope="col">Optimised For</th>
+                            <th scope="col">Size</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% if objects[imageType]|length > 0 %}
+                            {% for index,row in objects[imageType] %}
+                                <tr>
+                                    <td scope="row">{{ index+1 }}</td>
+                                    <td>{{ row.Key }}</td>
+                                    <td>{% if row.Key matches '/\-\-xs\./' %}Extra small devices<br/>
+                                            <small>(portrait phones, less than 576px)
+                                            </small>{% elseif row.Key matches '/\-\-sm\./' %}Small devices<br/>
+                                            <small>(landscape phones, 576px and up)
+                                            </small>{% elseif row.Key matches '/\-\-md\./' %}Medium devices<br/>
+                                            <small>(tablets, 768px and up)
+                                            </small>{% elseif row.Key matches '/\-\-lg\./' %}Large devices<br/>
+                                            <small>(desktops, 992px and up)</small>{% else %}Extra large devices<br/>
+                                            <small>(large desktops, 1200px and up)</small>{% endif %}</td>
+                                    <td title="{{ row.Size }} B">{{ filesize.bytesToSize(row.Size) }}</td>
+                                    <td>&nbsp;</td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center bg-light">No Images Found</td>
+                            </tr>
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        {% endfor %}
+
+    </div>
 {% endblock %}

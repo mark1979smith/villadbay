@@ -14,7 +14,7 @@ class Type
 {
     const TYPE_BACKGROUND = 'background';
     const TYPE_CAROUSEL = 'carousel';
-    const TYPE_PANORAMIC = 'panoramic';
+    const TYPE_PANORAMIC = 'pano';
 
     /**
      * @Assert\NotBlank(message="Please select the type of image.")

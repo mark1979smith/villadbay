@@ -150,6 +150,61 @@ class ImagesController extends Controller
 
         $twigData['imageTypes'] = $this->getImageTypes();
 
+        /** @var \App\Utils\Redis $redisService */
+        $redisService = $this->container->get('app.redis');
+        $redisClient = $redisService->get();
+        /** @var \App\Utils\AwsS3Client $s3Service */
+        $s3Service = $this->container->get('app.aws.s3');
+
+        $awsListingData = [];
+
+        foreach ($twigData['imageTypes'] as $imageType) {
+            $coreData = [
+                'Prefix'     => 'images/'. $imageType,
+                'Bucket'     => $s3Service->getBucket(),
+                'MaxKeys'    => 100,
+                'StartAfter' => 'images/'. $imageType .'/',
+            ];
+
+            $cacheKey = 'aws.s3.listobjects.' . $s3Service->getBucket() . '-' . md5(serialize($coreData));
+            if ($redisClient->hasItem($cacheKey)) {
+                /** \Aws\Result $results */
+                $results = $redisClient->getItem($cacheKey)->get();
+                $twigData['objects'] = $results;
+            } else {
+                $s3Client = $s3Service->get();
+
+                $isTruncated = false;
+                $page = 1;
+                $awsListingData[$imageType] = [];
+
+                // Build up the assets list available on AWS S3
+                do {
+                    $response = $s3Client->listObjectsV2($coreData);
+                    if ($response instanceof \Aws\Result) {
+                        $isTruncated = $response->get('IsTruncated');
+                        if (is_iterable($response->get('Contents'))) {
+                            foreach ($response->get('Contents') as $asset) {
+                                // Only return assets which are lowercase
+                                if (strcmp($asset['Key'], strtolower($asset['Key'])) === 0) {
+                                    $awsListingData[$imageType][] = array_merge($asset, ['Key' => basename($asset['Key'])]);
+                                }
+                            }
+                        }
+                    }
+
+                    if ($isTruncated) {
+                        $coreData['ContinuationToken'] = $response->get('NextContinuationToken');
+                    } else {
+                        unset($coreData['ContinuationToken']);
+                    }
+
+                    $page++;
+                } while ($isTruncated === true);
+                $twigData['objects'] = $awsListingData;
+            }
+        }
+
         return $this->render('admin/images.list.html.twig', $twigData);
     }
 
