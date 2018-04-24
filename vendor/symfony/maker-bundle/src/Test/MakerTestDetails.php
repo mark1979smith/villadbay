@@ -22,6 +22,8 @@ final class MakerTestDetails
 
     private $fixtureFilesPath;
 
+    private $deletedFiles = [];
+
     private $replacements = [];
 
     private $preMakeCommands = [];
@@ -35,6 +37,8 @@ final class MakerTestDetails
     private $argumentsString = '';
 
     private $commandAllowedToFail = false;
+
+    private $requiredPhpVersion;
 
     /**
      * @param MakerInterface $maker
@@ -72,6 +76,18 @@ final class MakerTestDetails
         $this->postMakeCommands[] = $postMakeCommand;
 
         return $this;
+    }
+
+    public function deleteFile(string $filename): self
+    {
+        $this->deletedFiles[] = $filename;
+
+        return $this;
+    }
+
+    public function getFilesToDelete(): array
+    {
+        return $this->deletedFiles;
     }
 
     public function addReplacement(string $filename, string $find, string $replace): self
@@ -165,6 +181,13 @@ final class MakerTestDetails
         return $this;
     }
 
+    public function setRequiredPhpVersion(int $version): self
+    {
+        $this->requiredPhpVersion = $version;
+
+        return $this;
+    }
+
     public function getInputs(): array
     {
         return $this->inputs;
@@ -230,5 +253,10 @@ final class MakerTestDetails
     public function isCommandAllowedToFail(): bool
     {
         return $this->commandAllowedToFail;
+    }
+
+    public function isSupportedByCurrentPhpVersion(): bool
+    {
+        return null === $this->requiredPhpVersion || \PHP_VERSION_ID >= $this->requiredPhpVersion;
     }
 }

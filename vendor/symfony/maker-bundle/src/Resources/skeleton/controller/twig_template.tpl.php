@@ -1,12 +1,4 @@
-<?php if ($base_layout_exists): ?>
-{% extends 'base.html.twig' %}
-
-{% block title %}Hello {{ controller_name }}!{% endblock %}
-<?php else: ?>
-<!DOCTYPE html>
-
-<title>Hello {{ controller_name }}!</title>
-<?php endif; ?>
+<?= $helper->getHeadPrintCode('Hello {{ controller_name }}!'); ?>
 
 {% block body %}
 <style>
@@ -19,8 +11,8 @@
 
     This friendly message is coming from:
     <ul>
-        <li>Your controller at <code><?= $controller_path; ?></code></li>
-        <li>Your template at <code><?= $relative_path ?></code></li>
+        <li>Your controller at <code><?= $helper->getFileLink($controller_path); ?></code></li>
+        <li>Your template at <code><?= $helper->getFileLink($relative_path); ?></code></li>
     </ul>
 </div>
 {% endblock %}

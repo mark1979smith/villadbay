@@ -7,6 +7,7 @@ git:
     depth: 1
 
 php:
+  - 7.0
   - 7.1
   - 7.2
 
@@ -22,6 +23,9 @@ env:
 install:
     - composer --prefer-dist install
     - ./vendor/bin/simple-phpunit install
+
+before_script:
+    - phpenv config-rm xdebug.ini
 
 script:
     - ./vendor/bin/simple-phpunit
