@@ -1,17 +1,17 @@
 [
     {
         "name": "aws/aws-sdk-php",
-        "version": "3.54.4",
-        "version_normalized": "3.54.4.0",
+        "version": "3.55.1",
+        "version_normalized": "3.55.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/aws/aws-sdk-php.git",
-            "reference": "6642a13df7ddcccf19e66c744c5bfae5b61e9e85"
+            "reference": "42fd0afe654b549d3353e82fe05bed1cd8c70b49"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/6642a13df7ddcccf19e66c744c5bfae5b61e9e85",
-            "reference": "6642a13df7ddcccf19e66c744c5bfae5b61e9e85",
+            "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/42fd0afe654b549d3353e82fe05bed1cd8c70b49",
+            "reference": "42fd0afe654b549d3353e82fe05bed1cd8c70b49",
             "shasum": ""
         },
         "require": {
@@ -42,7 +42,7 @@
             "ext-curl": "To send requests using cURL",
             "ext-openssl": "Allows working with CloudFront private distributions and verifying received SNS messages"
         },
-        "time": "2018-04-10T22:11:31+00:00",
+        "time": "2018-04-24T19:18:36+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -450,17 +450,17 @@
     },
     {
         "name": "doctrine/doctrine-bundle",
-        "version": "1.8.1",
-        "version_normalized": "1.8.1.0",
+        "version": "1.9.1",
+        "version_normalized": "1.9.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/doctrine/DoctrineBundle.git",
-            "reference": "eb6e4fb904a459be28872765ab6e2d246aac7c87"
+            "reference": "703fad32e4c8cbe609caf45a71a1d4266c830f0f"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/eb6e4fb904a459be28872765ab6e2d246aac7c87",
-            "reference": "eb6e4fb904a459be28872765ab6e2d246aac7c87",
+            "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/703fad32e4c8cbe609caf45a71a1d4266c830f0f",
+            "reference": "703fad32e4c8cbe609caf45a71a1d4266c830f0f",
             "shasum": ""
         },
         "require": {
@@ -471,13 +471,13 @@
             "symfony/console": "~2.7|~3.0|~4.0",
             "symfony/dependency-injection": "~2.7|~3.0|~4.0",
             "symfony/doctrine-bridge": "~2.7|~3.0|~4.0",
-            "symfony/framework-bundle": "~2.7|~3.0|~4.0"
+            "symfony/framework-bundle": "^2.7.22|~3.0|~4.0"
         },
         "conflict": {
             "symfony/http-foundation": "<2.6"
         },
         "require-dev": {
-            "doctrine/orm": "~2.3",
+            "doctrine/orm": "~2.4",
             "phpunit/phpunit": "^4.8.36|^5.7|^6.4",
             "satooshi/php-coveralls": "^1.0",
             "symfony/phpunit-bridge": "~2.7|~3.0|~4.0",
@@ -491,7 +491,7 @@
             "doctrine/orm": "The Doctrine ORM integration is optional in the bundle.",
             "symfony/web-profiler-bundle": "To use the data collector."
         },
-        "time": "2017-11-24T13:09:19+00:00",
+        "time": "2018-04-19T14:07:39+00:00",
         "type": "symfony-bundle",
         "extra": {
             "branch-alias": {
@@ -1029,17 +1029,17 @@
     },
     {
         "name": "guzzlehttp/guzzle",
-        "version": "6.3.2",
-        "version_normalized": "6.3.2.0",
+        "version": "6.3.3",
+        "version_normalized": "6.3.3.0",
         "source": {
             "type": "git",
             "url": "https://github.com/guzzle/guzzle.git",
-            "reference": "68d0ea14d5a3f42a20e87632a5f84931e2709c90"
+            "reference": "407b0cb880ace85c9b63c5f9551db498cb2d50ba"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/guzzle/guzzle/zipball/68d0ea14d5a3f42a20e87632a5f84931e2709c90",
-            "reference": "68d0ea14d5a3f42a20e87632a5f84931e2709c90",
+            "url": "https://api.github.com/repos/guzzle/guzzle/zipball/407b0cb880ace85c9b63c5f9551db498cb2d50ba",
+            "reference": "407b0cb880ace85c9b63c5f9551db498cb2d50ba",
             "shasum": ""
         },
         "require": {
@@ -1049,13 +1049,13 @@
         },
         "require-dev": {
             "ext-curl": "*",
-            "phpunit/phpunit": "^4.8.35 || ^5.7 || ^6.4",
+            "phpunit/phpunit": "^4.8.35 || ^5.7 || ^6.4 || ^7.0",
             "psr/log": "^1.0"
         },
         "suggest": {
             "psr/log": "Required for using the Log middleware"
         },
-        "time": "2018-03-26T16:33:04+00:00",
+        "time": "2018-04-22T15:46:56+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3142,23 +3142,23 @@
     },
     {
         "name": "symfony/maker-bundle",
-        "version": "v1.4.0",
-        "version_normalized": "1.4.0.0",
+        "version": "v1.4.2",
+        "version_normalized": "1.4.2.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/maker-bundle.git",
-            "reference": "253cee42124de11dc0a5bb7c91e5375d7197be12"
+            "reference": "8713152f523b337177163a328485ea6a39fae7ad"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/maker-bundle/zipball/253cee42124de11dc0a5bb7c91e5375d7197be12",
-            "reference": "253cee42124de11dc0a5bb7c91e5375d7197be12",
+            "url": "https://api.github.com/repos/symfony/maker-bundle/zipball/8713152f523b337177163a328485ea6a39fae7ad",
+            "reference": "8713152f523b337177163a328485ea6a39fae7ad",
             "shasum": ""
         },
         "require": {
             "doctrine/inflector": "^1.2",
             "nikic/php-parser": "^4.0",
-            "php": "^7.1.3",
+            "php": "^7.0.8",
             "symfony/config": "^3.4|^4.0",
             "symfony/console": "^3.4|^4.0",
             "symfony/dependency-injection": "^3.4|^4.0",
@@ -3170,12 +3170,12 @@
         "require-dev": {
             "allocine/twigcs": "^3.0",
             "doctrine/doctrine-bundle": "^1.8",
-            "doctrine/orm": "^2.6",
+            "doctrine/orm": "^2.3",
             "friendsofphp/php-cs-fixer": "^2.8",
             "symfony/phpunit-bridge": "^3.4|^4.0",
             "symfony/process": "^3.4|^4.0"
         },
-        "time": "2018-04-11T22:44:12+00:00",
+        "time": "2018-04-19T17:28:47+00:00",
         "type": "symfony-bundle",
         "extra": {
             "branch-alias": {
