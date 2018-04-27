@@ -25,9 +25,9 @@
                         <tbody>
                         {% if objects[imageType]|length > 0 %}
                             {% for index,row in objects[imageType] %}
-                                <tr>
+                                <tr{% if row.Metadata.parent is defined %} data-parent="{{ row.Metadata.parent }}"{% endif %}>
                                     <td scope="row">{{ index+1 }}</td>
-                                    <td>{{ row.Key }}</td>
+                                    <td>{% if row.Metadata.filename is not defined %}{{ row.DisplayKey }}{% else %}{{ row.Metadata.filename }}{% endif %}</td>
                                     <td>{% if row.Key matches '/\-\-xs\./' %}Extra small devices<br/>
                                             <small>(portrait phones, less than 576px)
                                             </small>{% elseif row.Key matches '/\-\-sm\./' %}Small devices<br/>

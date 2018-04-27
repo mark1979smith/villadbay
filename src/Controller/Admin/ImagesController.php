@@ -76,7 +76,7 @@ class ImagesController extends Controller
         } else {
             $imageType = strtolower($request->get('type'));
             switch ($imageType) {
-                case 'background':
+                case Type::TYPE_BACKGROUND:
                     $entity = new Type\Background();
                     $form = $this->createFormBuilder($entity)
                         ->add('file', FileType::class, [
@@ -86,7 +86,7 @@ class ImagesController extends Controller
                             ],
                         ]);
                     break;
-                case 'carousel':
+                case Type::TYPE_CAROUSEL:
                     $entity = new Type\Carousel();
                     $form = $this->createFormBuilder($entity)
                         ->add('file', FileType::class, [
@@ -96,7 +96,7 @@ class ImagesController extends Controller
                             ],
                         ]);
                     break;
-                case 'panoramic':
+                case Type::TYPE_PANORAMIC:
                     $entity = new Type\Panoramic();
                     $form = $this->createFormBuilder($entity)
                         ->add('file', FileType::class, [
@@ -187,7 +187,8 @@ class ImagesController extends Controller
                             foreach ($response->get('Contents') as $asset) {
                                 // Only return assets which are lowercase
                                 if (strcmp($asset['Key'], strtolower($asset['Key'])) === 0) {
-                                    $awsListingData[$imageType][] = array_merge($asset, ['Key' => basename($asset['Key'])]);
+                                    $headers = $s3Client->headObject(['Bucket' => $s3Service->getBucket(), 'Key' => $asset['Key']]);
+                                    $awsListingData[$imageType][] = array_merge($asset, ['DisplayKey' => basename($asset['Key']), 'Metadata' => $headers->get('Metadata')]);
                                 }
                             }
                         }
@@ -204,6 +205,7 @@ class ImagesController extends Controller
                 $twigData['objects'] = $awsListingData;
             }
         }
+
 
         return $this->render('admin/images.list.html.twig', $twigData);
     }
@@ -230,7 +232,7 @@ class ImagesController extends Controller
     private function sendImageToAWS($imageType, $file, $fileName, $fileNameExt)
     {
         switch ($imageType) {
-            case 'panoramic':
+            case Type::TYPE_PANORAMIC:
                 $dirPrefix = 'pano';
                 $settings = [
                     'lg' => [
@@ -255,7 +257,7 @@ class ImagesController extends Controller
                     ],
                 ];
                 break;
-            case 'background':
+            case Type::TYPE_BACKGROUND:
                 $dirPrefix = 'backgrounds';
                 $settings = [
                     'lg' => [
@@ -281,7 +283,7 @@ class ImagesController extends Controller
                 ];
                 break;
 
-            case 'carousel':
+            case Type::TYPE_CAROUSEL:
                 $dirPrefix = 'carousel';
                 $settings = [
                     'lg' => [
@@ -319,6 +321,9 @@ class ImagesController extends Controller
             'Key'           => 'images/' . $dirPrefix . '/' . $fileName . '.' . $fileNameExt,
             'Body'          => $imagick->getImageBlob(),
             'ACL'           => 'public-read',
+            'Metadata' => [
+                'filename' => $file->getClientOriginalName()
+            ]
         ]);
 
         if (isset($settings)) {
@@ -329,6 +334,9 @@ class ImagesController extends Controller
                     'Key'     => 'images/' . $dirPrefix . '/' . $fileName . '--' . $responsiveSizeClass . '.' . $fileNameExt,
                     'Body'    => $imagick->getImageBlob(),
                     'ACL'     => 'public-read',
+                    'Metadata' => [
+                        'parent' => 'images/' . $dirPrefix . '/' . $fileName . '.' . $fileNameExt
+                    ]
                 ]);
             }
         }
