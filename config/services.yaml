@@ -31,6 +31,7 @@ services:
             $region: '%env(AWS_S3_REGION)%'
             $bucket: '%env(AWS_S3_BUCKET)%'
             $imageCdn: '%env(IMAGE_CDN)%'
+            $cacheHandler: '@app.redis'
 
     app.redis:
         class: App\Utils\Redis

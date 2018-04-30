@@ -162,54 +162,13 @@ class ImagesController extends Controller
             $coreData = [
                 'Prefix'     => 'images/'. $imageType,
                 'Bucket'     => $s3Service->getBucket(),
-                'MaxKeys'    => 100,
+                'MaxKeys'    => 1000,
                 'StartAfter' => 'images/'. $imageType .'/',
             ];
-
-            $cacheKey = 'aws.s3.listobjects.' . $s3Service->getBucket() . '-' . md5(serialize($coreData));
-            if ($redisClient->hasItem($cacheKey)) {
-                /** \Aws\Result $results */
-                $results = $redisClient->getItem($cacheKey)->get();
-                $twigData['objects'] = $results;
-            } else {
-                $s3Client = $s3Service->get();
-
-                $isTruncated = false;
-                $page = 1;
-                $awsListingData[$imageType] = [];
-
-                // Build up the assets list available on AWS S3
-                do {
-                    $response = $s3Client->listObjectsV2($coreData);
-                    if ($response instanceof \Aws\Result) {
-                        $isTruncated = $response->get('IsTruncated');
-                        if (is_iterable($response->get('Contents'))) {
-                            foreach ($response->get('Contents') as $asset) {
-                                // Only return assets which are lowercase
-                                if (strcmp($asset['Key'], strtolower($asset['Key'])) === 0) {
-                                    $headers = $s3Client->headObject(['Bucket' => $s3Service->getBucket(), 'Key' => $asset['Key']]);
-                                    $awsListingData[$imageType][] = array_merge($asset, ['DisplayKey' => basename($asset['Key']), 'Metadata' => $headers->get('Metadata')]);
-                                }
-                            }
-                        }
-                    }
-
-                    if ($isTruncated) {
-                        $coreData['ContinuationToken'] = $response->get('NextContinuationToken');
-                    } else {
-                        unset($coreData['ContinuationToken']);
-                    }
-
-                    $page++;
-                } while ($isTruncated === true);
-
-                $cacheItem = $redisClient->getItem($cacheKey);
-                $cacheItem->set($awsListingData);
-                $redisClient->save($cacheItem);
-
-                $twigData['objects'] = $awsListingData;
-            }
+            $awsListingData[$imageType] = $s3Service->getImagesBasedOnConfig($coreData);
         }
+
+        $twigData['objects'] = $awsListingData;
 
 
         return $this->render('admin/images.list.html.twig', $twigData);
@@ -236,84 +195,9 @@ class ImagesController extends Controller
      */
     private function sendImageToAWS($imageType, $file, $fileName, $fileNameExt)
     {
-        switch ($imageType) {
-            case Type::TYPE_PANORAMIC:
-                $dirPrefix = 'pano';
-                $settings = [
-                    'lg' => [
-                        'width'   => 1199,
-                        'rows'    => null,
-                        'bestfit' => false,
-                    ],
-                    'md' => [
-                        'width'   => 991,
-                        'rows'    => null,
-                        'bestfit' => false,
-                    ],
-                    'sm' => [
-                        'width'   => 767,
-                        'rows'    => null,
-                        'bestfit' => false,
-                    ],
-                    'xs' => [
-                        'width'   => 575,
-                        'rows'    => null,
-                        'bestfit' => false,
-                    ],
-                ];
-                break;
-            case Type::TYPE_BACKGROUND:
-                $dirPrefix = 'backgrounds';
-                $settings = [
-                    'lg' => [
-                        'width'   => 1199,
-                        'rows'    => null,
-                        'bestfit' => false,
-                    ],
-                    'md' => [
-                        'width'   => 991,
-                        'rows'    => null,
-                        'bestfit' => false,
-                    ],
-                    'sm' => [
-                        'width'   => 767,
-                        'rows'    => null,
-                        'bestfit' => false,
-                    ],
-                    'xs' => [
-                        'width'   => 575,
-                        'rows'    => null,
-                        'bestfit' => false,
-                    ],
-                ];
-                break;
+        $dirPrefix =  $this->getImageTypeDirectory($imageType);
+        $settings = $this->getImageTypesSettings($imageType);
 
-            case Type::TYPE_CAROUSEL:
-                $dirPrefix = 'carousel';
-                $settings = [
-                    'lg' => [
-                        'width'   => 930,
-                        'rows'    => 800,
-                        'bestfit' => false,
-                    ],
-                    'md' => [
-                        'width'   => 690,
-                        'rows'    => 594,
-                        'bestfit' => false,
-                    ],
-                    'sm' => [
-                        'width'   => 510,
-                        'rows'    => 439,
-                        'bestfit' => false,
-                    ],
-                    'xs' => [
-                        'width'   => 290,
-                        'rows'    => 249,
-                        'bestfit' => false,
-                    ],
-                ];
-                break;
-        }
         /** @var \App\Utils\AwsS3Client $s3Service */
         $s3Service = $this->container->get('app.aws.s3');
         $s3Client = $s3Service->get();
