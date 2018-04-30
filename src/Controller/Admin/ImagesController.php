@@ -202,6 +202,11 @@ class ImagesController extends Controller
 
                     $page++;
                 } while ($isTruncated === true);
+
+                $cacheItem = $redisClient->getItem($cacheKey);
+                $cacheItem->set($awsListingData);
+                $redisClient->save($cacheItem);
+
                 $twigData['objects'] = $awsListingData;
             }
         }
