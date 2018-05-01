@@ -24,10 +24,14 @@
                         </thead>
                         <tbody>
                         {% if objects[imageType]|length > 0 %}
-                            {% for index,row in objects[imageType] %}
-                                <tr{% if row.Metadata.parent is defined %} data-parent="{{ row.Metadata.parent }}"{% endif %}>
-                                    <td scope="row">{{ index+1 }}</td>
-                                    <td>{% if row.Metadata.filename is not defined %}{{ row.DisplayKey }}{% else %}{{ row.Metadata.filename }}{% endif %}</td>
+                            {%  set index = 0 %}
+                            {% for row in objects[imageType] %}
+                                {% if row.Metadata.filename is defined %}
+                                    {%  set index = index + 1 %}
+                                {% endif %}
+                                <tr{% if row.Metadata.filename is defined %} data-row-id="{{ row.Key }}"{% elseif row.Metadata.parent is defined %} data-parent="{{ row.Metadata.parent }}"{% endif %}>
+                                    <td scope="row">{{ index }}</td>
+                                    <td>{% if row.Metadata.filename is not defined %}&nbsp;{% else %}{{ row.Metadata.filename }}{% endif %}</td>
                                     <td>{% if row.Key matches '/\-\-xs\./' %}Extra small devices<br/>
                                             <small>(portrait phones, less than 576px)
                                             </small>{% elseif row.Key matches '/\-\-sm\./' %}Small devices<br/>
@@ -54,4 +58,14 @@
         {% endfor %}
 
     </div>
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript">
+    $('tr[data-parent]').hide();
+
+    $('table.table').on('click', 'tr[data-row-id]', function(e) {
+        $(this).closest('table').find('tr[data-parent="' + $(this).data('row-id') + '"]').toggle();
+    })
+</script>
 {% endblock %}
