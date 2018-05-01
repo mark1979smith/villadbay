@@ -177,7 +177,11 @@ class AwsS3Client
                             // Only return assets which are lowercase
                             if (strcmp($asset['Key'], strtolower($asset['Key'])) === 0) {
                                 $headers = $s3Client->headObject(['Bucket' => $this->getBucket(), 'Key' => $asset['Key']]);
-                                $awsListingData[$key] = array_merge($asset, ['DisplayKey' => basename($asset['Key']), 'Metadata' => $headers->get('Metadata')]);
+                                $awsListingData[$key] = array_merge($asset, [
+                                    'CdnUrl' => $this->getImageCdn() . DIRECTORY_SEPARATOR . $asset['Key'],
+                                    'DisplayKey' => basename($asset['Key']),
+                                    'Metadata' => $headers->get('Metadata')
+                                ]);
                                 if (isset($headers->get('Metadata')['filename'])) {
                                     // This is the uploaded image
                                     $orderByAssetName[$key] = $asset['Key'];
