@@ -245,7 +245,7 @@ class AwsS3Client
             ]);
         }
 
-        $this->getCache()->get()->invalidateTags([self::CACHE_TAG_ASSET_LIST]);
+        $this->getCache()->invalidateTag(self::CACHE_TAG_ASSET_LIST);
     }
 
 }

@@ -246,16 +246,6 @@ class ImagesController extends Controller
 
         /** @var \App\Utils\Redis $redisService */
         $redisService = $this->container->get('app.redis');
-        $redisClient = $redisService->get();
-
-        $response = $s3Client->listObjectsV2([
-            'Bucket' => $s3Service->getBucket(),
-        ]);
-
-        $cacheKey = 'aws.s3.listobjects.' . $s3Service->getBucket();
-        $cacheItem = $redisClient->getItem($cacheKey);
-        $cacheItem->set($response);
-
-        $redisClient->save($cacheItem);
+        $redisService->invalidateTag($s3Service::CACHE_TAG_ASSET_LIST);
     }
 }

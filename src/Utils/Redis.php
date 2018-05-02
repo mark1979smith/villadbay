@@ -62,4 +62,26 @@ class Redis
 
         return $cache;
     }
+
+    /**
+     * @param string $tag
+     *
+     * @return bool|mixed
+     * @throws \Psr\Cache\InvalidArgumentException
+     */
+    public function invalidateTag(string $tag)
+    {
+        return $this->invalidateTags([$tag]);
+    }
+
+    /**
+     * @param array $tags
+     *
+     * @return bool|mixed
+     * @throws \Psr\Cache\InvalidArgumentException
+     */
+    public function invalidateTags(array $tags)
+    {
+        return $this->get()->invalidateTags($tags);
+    }
 }
