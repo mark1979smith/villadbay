@@ -14,6 +14,7 @@ use Aws\S3\S3Client;
 
 class AwsS3Client
 {
+    const CACHE_TAG_ASSET_LIST = 'asset-listing';
     use ImageTypes;
 
     /** @var  string */
@@ -217,10 +218,34 @@ class AwsS3Client
 
             $cacheItem = $this->getCache()->get()->getItem($cacheKey);
             $cacheItem->set($awsListingData);
+            $cacheItem->tag(self::CACHE_TAG_ASSET_LIST);
             $this->getCache()->get()->save($cacheItem);
 
             return $awsListingData;
         }
+    }
+
+    public function deleteImages($hash)
+    {
+        $coreData = [
+            'Prefix'     => $hash,
+            'Bucket'     => $this->getBucket(),
+            'MaxKeys'    => 1000,
+        ];
+
+        $response = $this->get()->listObjectsV2($coreData);
+        if ($response->hasKey('Contents') && is_iterable($response->get('Contents'))) {
+            $this->get()->deleteObjects([
+                'Bucket' => $this->getBucket(),
+                'Delete' => [
+                    'Objects' => array_map(function ($asset) {
+                        return ['Key' => $asset['Key']];
+                    }, $response->get('Contents')),
+                ],
+            ]);
+        }
+
+        $this->getCache()->get()->invalidateTags([self::CACHE_TAG_ASSET_LIST]);
     }
 
 }

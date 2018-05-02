@@ -9,6 +9,7 @@
 namespace App\Utils;
 
 use Symfony\Component\Cache\Adapter\RedisAdapter;
+use Symfony\Component\Cache\Adapter\TagAwareAdapter;
 
 class Redis
 {
@@ -23,6 +24,9 @@ class Redis
         $this->redisPort = $redisPort;
     }
 
+    /**
+     * @return \Symfony\Component\Cache\Adapter\TagAwareAdapter
+     */
     public function get()
     {
         $redisConnection = RedisAdapter::createConnection(
@@ -35,14 +39,25 @@ class Redis
                 'retry_interval' => 0,
             ]
         );
-        $cache = new RedisAdapter(
-            $redisConnection, // the object that stores a valid connection to your Redis system
-            // the string prefixed to the keys of the items stored in this cache
-            'app-',
-            // the default lifetime (in seconds) for cache items that do not define their
-            // own lifetime, with a value 0 causing items to be stored indefinitely (i.e.
-            // until RedisAdapter::clear() is invoked or the server(s) are purged)
-            0
+        $cache = new TagAwareAdapter(
+            new RedisAdapter(
+                $redisConnection, // the object that stores a valid connection to your Redis system
+                // the string prefixed to the keys of the items stored in this cache
+                'app-',
+                // the default lifetime (in seconds) for cache items that do not define their
+                // own lifetime, with a value 0 causing items to be stored indefinitely (i.e.
+                // until RedisAdapter::clear() is invoked or the server(s) are purged)
+                0
+            ),
+            new RedisAdapter(
+                $redisConnection, // the object that stores a valid connection to your Redis system
+                // the string prefixed to the keys of the items stored in this cache
+                'tags-',
+                // the default lifetime (in seconds) for cache items that do not define their
+                // own lifetime, with a value 0 causing items to be stored indefinitely (i.e.
+                // until RedisAdapter::clear() is invoked or the server(s) are purged)
+                0
+            )
         );
 
         return $cache;

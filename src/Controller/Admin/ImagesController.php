@@ -175,6 +175,20 @@ class ImagesController extends Controller
     }
 
     /**
+     * @Route("/delete/{key}", name="admin-images-delete", methods={"POST"})
+     */
+    public function delete($key)
+    {
+        /** @var \App\Utils\AwsS3Client $s3Service */
+        $s3Service = $this->container->get('app.aws.s3');
+        $s3Service->deleteImages(substr(base64_decode($key), 0, strrpos(base64_decode($key), '.')));
+
+        $this->addFlash('success', 'The image has been deleted');
+
+        return $this->redirectToRoute('admin-images-list');
+    }
+
+    /**
      * @return string
      */
     private function generateUniqueFileName()

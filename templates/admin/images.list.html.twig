@@ -47,7 +47,16 @@
                                             <small>(desktops, 992px and up)</small>{% else %}Extra large devices<br/>
                                             <small>(large desktops, 1200px and up)</small>{% endif %}</td>
                                     <td title="{{ row.Size }} B">{{ filesize.bytesToSize(row.Size) }}</td>
-                                    <td><a href="{{ row.CdnUrl }}"><span class="oi oi-cloud-download"></span></a></td>
+                                    <td>
+                                        <a href="{{ row.CdnUrl }}"><span class="oi oi-cloud-download"></span> Download</a>
+                                        {% if row.Metadata.filename is defined %}
+                                            <form method="post" action="{{ path('admin-images-delete', {'key': row.Key | base64_encode}) }}" class="form-inline">
+                                                <button type="submit" class="btn btn-link">
+                                                    <i class="oi oi-trash"></i> Delete
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                    </td>
                                 </tr>
                             {% endfor %}
                         {% else %}
