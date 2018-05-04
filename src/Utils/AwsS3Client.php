@@ -32,7 +32,18 @@ class AwsS3Client
     /** @var Redis|null */
     protected $cache;
 
-    public function __construct($version, $region, $bucket, $imageCdn, $cacheHandler = null)
+    protected $profiles = array();
+
+    /**
+     * AwsS3Client constructor.
+     *
+     * @param string                $version
+     * @param string                $region
+     * @param string                $bucket
+     * @param string                $imageCdn
+     * @param \App\Utils\Redis|null $cacheHandler
+     */
+    public function __construct(string $version = '', string $region, string $bucket, string $imageCdn, ?\App\Utils\Redis $cacheHandler = null)
     {
         $this->setVersion($version);
         $this->setRegion($region);
@@ -171,13 +182,16 @@ class AwsS3Client
             // Build up the assets list available on AWS S3
             do {
                 $response = $s3Client->listObjectsV2($config);
+                $this->profiles[] = array_merge(['_method' => __METHOD__ . ' listObjectsV2'], $config);
                 if ($response instanceof \Aws\Result) {
                     $isTruncated = $response->get('IsTruncated');
                     if (is_iterable($response->get('Contents'))) {
                         foreach ($response->get('Contents') as $key => $asset) {
                             // Only return assets which are lowercase
                             if (strcmp($asset['Key'], strtolower($asset['Key'])) === 0) {
-                                $headers = $s3Client->headObject(['Bucket' => $this->getBucket(), 'Key' => $asset['Key']]);
+                                $headData = ['Bucket' => $this->getBucket(), 'Key' => $asset['Key']];
+                                $this->profiles[] = array_merge(['_method' => __METHOD__ . ' headObject'], $headData);
+                                $headers = $s3Client->headObject($headData);
                                 $awsListingData[$key] = array_merge($asset, [
                                     'CdnUrl' => $this->getImageCdn() . DIRECTORY_SEPARATOR . $asset['Key'],
                                     'DisplayKey' => basename($asset['Key']),
@@ -234,18 +248,31 @@ class AwsS3Client
         ];
 
         $response = $this->get()->listObjectsV2($coreData);
+        $this->profiles[] = array_merge(['_method' => __METHOD__ . ' listObjectsV2'], $coreData);
         if ($response->hasKey('Contents') && is_iterable($response->get('Contents'))) {
-            $this->get()->deleteObjects([
+            $data = [
                 'Bucket' => $this->getBucket(),
                 'Delete' => [
                     'Objects' => array_map(function ($asset) {
                         return ['Key' => $asset['Key']];
                     }, $response->get('Contents')),
                 ],
-            ]);
+            ];
+            $this->profiles[] = array_merge(['_method' => __METHOD__ . ' deleteObjects'], $data);
+            $this->get()->deleteObjects($data);
         }
 
         $this->getCache()->invalidateTag(self::CACHE_TAG_ASSET_LIST);
     }
+
+    /**
+     * @return array
+     */
+    public function getProfiles(): array
+    {
+        return $this->profiles;
+    }
+
+
 
 }

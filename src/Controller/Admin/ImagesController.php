@@ -156,16 +156,22 @@ class ImagesController extends Controller
         /** @var \App\Utils\AwsS3Client $s3Service */
         $s3Service = $this->container->get('app.aws.s3');
 
+
         $awsListingData = [];
 
+        $coreData = [
+            'Prefix'     => 'images/',
+            'Bucket'     => $s3Service->getBucket(),
+            'MaxKeys'    => 1000,
+        ];
+        $awsData = $s3Service->getImagesBasedOnConfig($coreData);
+
         foreach ($twigData['imageTypes'] as $imageType) {
-            $coreData = [
-                'Prefix'     => 'images/'. $imageType,
-                'Bucket'     => $s3Service->getBucket(),
-                'MaxKeys'    => 1000,
-                'StartAfter' => 'images/'. $imageType .'/',
-            ];
-            $awsListingData[$imageType] = $s3Service->getImagesBasedOnConfig($coreData);
+            foreach ($awsData as $data) {
+                if (preg_match('/^'. preg_quote('images/' . $this->getImageTypeDirectory($imageType) .'/', '/') .'/', $data['Key'])) {
+                    $awsListingData[$imageType][] = $data;
+                }
+            }
         }
 
         $twigData['objects'] = $awsListingData;
@@ -247,5 +253,12 @@ class ImagesController extends Controller
         /** @var \App\Utils\Redis $redisService */
         $redisService = $this->container->get('app.redis');
         $redisService->invalidateTag($s3Service::CACHE_TAG_ASSET_LIST);
+
+        $coreData = [
+            'Prefix'     => 'images/',
+            'Bucket'     => $s3Service->getBucket(),
+            'MaxKeys'    => 1000,
+        ];
+        $s3Service->getImagesBasedOnConfig($coreData);
     }
 }

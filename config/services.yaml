@@ -23,7 +23,7 @@ services:
         autowire: true
         tags: ['doctrine.repository_service']
 
-    app.aws.s3:
+    App\Utils\AwsS3Client:
         class: App\Utils\AwsS3Client
         public: true
         arguments:
@@ -33,12 +33,20 @@ services:
             $imageCdn: '%env(IMAGE_CDN)%'
             $cacheHandler: '@app.redis'
 
-    app.redis:
+    app.aws.s3:
+        alias: App\Utils\AwsS3Client
+        public: true
+
+    App\Utils\Redis:
         class: App\Utils\Redis
         public: true
         arguments:
             $redisHost: '%env(REDIS_HOST)%'
             $redisPort: '%env(REDIS_PORT)%'
+
+    app.redis:
+        alias: App\Utils\Redis
+        public: true
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
@@ -48,3 +56,14 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    App\DataCollector\AwsS3Collector:
+        tags:
+            -
+                name:     data_collector
+                template: 'data_collector/aws_s3.html.twig'
+                # must match the value returned by the getName() method
+                id:       'app.aws_s3_collector'
+                # optional priority
+                # priority: 300
+        public: true
