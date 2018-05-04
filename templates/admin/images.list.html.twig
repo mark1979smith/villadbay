@@ -23,7 +23,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        {% if objects[imageType]|length > 0 %}
+                        {% if objects[imageType] is defined and objects[imageType]|length > 0 %}
                             {%  set index = 0 %}
                             {% for row in objects[imageType] %}
                                 {% if row.Metadata.filename is defined %}
@@ -51,7 +51,7 @@
                                         <a href="{{ row.CdnUrl }}"><span class="oi oi-cloud-download"></span> Download</a>
                                         {% if row.Metadata.filename is defined %}
                                             <form method="post" action="{{ path('admin-images-delete', {'key': row.Key | base64_encode}) }}" class="form-inline">
-                                                <button type="submit" class="btn btn-link">
+                                                <button type="submit" class="btn btn-link text-danger">
                                                     <i class="oi oi-trash"></i> Delete
                                                 </button>
                                             </form>
