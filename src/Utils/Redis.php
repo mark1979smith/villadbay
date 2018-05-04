@@ -8,6 +8,7 @@
 
 namespace App\Utils;
 
+use Psr\Cache\CacheItemInterface;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
 use Symfony\Component\Cache\Adapter\TagAwareAdapter;
 
@@ -18,6 +19,8 @@ class Redis
     /** @var  int the port number */
     private $redisPort;
 
+    protected $profiles = array();
+
     public function __construct($redisHost, $redisPort)
     {
         $this->redisHost = $redisHost;
@@ -27,8 +30,10 @@ class Redis
     /**
      * @return \Symfony\Component\Cache\Adapter\TagAwareAdapter
      */
-    public function get()
+    private function get()
     {
+        $this->profiles[] = ['_method' => __METHOD__];
+        
         $redisConnection = RedisAdapter::createConnection(
             'redis://' . $this->redisHost . ':' . $this->redisPort . '/cache/',
             [
@@ -64,6 +69,41 @@ class Redis
     }
 
     /**
+     * @param string $cacheKey
+     *
+     * @return bool
+     * @throws \Psr\Cache\InvalidArgumentException
+     */
+    public function hasItem(string $cacheKey)
+    {
+        $this->profiles[] = ['_method' => __METHOD__, 'Key' => $cacheKey];
+
+        return $this->get()->hasItem($cacheKey);
+    }
+
+    /**
+     * @param string $cacheKey
+     *
+     * @return mixed|\Symfony\Component\Cache\CacheItem
+     * @throws \Psr\Cache\InvalidArgumentException
+     */
+    public function getItem(string $cacheKey)
+    {
+        $this->profiles[] = ['_method' => __METHOD__, 'Key' => $cacheKey];
+
+        return $this->get()->getItem($cacheKey);
+    }
+
+    /**
+     * @return array
+     */
+    public function getProfiles(): array
+    {
+        return $this->profiles;
+    }
+
+
+    /**
      * @param string $tag
      *
      * @return bool|mixed
@@ -82,6 +122,18 @@ class Redis
      */
     public function invalidateTags(array $tags)
     {
+        $this->profiles[] = array_merge(['_method' => __METHOD__ . ' invalidateTags'], $tags);
         return $this->get()->invalidateTags($tags);
+    }
+
+    /**
+     * @param \Psr\Cache\CacheItemInterface $cacheItem
+     *
+     * @return bool
+     */
+    public function save(CacheItemInterface $cacheItem)
+    {
+        $this->profiles[] = ['_method' => __METHOD__];
+        return $this->get()->save($cacheItem);
     }
 }

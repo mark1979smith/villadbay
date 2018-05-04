@@ -139,23 +139,17 @@ class ImagesController extends Controller
 
     /**
      * @Route("/list", name="admin-images-list")
-     * @param \Symfony\Component\HttpFoundation\Request $request
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function list(Request $request)
+    public function list()
     {
-
         $twigData = [];
 
         $twigData['imageTypes'] = $this->getImageTypes();
 
-        /** @var \App\Utils\Redis $redisService */
-        $redisService = $this->container->get('app.redis');
-        $redisClient = $redisService->get();
         /** @var \App\Utils\AwsS3Client $s3Service */
         $s3Service = $this->container->get('app.aws.s3');
-
 
         $awsListingData = [];
 
@@ -220,12 +214,11 @@ class ImagesController extends Controller
 
         /** @var \App\Utils\AwsS3Client $s3Service */
         $s3Service = $this->container->get('app.aws.s3');
-        $s3Client = $s3Service->get();
 
         $imagick = new \Imagick($file->getPathname());
         $imagick->setImageCompressionQuality(80);
 
-        $s3Client->putObject([
+        $s3Service->putObject([
             'Bucket'        => $s3Service->getBucket(),
             'Key'           => 'images/' . $dirPrefix . '/' . $fileName . '.' . $fileNameExt,
             'Body'          => $imagick->getImageBlob(),
@@ -238,7 +231,7 @@ class ImagesController extends Controller
         if (isset($settings)) {
             foreach ($settings as $responsiveSizeClass => $thumbnailSettings) {
                 $imagick->scaleImage($thumbnailSettings['width'], $thumbnailSettings['rows'], $thumbnailSettings['bestfit']);
-                $s3Client->putObject([
+                $s3Service->putObject([
                     'Bucket'  => $s3Service->getBucket(),
                     'Key'     => 'images/' . $dirPrefix . '/' . $fileName . '--' . $responsiveSizeClass . '.' . $fileNameExt,
                     'Body'    => $imagick->getImageBlob(),

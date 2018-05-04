@@ -67,3 +67,14 @@ services:
                 # optional priority
                 # priority: 300
         public: true
+
+    App\DataCollector\RedisCollector:
+        tags:
+            -
+                name:     data_collector
+                template: 'data_collector/redis.html.twig'
+                # must match the value returned by the getName() method
+                id:       'app.redis_collector'
+                # optional priority
+                # priority: 300
+        public: true

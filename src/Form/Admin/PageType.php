@@ -297,24 +297,22 @@ class PageType extends AbstractType
     {
         /** @var \App\Utils\Redis $redisService */
         $redisService = $container->get('app.redis');
-        $redisClient = $redisService->get();
 
         /** @var \App\Utils\AwsS3Client $s3Service */
         $s3Service = $container->get('app.aws.s3');
-        $s3Client = $s3Service->get();
 
         $cacheKey = 'aws.s3.listobjects.'.$s3Service->getBucket() . md5(time());
-        if ($redisClient->hasItem($cacheKey)) {
-            $response = $redisClient->getItem($cacheKey)->get();
+        if ($redisService->hasItem($cacheKey)) {
+            $response = $redisService->getItem($cacheKey)->get();
         } else {
-            $response = $s3Client->listObjectsV2([
+            $response = $s3Service->getImagesBasedOnConfig([
                 'Bucket' => $s3Service->getBucket(),
             ]);
 
-            $cacheItem = $redisClient->getItem($cacheKey);
+            $cacheItem = $redisService->getItem($cacheKey);
             $cacheItem->set($response);
 
-            $redisClient->save($cacheItem);
+            $redisService->save($cacheItem);
         }
 
         $backgroundImages = [];
@@ -335,24 +333,22 @@ class PageType extends AbstractType
     {
         /** @var \App\Utils\Redis $redisService */
         $redisService = $container->get('app.redis');
-        $redisClient = $redisService->get();
 
         /** @var \App\Utils\AwsS3Client $s3Service */
         $s3Service = $container->get('app.aws.s3');
-        $s3Client = $s3Service->get();
 
         $cacheKey = 'aws.s3.listobjects.'.$s3Service->getBucket();
-        if ($redisClient->hasItem($cacheKey)) {
-            $response = $redisClient->getItem($cacheKey)->get();
+        if ($redisService->hasItem($cacheKey)) {
+            $response = $redisService->getItem($cacheKey)->get();
         } else {
-            $response = $s3Client->listObjectsV2([
+            $response = $s3Service->getImagesBasedOnConfig([
                 'Bucket' => $s3Service->getBucket(),
             ]);
 
-            $cacheItem = $redisClient->getItem($cacheKey);
+            $cacheItem = $redisService->getItem($cacheKey);
             $cacheItem->set($response);
 
-            $redisClient->save($cacheItem);
+            $redisService->save($cacheItem);
         }
 
         $panoImages = [];

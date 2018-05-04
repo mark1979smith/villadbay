@@ -43,7 +43,7 @@ class AwsS3Client
      * @param string                $imageCdn
      * @param \App\Utils\Redis|null $cacheHandler
      */
-    public function __construct(string $version = '', string $region, string $bucket, string $imageCdn, ?\App\Utils\Redis $cacheHandler = null)
+    public function __construct(string $version, string $region, string $bucket, string $imageCdn, ?\App\Utils\Redis $cacheHandler = null)
     {
         $this->setVersion($version);
         $this->setRegion($region);
@@ -54,8 +54,12 @@ class AwsS3Client
         }
     }
 
-    public function get()
+    /**
+     * @return \Aws\S3\S3Client
+     */
+    private function get()
     {
+        $this->profiles[] = ['_method' => __METHOD__];
         $s3 = new S3Client([
             'version' => $this->getVersion(),
             'region'  => $this->getRegion()
@@ -167,9 +171,9 @@ class AwsS3Client
     public function getImagesBasedOnConfig(array $config)
     {
         $cacheKey = 'aws.s3.listobjects.' . $this->getBucket() . '-' . md5(serialize($config));
-        if ($this->getCache()->get()->hasItem($cacheKey)) {
+        if ($this->getCache()->hasItem($cacheKey)) {
             /** \Aws\Result $results */
-            $results = $this->getCache()->get()->getItem($cacheKey)->get();
+            $results = $this->getCache()->getItem($cacheKey)->get();
             return $results;
         } else {
             $s3Client = $this->get();
@@ -230,10 +234,10 @@ class AwsS3Client
 
             array_multisort($orderByAssetName, SORT_ASC, $orderByAssetType, SORT_ASC, $awsListingData);
 
-            $cacheItem = $this->getCache()->get()->getItem($cacheKey);
+            $cacheItem = $this->getCache()->getItem($cacheKey);
             $cacheItem->set($awsListingData);
             $cacheItem->tag(self::CACHE_TAG_ASSET_LIST);
-            $this->getCache()->get()->save($cacheItem);
+            $this->getCache()->save($cacheItem);
 
             return $awsListingData;
         }
@@ -263,6 +267,18 @@ class AwsS3Client
         }
 
         $this->getCache()->invalidateTag(self::CACHE_TAG_ASSET_LIST);
+    }
+
+    /**
+     * @param array $config
+     *
+     * @return \Aws\Result
+     */
+    public function putObject(array $config)
+    {
+        $this->profiles[] = ['_method' => __METHOD__, 'Key' => $config['Key']];
+
+        return $this->get()->putObject($config);
     }
 
     /**
