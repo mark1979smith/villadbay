@@ -122,6 +122,8 @@ class ImagesController extends Controller
                 $fileNameExt = $file->guessExtension();
 
                 $this->sendImageToAWS($request->get('type'), $file, $fileName, $fileNameExt);
+
+                $this->addFlash('admin-success', 'Your image ('. $file->getClientOriginalName() .') has been uploaded successfully');
             }
         }
 
