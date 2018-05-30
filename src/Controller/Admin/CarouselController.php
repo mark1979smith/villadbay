@@ -8,8 +8,13 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Carousel;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -44,14 +49,28 @@ class CarouselController extends Controller
     /**
      * @Route("/create", name="admin-carousel-create")
      */
-    public function create(AuthorizationCheckerInterface $authorizationChecker)
+    public function create(AuthorizationCheckerInterface $authorizationChecker, Request $request)
     {
         if (false === $authorizationChecker->isGranted('ROLE_ADMIN')) {
             throw new AccessDeniedException('Unable to access this page!');
         }
 
+        $carousel = new Carousel();
+        $form = $this->createFormBuilder($carousel)
+            ->add('slug', TextType::class, ['label' => 'Name', 'attr' => [
+                'description' => 'Must be unique'],
+                'required' => true
+            ])
+            ->add('description', TextareaType::class)
+            ->add('send', SubmitType::class, ['label' => 'Create carousel'])
+            ->getForm();
+
+        $form->handleRequest($request);
+
+
         return $this->render('admin/carousel.create.html.twig', array(
             'selectedNav' => $this->selectedNav,
+            'form' => $form->createView()
         ));
 
     }
