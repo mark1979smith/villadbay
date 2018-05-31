@@ -100,7 +100,7 @@ class ResolveChildDefinitionsPass extends AbstractRecursivePass
         $def->setAutowired($parentDef->isAutowired());
         $def->setChanges($parentDef->getChanges());
 
-        $def->setBindings($parentDef->getBindings());
+        $def->setBindings($definition->getBindings() + $parentDef->getBindings());
 
         // overwrite with values specified in the decorator
         $changes = $definition->getChanges();
@@ -161,6 +161,10 @@ class ResolveChildDefinitionsPass extends AbstractRecursivePass
         // append method calls
         if ($calls = $definition->getMethodCalls()) {
             $def->setMethodCalls(array_merge($def->getMethodCalls(), $calls));
+        }
+
+        foreach (array_merge($parentDef->getErrors(), $definition->getErrors()) as $v) {
+            $def->addError($v);
         }
 
         // these attributes are always taken from the child

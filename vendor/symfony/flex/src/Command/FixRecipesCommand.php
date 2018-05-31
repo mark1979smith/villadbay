@@ -32,8 +32,9 @@ class FixRecipesCommand extends BaseCommand
 
     protected function configure()
     {
-        $this->setName('fix-recipes')
-            ->setDescription('Install missing recipes.')
+        $this->setName('symfony:fix-recipes')
+            ->setAliases(['fix-recipes'])
+            ->setDescription('Installs missing recipes.')
         ;
     }
 
@@ -62,6 +63,7 @@ class FixRecipesCommand extends BaseCommand
 
         $composer = $this->getComposer();
         $installedRepo = $composer->getRepositoryManager()->getLocalRepository();
+        $io = $this->getIO();
 
         $operations = [];
         foreach ($packages as $package) {
@@ -74,13 +76,10 @@ class FixRecipesCommand extends BaseCommand
             $operations[] = new InstallOperation($pkg);
         }
 
-        $this->flex->update(new EmptyEvent(), $operations);
-    }
-}
-
-class EmptyEvent extends Event
-{
-    public function __construct()
-    {
+        $this->flex->update(new class extends Event {
+            public function __construct()
+            {
+            }
+        }, $operations);
     }
 }

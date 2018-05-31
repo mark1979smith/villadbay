@@ -36,7 +36,7 @@ class FileManager
         // update EntityRegeneratorTest to mock the autoloader
         $this->fs = $fs;
         $this->autoloaderUtil = $autoloaderUtil;
-        $this->rootDirectory = rtrim($this->realpath($this->normalizeSlashes($rootDirectory)), '/');
+        $this->rootDirectory = rtrim($this->realPath($this->normalizeSlashes($rootDirectory)), '/');
     }
 
     public function setIO(SymfonyStyle $io)
@@ -163,6 +163,11 @@ class FileManager
         return $this->autoloaderUtil->getNamespacePrefixForClass($className);
     }
 
+    public function isNamespaceConfiguredToAutoload(string $namespace): bool
+    {
+        return $this->autoloaderUtil->isNamespaceConfiguredToAutoload($namespace);
+    }
+
     /**
      * Resolve '../' in paths (like real_path), but for non-existent files.
      *
@@ -196,8 +201,7 @@ class FileManager
         $finalPath = implode('/', $finalParts);
         // Normalize: // => /
         // Normalize: /./ => /
-        $finalPath = str_replace('//', '/', $finalPath);
-        $finalPath = str_replace('/./', '/', $finalPath);
+        $finalPath = str_replace(['//', '/./'], '/', $finalPath);
 
         return $finalPath;
     }

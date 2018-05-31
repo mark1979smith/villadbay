@@ -135,14 +135,14 @@ final class MakerTestEnvironment
 
     public function runMaker()
     {
+        $this->preMake();
+
         MakerTestProcess::create('php bin/console cache:clear --no-ansi', $this->path)
                         ->run();
 
-        $this->preMake();
-
         // We don't need ansi coloring in tests!
         $testProcess = MakerTestProcess::create(
-            sprintf('php bin/console %s %s --no-ansi', ($this->testDetails->getMaker())::getCommandName(), $this->testDetails->getArgumentsString()),
+            sprintf('php bin/console %s %s --no-ansi', $this->testDetails->getMaker()::getCommandName(), $this->testDetails->getArgumentsString()),
             $this->path,
             10
         );
@@ -184,9 +184,7 @@ final class MakerTestEnvironment
 
         preg_match_all('#(created|updated): (.*)\n#iu', $output, $matches, PREG_PATTERN_ORDER);
 
-        $files = array_map('trim', $matches[2]);
-
-        return $files;
+        return array_map('trim', $matches[2]);
     }
 
     public function fileExists(string $file)
@@ -237,7 +235,7 @@ final class MakerTestEnvironment
 
         $diff = array_diff($currentSnapshot, $cleanSnapshot);
 
-        if (count($diff)) {
+        if (\count($diff)) {
             $this->fs->remove($diff);
         }
 

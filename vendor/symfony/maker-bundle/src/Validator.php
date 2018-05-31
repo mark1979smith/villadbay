@@ -150,7 +150,7 @@ final class Validator
         self::notBlank($className);
 
         if (!class_exists($className)) {
-            $errorMessage = $errorMessage ?: sprintf('Class "%s" does\'t exists. Please enter existing full class name', $className);
+            $errorMessage = $errorMessage ?: sprintf('Class "%s" doesn\'t exists. Please enter existing full class name', $className);
 
             throw new RuntimeCommandException($errorMessage);
         }
@@ -163,14 +163,14 @@ final class Validator
         self::notBlank($className);
 
         if (empty($entites)) {
-            throw new RuntimeCommandException(sprintf('There is no registered entites. Please create entity before use this command', $className));
+            throw new RuntimeCommandException('There is no registered entites. Please create entity before use this command');
         }
 
         if (0 === strpos($className, '\\')) {
             self::classExists($className, sprintf('Entity "%s" does\'t exists. Please enter existing one or create new', $className));
         }
 
-        if (!in_array($className, $entites)) {
+        if (!\in_array($className, $entites)) {
             throw new RuntimeCommandException(sprintf('Entity "%s" does\'t exists. Please enter existing one or create new', $className));
         }
 

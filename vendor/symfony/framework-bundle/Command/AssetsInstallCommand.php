@@ -12,6 +12,7 @@
 namespace Symfony\Bundle\FrameworkBundle\Command;
 
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -58,6 +59,7 @@ class AssetsInstallCommand extends Command
             ))
             ->addOption('symlink', null, InputOption::VALUE_NONE, 'Symlinks the assets instead of copying it')
             ->addOption('relative', null, InputOption::VALUE_NONE, 'Make relative symlinks')
+            ->addOption('no-cleanup', null, InputOption::VALUE_NONE, 'Do not remove the assets of the bundles that no longer exist')
             ->setDescription('Installs bundles web assets under a public directory')
             ->setHelp(<<<'EOT'
 The <info>%command.name%</info> command installs bundle assets into a given
@@ -94,7 +96,7 @@ EOT
             $targetArg = $kernel->getContainer()->getParameter('kernel.project_dir').'/'.$targetArg;
 
             if (!is_dir($targetArg)) {
-                throw new \InvalidArgumentException(sprintf('The target directory "%s" does not exist.', $input->getArgument('target')));
+                throw new InvalidArgumentException(sprintf('The target directory "%s" does not exist.', $input->getArgument('target')));
             }
         }
 
@@ -162,7 +164,7 @@ EOT
             }
         }
         // remove the assets of the bundles that no longer exist
-        if (is_dir($bundlesDir)) {
+        if (!$input->getOption('no-cleanup') && is_dir($bundlesDir)) {
             $dirsToRemove = Finder::create()->depth(0)->directories()->exclude($validAssetDirs)->in($bundlesDir);
             $this->filesystem->remove($dirsToRemove);
         }

@@ -60,6 +60,7 @@ class Flex implements PluginInterface, EventSubscriberInterface
     private $displayThanksReminder = 0;
     private $rfs;
     private $progress = true;
+    private $dryRun = false;
     private static $activated = true;
     private static $repoReadingCommands = [
         'create-project' => true,
@@ -175,6 +176,10 @@ class Flex implements PluginInterface, EventSubscriberInterface
                 $this->progress = !$input->getOption('no-progress');
             }
 
+            if ($input->hasOption('dry-run')) {
+                $this->dryRun = $input->getOption('dry-run');
+            }
+
             $composerFile = Factory::getComposerFile();
             if ($populateRepoCacheDir && isset(self::$repoReadingCommands[$command]) && ('install' !== $command || (file_exists($composerFile) && !file_exists(substr($composerFile, 0, -4).'lock')))) {
                 $this->populateRepoCacheDir();
@@ -185,6 +190,7 @@ class Flex implements PluginInterface, EventSubscriberInterface
             $app->add(new Command\RemoveCommand($resolver));
             $app->add(new Command\UnpackCommand($resolver));
             $app->add(new Command\FixRecipesCommand($this));
+            $app->add(new Command\GenerateIdCommand($this));
 
             break;
         }
@@ -433,7 +439,7 @@ class Flex implements PluginInterface, EventSubscriberInterface
 
     public function populateFilesCacheDir(InstallerEvent $event)
     {
-        if ($this->cacheDirPopulated) {
+        if ($this->cacheDirPopulated || $this->dryRun) {
             return;
         }
         $this->cacheDirPopulated = true;
@@ -493,6 +499,20 @@ class Flex implements PluginInterface, EventSubscriberInterface
         if ($event->getRemoteFilesystem() !== $this->rfs) {
             $event->setRemoteFilesystem($this->rfs->setNextOptions($event->getRemoteFilesystem()->getOptions()));
         }
+    }
+
+    public function generateFlexId()
+    {
+        if ($this->getFlexId()) {
+            return;
+        }
+
+        $json = new JsonFile(Factory::getComposerFile());
+        $manipulator = new JsonManipulator(file_get_contents($json->getPath()));
+        $manipulator->addSubNode('extra', 'symfony.id', $this->downloader->get('/ulid')->getBody()['ulid']);
+        file_put_contents($json->getPath(), $manipulator->getContents());
+
+        $this->updateComposerLock();
     }
 
     private function fetchRecipes(): array
@@ -563,27 +583,7 @@ class Flex implements PluginInterface, EventSubscriberInterface
     {
         $extra = $this->composer->getPackage()->getExtra();
 
-        // don't want to be registered
-        if (getenv('SYMFONY_SKIP_REGISTRATION') || !isset($extra['symfony']['id'])) {
-            return null;
-        }
-
-        // already registered
-        if ($extra['symfony']['id']) {
-            return $extra['symfony']['id'];
-        }
-
-        // get a new ID
-        $id = $this->downloader->get('/ulid')->getBody()['ulid'];
-
-        // update composer.json
-        $json = new JsonFile(Factory::getComposerFile());
-        $manipulator = new JsonManipulator(file_get_contents($json->getPath()));
-        $manipulator->addSubNode('extra', 'symfony.id', $id);
-        file_put_contents($json->getPath(), $manipulator->getContents());
-        $this->shouldUpdateComposerLock = true;
-
-        return $id;
+        return $extra['symfony']['id'] ?? null;
     }
 
     private function formatOrigin(string $origin): string
