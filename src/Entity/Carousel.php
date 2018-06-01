@@ -5,11 +5,15 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\UniqueConstraint;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CarouselRepository")
- * @ORM\Table(name="carousel",uniqueConstraints={@ORM\UniqueConstraint(name="slug", columns={"slug"})})
+ * @ORM\Table(name="carousel",uniqueConstraints={@ORM\UniqueConstraint(name="name", columns={"name"})})
+ * @UniqueEntity(
+ *     fields={"name"}
+ * )
  */
 class Carousel
 {
@@ -22,12 +26,16 @@ class Carousel
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=25)
+     * @ORM\Column(type="string", length=25, unique=true)
+     * @Assert\Regex("/^[\w\s]+$/")
+     * @Assert\NotBlank()
+     * @Assert\Length(max = 25)
      */
-    private $slug;
+    private $name;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length(max = 255)
      */
     private $description;
 
@@ -41,18 +49,6 @@ class Carousel
         return $this->id;
     }
 
-    public function getSlug(): ?string
-    {
-        return $this->slug;
-    }
-
-    public function setSlug(string $slug): self
-    {
-        $this->slug = $slug;
-
-        return $this;
-    }
-
     public function getDescription(): ?string
     {
         return $this->description;
@@ -61,6 +57,18 @@ class Carousel
     public function setDescription(?string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function setName($name): self
+    {
+        $this->name = $name;
 
         return $this;
     }
