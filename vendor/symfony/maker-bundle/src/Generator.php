@@ -25,11 +25,11 @@ class Generator
     private $pendingOperations = [];
     private $namespacePrefix;
 
-    public function __construct(FileManager $fileManager, $namespacePrefix)
+    public function __construct(FileManager $fileManager, string $namespacePrefix)
     {
         $this->fileManager = $fileManager;
         $this->twigHelper = new GeneratorTwigHelper($fileManager);
-        $this->namespacePrefix = rtrim($namespacePrefix, '\\');
+        $this->namespacePrefix = trim($namespacePrefix, '\\');
     }
 
     /**
@@ -40,7 +40,7 @@ class Generator
         $targetPath = $this->fileManager->getRelativePathForFutureClass($className);
 
         if (null === $targetPath) {
-            throw new \LogicException(sprintf('Could not determine where to locate the new class "%s".', $className));
+            throw new \LogicException(sprintf('Could not determine where to locate the new class "%s", maybe try with a full namespace like "\\My\\Full\\Namespace\\%s"', $className, Str::getShortClassName($className)));
         }
 
         $variables = array_merge($variables, [
@@ -169,5 +169,10 @@ class Generator
         }
 
         $this->pendingOperations = [];
+    }
+
+    public function getRootNamespace(): string
+    {
+        return $this->namespacePrefix;
     }
 }

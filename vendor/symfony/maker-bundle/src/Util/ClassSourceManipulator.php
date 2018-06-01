@@ -84,9 +84,9 @@ final class ClassSourceManipulator
 
     public function addEntityField(string $propertyName, array $columnOptions)
     {
-        $typeHint = self::getEntityTypeHint($columnOptions['type']);
-        $nullable = isset($columnOptions['nullable']) ? $columnOptions['nullable'] : false;
-        $isId = (bool) isset($columnOptions['id']) && $columnOptions['id'];
+        $typeHint = $this->getEntityTypeHint($columnOptions['type']);
+        $nullable = $columnOptions['nullable'] ?? false;
+        $isId = (bool) ($columnOptions['id'] ?? false);
 
         $this->addProperty($propertyName, [
             $this->buildAnnotationLine('@ORM\Column', $columnOptions),
@@ -104,6 +104,46 @@ final class ClassSourceManipulator
         if (!$isId) {
             $this->addSetter($propertyName, $typeHint, $nullable);
         }
+    }
+
+    public function addEmbeddedEntity(string $propertyName, string $className)
+    {
+        $typeHint = $this->addUseStatementIfNecessary($className);
+
+        $annotations = [
+            $this->buildAnnotationLine(
+                '@ORM\\Embedded',
+                [
+                    'class' => $className,
+                ]
+            ),
+        ];
+
+        $this->addProperty($propertyName, $annotations);
+
+        // logic to avoid re-adding the same ArrayCollection line
+        $addEmbedded = true;
+        if ($this->getConstructorNode()) {
+            // We print the constructor to a string, then
+            // look for "$this->propertyName = "
+
+            $constructorString = $this->printer->prettyPrint([$this->getConstructorNode()]);
+            if (false !== strpos($constructorString, sprintf('$this->%s = ', $propertyName))) {
+                $addEmbedded = false;
+            }
+        }
+
+        if ($addEmbedded) {
+            $this->addStatementToConstructor(
+                new Node\Stmt\Expression(new Node\Expr\Assign(
+                    new Node\Expr\PropertyFetch(new Node\Expr\Variable('this'), $propertyName),
+                    new Node\Expr\New_(new Node\Name($typeHint))
+                ))
+            );
+        }
+
+        $this->addGetter($propertyName, $typeHint, false);
+        $this->addSetter($propertyName, $typeHint, false);
     }
 
     public function addManyToOneRelation(RelationManyToOne $manyToOne)
@@ -204,14 +244,11 @@ final class ClassSourceManipulator
     private function buildAnnotationLine(string $annotationClass, array $options)
     {
         $formattedOptions = array_map(function ($option, $value) {
-            if (is_array($value)) {
+            if (\is_array($value)) {
                 if (!isset($value[0])) {
                     return sprintf('%s={%s}', $option, implode(', ', array_map(function ($val, $key) {
                         return sprintf('"%s" = %s', $key, $this->quoteAnnotationValue($val));
                     }, $value, array_keys($value))));
-
-                    // associative array: we'll add this if/when we need it
-                    throw new \Exception('Not currently supported');
                 }
 
                 return sprintf('%s={%s}', $option, implode(', ', array_map(function ($val) {
@@ -227,7 +264,7 @@ final class ClassSourceManipulator
 
     private function quoteAnnotationValue($value)
     {
-        if (is_bool($value)) {
+        if (\is_bool($value)) {
             return $value ? 'true' : 'false';
         }
 
@@ -235,11 +272,11 @@ final class ClassSourceManipulator
             return 'null';
         }
 
-        if (is_int($value)) {
+        if (\is_int($value)) {
             return $value;
         }
 
-        if (is_array($value)) {
+        if (\is_array($value)) {
             throw new \Exception('Invalid value: loop before quoting.');
         }
 
@@ -495,7 +532,20 @@ final class ClassSourceManipulator
     private function addStatementToConstructor(Node\Stmt $stmt)
     {
         if (!$this->getConstructorNode()) {
-            $constructorNode = $getterNodeBuilder = (new Builder\Method('__construct'))->makePublic()->getNode();
+            $constructorNode = (new Builder\Method('__construct'))->makePublic()->getNode();
+
+            // add call to parent::__construct() if there is a need to
+            try {
+                $ref = new \ReflectionClass($this->getThisFullClassName());
+
+                if ($ref->getParentClass() && $ref->getParentClass()->getConstructor()) {
+                    $constructorNode->stmts[] = new Node\Stmt\Expression(
+                        new Node\Expr\StaticCall(new Node\Name('parent'), new Node\Identifier('__construct'))
+                    );
+                }
+            } catch (\ReflectionException $e) {
+            }
+
             $this->addNodeAfterProperties($constructorNode);
         }
 
@@ -609,9 +659,7 @@ final class ClassSourceManipulator
         );
 
         // this fake property is a placeholder for a linebreak
-        $newCode = str_replace('    private $__EXTRA__LINE;', '', $newCode);
-        $newCode = str_replace('use __EXTRA__LINE;', '', $newCode);
-        $newCode = str_replace('        $__EXTRA__LINE;', '', $newCode);
+        $newCode = str_replace(['    private $__EXTRA__LINE;', 'use __EXTRA__LINE;', '        $__EXTRA__LINE;'], '', $newCode);
 
         // process comment lines
         foreach ($this->pendingComments as $i => $comment) {
@@ -734,7 +782,7 @@ final class ClassSourceManipulator
                 // just not needed yet
                 throw new \Exception('not supported');
             case self::CONTEXT_CLASS_METHOD:
-                return BuilderHelpers::normalizeStmt(new Node\Expr\Variable(sprintf('__COMMENT__VAR_%d', (count($this->pendingComments) - 1))));
+                return BuilderHelpers::normalizeStmt(new Node\Expr\Variable(sprintf('__COMMENT__VAR_%d', \count($this->pendingComments) - 1)));
             default:
                 throw new \Exception('Unknown context: '.$context);
         }
@@ -836,16 +884,16 @@ final class ClassSourceManipulator
             case 'datetimetz':
             case 'date':
             case 'time':
-                return '\DateTimeInterface';
+                return '\\'.\DateTimeInterface::class;
 
             case 'datetime_immutable':
             case 'datetimetz_immutable':
             case 'date_immutable':
             case 'time_immutable':
-                return '\DateTimeImmutable';
+                return '\\'.\DateTimeImmutable::class;
 
             case 'dateinterval':
-                return '\DateInterval';
+                return '\\'.\DateInterval::class;
 
             case 'json_array':
             case 'json':
@@ -997,7 +1045,7 @@ final class ClassSourceManipulator
 
     private function methodExists(string $methodName): bool
     {
-        return false === $this->getMethodIndex($methodName) ? false : true;
+        return false !== $this->getMethodIndex($methodName);
     }
 
     private function getMethodIndex(string $methodName)

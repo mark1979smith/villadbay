@@ -61,7 +61,8 @@ class UrlValidator extends ConstraintValidator
             return;
         }
 
-        $pattern = sprintf(static::PATTERN, implode('|', $constraint->protocols));
+        $pattern = $constraint->relativeProtocol ? str_replace('(%s):', '(?:(%s):)?', static::PATTERN) : static::PATTERN;
+        $pattern = sprintf($pattern, implode('|', $constraint->protocols));
 
         if (!preg_match($pattern, $value)) {
             $this->context->buildViolation($constraint->message)
@@ -86,7 +87,7 @@ class UrlValidator extends ConstraintValidator
                 Url::CHECK_DNS_TYPE_SOA,
                 Url::CHECK_DNS_TYPE_SRV,
                 Url::CHECK_DNS_TYPE_TXT,
-            ))) {
+            ), true)) {
                 throw new InvalidOptionsException(sprintf('Invalid value for option "checkDNS" in constraint %s', get_class($constraint)), array('checkDNS'));
             }
 

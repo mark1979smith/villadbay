@@ -38,12 +38,14 @@ final class MakerCommand extends Command
     /** @var ConsoleStyle */
     private $io;
     private $checkDependencies = true;
+    private $generator;
 
-    public function __construct(MakerInterface $maker, FileManager $fileManager)
+    public function __construct(MakerInterface $maker, FileManager $fileManager, Generator $generator)
     {
         $this->maker = $maker;
         $this->fileManager = $fileManager;
         $this->inputConfig = new InputConfiguration();
+        $this->generator = $generator;
 
         parent::__construct();
     }
@@ -56,11 +58,11 @@ final class MakerCommand extends Command
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
         $this->io = new ConsoleStyle($input, $output);
-        $this->fileManager->setIo($this->io);
+        $this->fileManager->setIO($this->io);
 
         if ($this->checkDependencies) {
             $dependencies = new DependencyBuilder();
-            $this->maker->configureDependencies($dependencies);
+            $this->maker->configureDependencies($dependencies, $input);
 
             if ($missingPackagesMessage = $dependencies->getMissingPackagesMessage($this->getName())) {
                 throw new RuntimeCommandException($missingPackagesMessage);
@@ -70,12 +72,19 @@ final class MakerCommand extends Command
 
     protected function interact(InputInterface $input, OutputInterface $output)
     {
+        if (!$this->fileManager->isNamespaceConfiguredToAutoload($this->generator->getRootNamespace())) {
+            $this->io->note([
+                sprintf('It looks like your app may be using a namespace other than "%s".', $this->generator->getRootNamespace()),
+                'To configure this and make your life easier, see: https://symfony.com/doc/current/bundles/SymfonyMakerBundle/index.html#configuration.',
+            ]);
+        }
+
         foreach ($this->getDefinition()->getArguments() as $argument) {
             if ($input->getArgument($argument->getName())) {
                 continue;
             }
 
-            if (in_array($argument->getName(), $this->inputConfig->getNonInteractiveArguments(), true)) {
+            if (\in_array($argument->getName(), $this->inputConfig->getNonInteractiveArguments(), true)) {
                 continue;
             }
 
@@ -88,12 +97,10 @@ final class MakerCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $generator = new Generator($this->fileManager, 'App\\');
-
-        $this->maker->generate($input, $this->io, $generator);
+        $this->maker->generate($input, $this->io, $this->generator);
 
         // sanity check for custom makers
-        if ($generator->hasPendingOperations()) {
+        if ($this->generator->hasPendingOperations()) {
             throw new \LogicException('Make sure to call the writeChanges() method on the generator.');
         }
     }

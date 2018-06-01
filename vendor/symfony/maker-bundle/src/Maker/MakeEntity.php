@@ -11,6 +11,7 @@
 
 namespace Symfony\Bundle\MakerBundle\Maker;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\Column;
@@ -20,6 +21,7 @@ use Symfony\Bundle\MakerBundle\DependencyBuilder;
 use Symfony\Bundle\MakerBundle\Doctrine\DoctrineHelper;
 use Symfony\Bundle\MakerBundle\Exception\RuntimeCommandException;
 use Symfony\Bundle\MakerBundle\Generator;
+use Symfony\Bundle\MakerBundle\InputAwareMakerInterface;
 use Symfony\Bundle\MakerBundle\InputConfiguration;
 use Symfony\Bundle\MakerBundle\Str;
 use Symfony\Bundle\MakerBundle\Doctrine\EntityRegenerator;
@@ -31,24 +33,33 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Finder\SplFileInfo;
 
 /**
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  * @author Ryan Weaver <weaverryan@gmail.com>
+ * @author Kévin Dunglas <dunglas@gmail.com>
  */
-final class MakeEntity extends AbstractMaker
+final class MakeEntity extends AbstractMaker implements InputAwareMakerInterface
 {
     private $fileManager;
     private $doctrineHelper;
-    private $projectDirectory;
+    private $generator;
 
-    public function __construct(FileManager $fileManager, string $projectDirectory, DoctrineHelper $doctrineHelper)
+    public function __construct(FileManager $fileManager, DoctrineHelper $doctrineHelper, string $projectDirectory, Generator $generator = null)
     {
         $this->fileManager = $fileManager;
-        $this->projectDirectory = $projectDirectory;
         $this->doctrineHelper = $doctrineHelper;
+        // $projectDirectory is unused, argument kept for BC
+
+        if (null === $generator) {
+            @trigger_error(sprintf('Passing a "%s" instance as 4th argument is mandatory since version 1.5.', Generator::class), E_USER_DEPRECATED);
+            $this->generator = new Generator($fileManager, 'App\\');
+        } else {
+            $this->generator = $generator;
+        }
     }
 
     public static function getCommandName(): string
@@ -59,8 +70,9 @@ final class MakeEntity extends AbstractMaker
     public function configureCommand(Command $command, InputConfiguration $inputConf)
     {
         $command
-            ->setDescription('Creates or updates a Doctrine entity class')
+            ->setDescription('Creates or updates a Doctrine entity class, and optionally an API Platform resource')
             ->addArgument('name', InputArgument::OPTIONAL, sprintf('Class name of the entity to create or update (e.g. <fg=yellow>%s</>)', Str::asClassName(Str::getRandomTerm())))
+            ->addOption('api-resource', 'a', InputOption::VALUE_NONE, 'Mark this class as an API Platform resource (expose a CRUD API for it)')
             ->addOption('regenerate', null, InputOption::VALUE_NONE, 'Instead of adding new fields, simply generate the methods (e.g. getter/setter) for existing fields')
             ->addOption('overwrite', null, InputOption::VALUE_NONE, 'Overwrite any existing getter/setter methods')
             ->setHelp(file_get_contents(__DIR__.'/../Resources/help/MakeEntity.txt'))
@@ -80,7 +92,7 @@ final class MakeEntity extends AbstractMaker
                 'This command will generate any missing methods (e.g. getters & setters) for a class or all classes in a namespace.',
                 'To overwrite any existing methods, re-run this command with the --overwrite flag',
             ], null, 'fg=yellow');
-            $classOrNamespace = $io->ask('Enter a class or namespace to regenerate', 'App\\Entity', [Validator::class, 'notBlank']);
+            $classOrNamespace = $io->ask('Enter a class or namespace to regenerate', $this->getEntityNamespace(), [Validator::class, 'notBlank']);
 
             $input->setArgument('name', $classOrNamespace);
 
@@ -98,7 +110,7 @@ final class MakeEntity extends AbstractMaker
                 continue;
             }
 
-            $classes[] = str_replace('/', '\\', str_replace('.php', '', $item->getRelativePathname()));
+            $classes[] = str_replace(['.php', '/'], ['', '\\'], $item->getRelativePathname());
         }
 
         $argument = $command->getDefinition()->getArgument('name');
@@ -106,6 +118,18 @@ final class MakeEntity extends AbstractMaker
         $value = $io->askQuestion($question);
 
         $input->setArgument('name', $value);
+
+        if (
+            !$input->getOption('api-resource') &&
+            class_exists(ApiResource::class) &&
+            !class_exists($this->generator->createClassNameDetails($value, 'Entity\\')->getFullName())
+        ) {
+            $description = $command->getDefinition()->getOption('api-resource')->getDescription();
+            $question = new ConfirmationQuestion($description, false);
+            $value = $io->askQuestion($question);
+
+            $input->setOption('api-resource', $value);
+        }
     }
 
     public function generate(InputInterface $input, ConsoleStyle $io, Generator $generator)
@@ -142,6 +166,7 @@ final class MakeEntity extends AbstractMaker
                 'doctrine/Entity.tpl.php',
                 [
                     'repository_full_class_name' => $repositoryClassDetails->getFullName(),
+                    'api_resource' => $input->getOption('api-resource'),
                 ]
             );
 
@@ -191,7 +216,7 @@ final class MakeEntity extends AbstractMaker
             $fileManagerOperations = [];
             $fileManagerOperations[$entityPath] = $manipulator;
 
-            if (is_array($newField)) {
+            if (\is_array($newField)) {
                 $annotationOptions = $newField;
                 unset($annotationOptions['fieldName']);
                 $manipulator->addEntityField($newField['fieldName'], $annotationOptions);
@@ -254,7 +279,7 @@ final class MakeEntity extends AbstractMaker
             }
 
             foreach ($fileManagerOperations as $path => $manipulatorOrMessage) {
-                if (is_string($manipulatorOrMessage)) {
+                if (\is_string($manipulatorOrMessage)) {
                     $io->comment($manipulatorOrMessage);
                 } else {
                     $this->fileManager->dumpFile($path, $manipulatorOrMessage->getSourceCode());
@@ -269,8 +294,15 @@ final class MakeEntity extends AbstractMaker
         ]);
     }
 
-    public function configureDependencies(DependencyBuilder $dependencies)
+    public function configureDependencies(DependencyBuilder $dependencies, InputInterface $input = null)
     {
+        if (null !== $input && $input->getOption('api-resource')) {
+            $dependencies->addClassDependency(
+                ApiResource::class,
+                'api'
+            );
+        }
+
         // guarantee DoctrineBundle
         $dependencies->addClassDependency(
             DoctrineBundle::class,
@@ -300,7 +332,7 @@ final class MakeEntity extends AbstractMaker
                 return $name;
             }
 
-            if (in_array($name, $fields)) {
+            if (\in_array($name, $fields)) {
                 throw new \InvalidArgumentException(sprintf('The "%s" property already exists.', $name));
             }
 
@@ -308,20 +340,21 @@ final class MakeEntity extends AbstractMaker
         });
 
         if (!$fieldName) {
-            return;
+            return null;
         }
 
         $defaultType = 'string';
         // try to guess the type by the field name prefix/suffix
         // convert to snake case for simplicity
         $snakeCasedField = Str::asSnakeCase($fieldName);
-        if ('_at' == substr($snakeCasedField, -3)) {
+
+        if ('_at' === $suffix = substr($snakeCasedField, -3)) {
             $defaultType = 'datetime';
-        } elseif ('_id' == substr($snakeCasedField, -3)) {
+        } elseif ('_id' === $suffix) {
             $defaultType = 'integer';
-        } elseif ('is_' == substr($snakeCasedField, 0, 3)) {
+        } elseif (0 === strpos($snakeCasedField, 'is_')) {
             $defaultType = 'boolean';
-        } elseif ('has_' == substr($snakeCasedField, 0, 4)) {
+        } elseif (0 === strpos($snakeCasedField, 'has_')) {
             $defaultType = 'boolean';
         }
 
@@ -341,7 +374,7 @@ final class MakeEntity extends AbstractMaker
                 $io->writeln('');
 
                 $type = null;
-            } elseif (!in_array($type, $allValidTypes)) {
+            } elseif (!\in_array($type, $allValidTypes)) {
                 $this->printAvailableTypes($io);
                 $io->error(sprintf('Invalid type "%s".', $type));
                 $io->writeln('');
@@ -350,7 +383,7 @@ final class MakeEntity extends AbstractMaker
             }
         }
 
-        if ('relation' === $type || in_array($type, EntityRelation::getValidRelationTypes())) {
+        if ('relation' === $type || \in_array($type, EntityRelation::getValidRelationTypes())) {
             return $this->askRelationDetails($io, $entityClass, $type, $fieldName);
         }
 
@@ -364,7 +397,7 @@ final class MakeEntity extends AbstractMaker
             $data['precision'] = $io->ask('Precision (total number of digits stored: 100.00 would be 5)', 10, [Validator::class, 'validatePrecision']);
 
             // 0 is the default value given in \Doctrine\DBAL\Schema\Column::$_scale
-            $data['precision'] = $io->ask('Scale (number of decimals to store: 100.00 would be 2)', 0, [Validator::class, 'validateScale']);
+            $data['scale'] = $io->ask('Scale (number of decimals to store: 100.00 would be 2)', 0, [Validator::class, 'validateScale']);
         }
 
         if ($io->confirm('Can this field be null in the database (nullable)', false)) {
@@ -414,9 +447,9 @@ final class MakeEntity extends AbstractMaker
                 unset($allTypes[$mainType]);
                 $line = sprintf('  * <comment>%s</comment>', $mainType);
 
-                if (is_string($subTypes) && $subTypes) {
+                if (\is_string($subTypes) && $subTypes) {
                     $line .= sprintf(' (%s)', $subTypes);
-                } elseif (is_array($subTypes) && !empty($subTypes)) {
+                } elseif (\is_array($subTypes) && !empty($subTypes)) {
                     $line .= sprintf(' (or %s)', implode(', ', array_map(function ($subType) {
                         return sprintf('<comment>%s</comment>', $subType);
                     }, $subTypes)));
@@ -485,14 +518,14 @@ final class MakeEntity extends AbstractMaker
             $targetEntityClass = $io->askQuestion($question);
 
             if (!class_exists($targetEntityClass)) {
-                if (!class_exists('App\\Entity\\'.$targetEntityClass)) {
+                if (!class_exists($this->getEntityNamespace().'\\'.$targetEntityClass)) {
                     $io->error(sprintf('Unknown class "%s"', $targetEntityClass));
                     $targetEntityClass = null;
 
                     continue;
                 }
 
-                $targetEntityClass = 'App\\Entity\\'.$targetEntityClass;
+                $targetEntityClass = $this->getEntityNamespace().'\\'.$targetEntityClass;
             }
         }
 
@@ -560,7 +593,7 @@ final class MakeEntity extends AbstractMaker
             }
 
             // recommend an inverse side, except for OneToOne, where it's inefficient
-            $recommendMappingInverse = EntityRelation::ONE_TO_ONE === $relation->getType() ? false : true;
+            $recommendMappingInverse = EntityRelation::ONE_TO_ONE !== $relation->getType();
 
             $getterMethodName = 'get'.Str::asCamelCase(Str::getShortClassName($relation->getOwningClass()));
             if (EntityRelation::ONE_TO_ONE !== $relation->getType()) {
@@ -742,7 +775,7 @@ final class MakeEntity extends AbstractMaker
         ));
         $question->setAutocompleterValues(EntityRelation::getValidRelationTypes());
         $question->setValidator(function ($type) {
-            if (!in_array($type, EntityRelation::getValidRelationTypes())) {
+            if (!\in_array($type, EntityRelation::getValidRelationTypes())) {
                 throw new \InvalidArgumentException(sprintf('Invalid type: use one of: %s', implode(', ', EntityRelation::getValidRelationTypes())));
             }
 
@@ -774,7 +807,7 @@ final class MakeEntity extends AbstractMaker
 
     private function regenerateEntities(string $classOrNamespace, bool $overwrite, Generator $generator)
     {
-        $regenerator = new EntityRegenerator($this->doctrineHelper, $this->fileManager, $generator, $this->projectDirectory, $overwrite);
+        $regenerator = new EntityRegenerator($this->doctrineHelper, $this->fileManager, $generator, $overwrite);
         $regenerator->regenerateEntities($classOrNamespace);
     }
 
@@ -801,11 +834,16 @@ final class MakeEntity extends AbstractMaker
                 return false;
             }
 
-            $className = (reset($otherClassMetadatas))->getName();
+            $className = reset($otherClassMetadatas)->getName();
         }
 
         $driver = $this->doctrineHelper->getMappingDriverForClass($className);
 
         return $driver instanceof AnnotationDriver;
+    }
+
+    private function getEntityNamespace(): string
+    {
+        return $this->doctrineHelper->getEntityNamespace();
     }
 }
