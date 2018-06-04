@@ -9,12 +9,18 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Carousel;
+use App\Form\Admin\CarouselType;
+use App\Repository\CarouselRepository;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\ORMException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -59,15 +65,7 @@ class CarouselController extends Controller
 
 
         $carousel = new Carousel();
-        $form = $this->createFormBuilder($carousel)
-            ->add('name', TextType::class, [
-                'label' => 'Name',
-                'help' => 'Must be unique',
-                'required' => true
-            ])
-            ->add('description', TextareaType::class)
-            ->add('send', SubmitType::class, ['label' => 'Create carousel'])
-            ->getForm();
+        $form = $this->createForm(CarouselType::class, $carousel);
 
         $form->handleRequest($request);
 
@@ -103,33 +101,89 @@ MSG;
 
     /**
      * @Route("/view", name="admin-carousel-list")
+     * @param \Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface $authorizationChecker
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function list(AuthorizationCheckerInterface $authorizationChecker)
+    public function list(AuthorizationCheckerInterface $authorizationChecker, EntityManagerInterface $em)
     {
         if (false === $authorizationChecker->isGranted('ROLE_ADMIN')) {
             throw new AccessDeniedException('Unable to access this page!');
         }
 
+
+        $carousel = $em->getRepository(Carousel::class);
+        $carousels = $carousel->findAll();
+
         return $this->render('admin/carousel.list.html.twig', array(
             'selectedNav' => $this->selectedNav,
+            'carousels' => $carousels
         ));
 
     }
 
     /**
      * @param \Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface $authorizationChecker
-     * @Route("/edit/{id}", name="admin-carousel-edit")
+     * @param \Doctrine\ORM\EntityManagerInterface                                         $em
+     *
      * @return \Symfony\Component\HttpFoundation\Response
+     * @Route("/edit/{id}", name="admin-carousel-edit")
      */
-    public function edit(AuthorizationCheckerInterface $authorizationChecker)
+    public function edit(AuthorizationCheckerInterface $authorizationChecker, EntityManagerInterface $em, Request $request)
+    {
+        if (false === $authorizationChecker->isGranted('ROLE_ADMIN')) {
+            throw new AccessDeniedException('Unable to access this page!');
+        }
+        $carouselRepo = $em->getRepository(Carousel::class);
+        $carousel = $carouselRepo->find($request->get('id'));
+
+        $form = $this->createForm(CarouselType::class, $carousel);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var \Doctrine\ORM\EntityManager $em */
+            $em = $this->getDoctrine()->getManager();
+            $entity = $form->getData();
+            try {
+                $em->persist($entity);
+                $em->flush();
+
+                $msg = <<<'MSG'
+                    Your carousel has been edited successfully.
+MSG;
+                $this->addFlash('admin-success', $msg);
+
+            } catch (ORMException $e) {
+                $this->addFlash('admin-notice', 'There was a problem saving the Carousel');
+            } finally {
+                return $this->redirectToRoute('admin-carousel');
+            }
+
+        }
+
+        return $this->render('admin/carousel.edit.html.twig', array(
+            'selectedNav' => $this->selectedNav,
+            'carousel' => $carousel,
+            'form' => $form->createView()
+        ));
+
+    }
+
+    /**
+     * @Route("/delete/{id}", name="admin-carousel-delete")
+     * @param \Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface $authorizationChecker
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function delete(AuthorizationCheckerInterface $authorizationChecker)
     {
         if (false === $authorizationChecker->isGranted('ROLE_ADMIN')) {
             throw new AccessDeniedException('Unable to access this page!');
         }
 
-        return $this->render('admin/carousel.list.html.twig', array(
-            'selectedNav' => $this->selectedNav,
-        ));
+        $this->addFlash('admin-success', 'The carousel has been deleted');
 
+        return $this->redirectToRoute('admin-carousel-list');
     }
 }
