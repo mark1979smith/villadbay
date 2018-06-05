@@ -16,12 +16,16 @@
                     <td>{{ row.name }}</td>
                     <td>{{ row.description }}</td>
                     <td>
-                        <a href="{{ path('admin-carousel-edit', {'id': row.id}) }}"><button class="btn btn-default"><i class="oi oi-pencil"></i> Edit</button></a>
-                        <form method="post" action="{{ path('admin-carousel-delete', {'id': row.id}) }}" class="form-inline">
+                        <a href="{{ path('admin-carousel-edit', {'id': row.id}) }}">
+                            <button class="btn btn-default"><i class="oi oi-pencil"></i> Edit</button>
+                        </a>
+                        {%  if deleteForm is defined %}
+                        {{ form_start(deleteForm, {'action': path('admin-carousel-delete', {'id': row.id})}) }}
                             <button type="submit" class="btn btn-link text-danger">
                                 <i class="oi oi-trash"></i> Delete
                             </button>
-                        </form>
+                        {{ form_end(deleteForm) }}
+                        {% endif %}
                     </td>
                 </tr>
                 {% endfor %}
