@@ -8,7 +8,7 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Carousel;
+use App\Entity\CarouselContainer;
 use App\Form\Admin\CarouselType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\ORMException;
@@ -57,7 +57,7 @@ class CarouselController extends Controller
         }
 
 
-        $carousel = new Carousel();
+        $carousel = new CarouselContainer();
         $form = $this->createForm(CarouselType::class, $carousel);
 
         $form->handleRequest($request);
@@ -107,7 +107,7 @@ MSG;
         }
 
 
-        $carousel = $em->getRepository(Carousel::class);
+        $carousel = $em->getRepository(CarouselContainer::class);
         $carousels = $carousel->findAll();
 
         $twigOptions =  [
@@ -116,7 +116,7 @@ MSG;
         ];
 
         if (count($carousels) > 0) {
-            $deleteCarouselForm = $this->createFormBuilder(new Carousel())
+            $deleteCarouselForm = $this->createFormBuilder(new CarouselContainer())
                 ->getForm();
 
             $twigOptions['deleteForm'] = $deleteCarouselForm->createView();
@@ -138,7 +138,7 @@ MSG;
         if (false === $authorizationChecker->isGranted('ROLE_ADMIN')) {
             throw new AccessDeniedException('Unable to access this page!');
         }
-        $carouselRepo = $em->getRepository(Carousel::class);
+        $carouselRepo = $em->getRepository(CarouselContainer::class);
         $carousel = $carouselRepo->find($request->get('id'));
 
         $form = $this->createForm(CarouselType::class, $carousel);
@@ -186,7 +186,7 @@ MSG;
             throw new AccessDeniedException('Unable to access this page!');
         }
 
-        $carouselRepository = $em->getRepository(Carousel::class);
+        $carouselRepository = $em->getRepository(CarouselContainer::class);
         $carousel = $carouselRepository->find($request->get('id'));
         if ($carousel) {
             $em->remove($carousel);

@@ -5,9 +5,9 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\CarouselEntriesRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\CarouselSlidesRepository")
  */
-class CarouselEntries
+class CarouselSlides
 {
     /**
      * @ORM\Id()
@@ -17,18 +17,18 @@ class CarouselEntries
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Carousel", inversedBy="id")
+     * @ORM\ManyToOne(targetEntity="App\Entity\CarouselContainer", inversedBy="carouselSlides")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $carousel;
+    private $carousel_id;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255)
      */
     private $title;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255)
      */
     private $description;
 
@@ -42,14 +42,14 @@ class CarouselEntries
         return $this->id;
     }
 
-    public function getCarousel(): ?Carousel
+    public function getCarouselId(): ?CarouselContainer
     {
-        return $this->carousel;
+        return $this->carousel_id;
     }
 
-    public function setCarousel(?Carousel $carousel): self
+    public function setCarouselId(?CarouselContainer $carousel_id): self
     {
-        $this->carousel = $carousel;
+        $this->carousel_id = $carousel_id;
 
         return $this;
     }
@@ -59,7 +59,7 @@ class CarouselEntries
         return $this->title;
     }
 
-    public function setTitle(?string $title): self
+    public function setTitle(string $title): self
     {
         $this->title = $title;
 
@@ -71,7 +71,7 @@ class CarouselEntries
         return $this->description;
     }
 
-    public function setDescription(?string $description): self
+    public function setDescription(string $description): self
     {
         $this->description = $description;
 
