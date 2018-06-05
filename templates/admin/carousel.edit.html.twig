@@ -1,5 +1,5 @@
 {% extends 'admin.html.twig' %}
-{% form_theme form 'bootstrap_4_layout.html.twig' %}
+{% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
 
 
 {% block body %}
@@ -8,13 +8,11 @@
             <div class="col">
                 <h1 class="display-3">Edit carousel</h1>
 
-                <div class="jumbotron">
-                    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-                    {{ form_row(form.name) }}
-                    {{ form_row(form.description) }}
-                    {{ form_row(form.send, {label: 'Edit Carousel'}) }}
-                    {{ form_end(form) }}
-                </div>
+                {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+                {{ form_row(form.name) }}
+                {{ form_row(form.description) }}
+                {{ form_row(form.send, {label: 'Edit Carousel'}) }}
+                {{ form_end(form) }}
             </div>
         </div>
     </div>
