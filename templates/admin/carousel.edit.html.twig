@@ -1,5 +1,6 @@
 {% extends 'admin.html.twig' %}
 {% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
+{% form_theme newSlideForm with ['bootstrap_4_horizontal_layout.html.twig', 'admin/form-themes/fields.html.twig'] %}
 
 
 {% block body %}
@@ -13,7 +14,53 @@
                 {{ form_row(form.description) }}
                 {{ form_row(form.send, {label: 'Edit Carousel'}) }}
                 {{ form_end(form) }}
+
+                {% for carouselSlideForm in carouselSlideForms %}
+                    <h3 class="display-4">Edit existing slide</h3>
+                    {{ form_start(carouselSlideForm, {'attr': {'novalidate': 'novalidate'}}) }}
+
+                    {{ form_end(carouselSlideForm) }}
+                {% endfor %}
+
             </div>
         </div>
     </div>
+
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h3 class="display-4">Add new slide</h3>
+
+                {{ form_start(newSlideForm, {'attr': {'novalidate': 'novalidate'}}) }}
+                {{ form_end(newSlideForm) }}
+            </div>
+        </div>
+    </div>
+
+
+
+
 {% endblock %}
+
+{%- block javascripts -%}
+<script type="text/javascript">
+    $(document).ready(function() {
+       $('form[name="carousel_slide"]').on('click', ':radio', function() {
+           applyCardClick($(this));
+       });
+       if ($('form[name="carousel_slide"]').find(':radio:checked').length > 0) {
+           $('form[name="carousel_slide"]').find(':radio:checked').closest('.card').addClass('border-success');
+       }
+    });
+function applyCardClick(ele) {
+
+    $(ele).closest('.card').find('label').removeClass('active');
+    $(ele).closest('form').find('.card').removeClass('border-success');
+    $(ele).closest('.card').find(':radio').attr('checked', 'checked');
+    $(ele).closest('.card').find(':radio[checked="checked"]').closest('label').addClass('active');
+    $(ele).closest('.card').addClass('border-success');
+}
+</script>
+{%- endblock -%}

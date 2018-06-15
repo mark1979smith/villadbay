@@ -9,15 +9,18 @@
 namespace App\Controller\Admin;
 
 use App\Entity\CarouselContainer;
+use App\Entity\CarouselSlides;
+use App\Form\Admin\CarouselSlideType;
 use App\Form\Admin\CarouselType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\ORMException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class CarouselController
@@ -139,9 +142,16 @@ MSG;
             throw new AccessDeniedException('Unable to access this page!');
         }
         $carouselRepo = $em->getRepository(CarouselContainer::class);
+        /** @var CarouselContainer $carousel */
         $carousel = $carouselRepo->find($request->get('id'));
 
         $form = $this->createForm(CarouselType::class, $carousel);
+
+
+        $newSlideForm = $this->createForm(CarouselSlideType::class, new CarouselSlides(), [
+            'service_redis' => $this->container->get('app.redis'),
+            'service_aws_s3' => $this->container->get('app.aws.s3'),
+        ]);
 
         $form->handleRequest($request);
 
@@ -166,12 +176,23 @@ MSG;
 
         }
 
-        return $this->render('admin/carousel.edit.html.twig', array(
-            'selectedNav' => $this->selectedNav,
-            'carousel' => $carousel,
-            'form' => $form->createView(),
-        ));
 
+        $carouselSlideForms = [];
+        foreach ($carousel->getCarouselSlides() as $carouselSlide) {
+            $newSlideForm = $this->createForm(CarouselSlideType::class, $carouselSlide, [
+                'service_redis' => $this->container->get('app.redis'),
+                'service_aws_s3' => $this->container->get('app.aws.s3'),
+            ]);
+            $carouselSlideForms[] = $newSlideForm->createView();
+        }
+
+        return $this->render('admin/carousel.edit.html.twig', [
+            'selectedNav'        => $this->selectedNav,
+            'carousel'           => $carousel,
+            'carouselSlideForms' => $carouselSlideForms,
+            'form'               => $form->createView(),
+            'newSlideForm'       => $newSlideForm->createView(),
+        ]);
     }
 
     /**

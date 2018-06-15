@@ -9,7 +9,7 @@
 namespace App\Form\Admin;
 
 
-use App\Entity\Carousel;
+use App\Entity\CarouselContainer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -36,7 +36,7 @@ class CarouselType extends AbstractType
                     return;
                 }
 
-                if ($carousel instanceof Carousel) {
+                if ($carousel instanceof CarouselContainer) {
                     $carousel->setName(ucfirst(strtolower($carousel->getName())));
                     $formEvent->setData($carousel);
                 }

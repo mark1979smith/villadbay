@@ -9,6 +9,7 @@
 namespace App\Form\Admin;
 
 
+use App\Component\ImageTypes;
 use App\Form\DataTransformer\TextHeadingType;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\AbstractType;
@@ -24,6 +25,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class PageType extends AbstractType
 {
+    use ImageTypes;
+
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setRequired('container_interface');
@@ -396,30 +399,5 @@ class PageType extends AbstractType
         $html .= '</div>';
 
         return $html;
-    }
-
-    /**
-     * @param array  $asset
-     * @param string $pathToMatch
-     *
-     * @return bool
-     */
-    private function filterByPath($asset, $pathToMatch)
-    {
-        if (preg_match('/^\//', $pathToMatch)) {
-            throw new \LogicException('Path cannot start with /');
-        }
-
-        if (preg_match('/\/$/', $pathToMatch)) {
-            throw new \LogicException('Path cannot end with /');
-        }
-
-        if (stristr($pathToMatch, '.') !== false) {
-            throw new \LogicException('Path cannot include the file');
-        }
-
-        if (strpos($asset['Key'], $pathToMatch) === 0 && $asset['Key'] !== $pathToMatch . '/') {
-            return (preg_match('/\--(xs|sm|md|lg)\./', $asset['Key']) === 0);
-        }
     }
 }
