@@ -18,7 +18,7 @@ RUN  apt-get update && \
         apt-get install -y libmagickwand-dev --no-install-recommends && \
         apt-get install -y jq awscli  && \
         pecl install imagick xdebug && \
-        echo "zend_extension=$(find / -name "xdebug.so")" >> /usr/local/etc/php/conf.d/custom.ini &&
+        echo "zend_extension=$(find / -name "xdebug.so")" >> /usr/local/etc/php/conf.d/custom.ini && \
         docker-php-ext-enable imagick
 
 # Create custom PHP settings
