@@ -1,1 +1,19 @@
 {% extends 'admin.html.twig' %}
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1 class="display-3">Create new carousel</h1>
+
+                <div class="jumbotron">
+                    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

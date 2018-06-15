@@ -140,4 +140,28 @@ trait ImageTypes
 
         throw new \LogicException('Image Type "' . $type . '" cannot be mapped to a directory');
     }
+
+    /**
+     * @param array  $asset
+     * @param string $pathToMatch
+     *
+     * @return bool
+     */
+    private function filterByPath($asset, $pathToMatch)
+    {
+        if (preg_match('/^\//', $pathToMatch)) {
+            throw new \LogicException('Path cannot start with /');
+        }
+
+        if (preg_match('/\/$/', $pathToMatch)) {
+            throw new \LogicException('Path cannot end with /');
+        }
+
+        if (stristr($pathToMatch, '.') !== false) {
+            throw new \LogicException('Path cannot include the file');
+        }
+        if (strpos($asset['Key'], $pathToMatch) === 0 && $asset['Key'] !== $pathToMatch . '/') {
+            return (preg_match('/\--(xs|sm|md|lg)\./', $asset['Key']) === 0);
+        }
+    }
 }
