@@ -14,11 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class CarouselImageType extends AbstractType
 {
-
-    public function getElement()
-    {
-        return 'div';
-    }
+    
     public function getParent()
     {
         return ChoiceType::class;
