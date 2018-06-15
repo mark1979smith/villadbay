@@ -1,14 +1,4 @@
 {% block CarouselSlideImageType_widget %}
-    {#{% for key, value in newSlideForm.image %}#}
-        {#<div class="col-3 float-left">#}
-            {#<div class="card px-3 pt-3 my-2 mx-0">#}
-                {#<img class="card-img-top" src="{{ value }}" alt="Card image cap" />#}
-                {#<div class="card-body px-0">#}
-                    {#{{ form_widget(value, {'label_attr':{'class':'text-truncate col-12 pl-0', 'title': value}}) }}#}
-                {#</div>#}
-            {#</div>#}
-        {#</div>#}
-    {#{% endfor %}#}
     {% if compound is defined and compound %}
         {%- for child in form %}
             <div class="col-3 float-left">

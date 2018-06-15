@@ -141,6 +141,7 @@ MSG;
         if (false === $authorizationChecker->isGranted('ROLE_ADMIN')) {
             throw new AccessDeniedException('Unable to access this page!');
         }
+
         $carouselRepo = $em->getRepository(CarouselContainer::class);
         /** @var CarouselContainer $carousel */
         $carousel = $carouselRepo->find($request->get('id'));
@@ -179,11 +180,11 @@ MSG;
 
         $carouselSlideForms = [];
         foreach ($carousel->getCarouselSlides() as $carouselSlide) {
-            $newSlideForm = $this->createForm(CarouselSlideType::class, $carouselSlide, [
+            $existingSlideForm = $this->createForm(CarouselSlideType::class, $carouselSlide, [
                 'service_redis' => $this->container->get('app.redis'),
                 'service_aws_s3' => $this->container->get('app.aws.s3'),
             ]);
-            $carouselSlideForms[] = $newSlideForm->createView();
+            $carouselSlideForms[] = $existingSlideForm->createView();
         }
 
         return $this->render('admin/carousel.edit.html.twig', [
