@@ -152,6 +152,7 @@ MSG;
         $newSlideForm = $this->createForm(CarouselSlideType::class, new CarouselSlides(), [
             'service_redis' => $this->container->get('app.redis'),
             'service_aws_s3' => $this->container->get('app.aws.s3'),
+            'submit_button_label' => 'Create carousel slide'
         ]);
 
         $form->handleRequest($request);
@@ -186,7 +187,6 @@ MSG;
             ]);
             $carouselSlideForms[] = $existingSlideForm->createView();
         }
-
         return $this->render('admin/carousel.edit.html.twig', [
             'selectedNav'        => $this->selectedNav,
             'carousel'           => $carousel,

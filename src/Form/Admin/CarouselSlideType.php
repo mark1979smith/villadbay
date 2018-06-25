@@ -32,6 +32,8 @@ class CarouselSlideType extends AbstractType
         $resolver->setRequired('service_aws_s3');
         $resolver->setDefaults(array(
             'data_class' => CarouselSlides::class,
+            'submit_button_label' => 'Edit carousel slide'
+
         ));
         parent::configureOptions($resolver);
     }
@@ -52,10 +54,11 @@ class CarouselSlideType extends AbstractType
             'data_class'  => null,
             'placeholder' => false,
             'choices'     => $carouselImages,
+
             'expanded' => true,
             'multiple' => false,
         ])
-        ->add('send', SubmitType::class, ['label' => 'Create carousel slide']);
+        ->add('send', SubmitType::class, ['label' => $options['submit_button_label']]);
     }
 
     private function getCarouselImages(\App\Utils\Redis $redisService, \App\Utils\AwsS3Client $s3Service)
