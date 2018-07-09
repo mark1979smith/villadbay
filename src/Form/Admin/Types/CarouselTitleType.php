@@ -16,11 +16,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CarouselTitleType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-//        $builder->addViewTransformer(new \App\Form\DataTransformer\CarouselSlideHeading());
-    }
-
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(

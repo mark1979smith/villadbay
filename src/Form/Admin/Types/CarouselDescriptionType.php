@@ -16,11 +16,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CarouselDescriptionType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-//        $builder->addViewTransformer(new \App\Form\DataTransformer\CarouselSlideDescription());
-    }
-
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(

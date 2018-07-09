@@ -16,12 +16,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CarouselImageType extends AbstractType
 {
-
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-//        $builder->addModelTransformer(new \App\Form\DataTransformer\CarouselSlideImage());
-    }
-
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
