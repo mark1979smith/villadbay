@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\CarouselSlides\Image;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -59,7 +60,7 @@ class CarouselSlides
         return $this->title;
     }
 
-    public function setTitle(string $title): self
+    public function setTitle($title): self
     {
         $this->title = $title;
 
@@ -71,7 +72,7 @@ class CarouselSlides
         return $this->description;
     }
 
-    public function setDescription(string $description): self
+    public function setDescription($description): self
     {
         $this->description = $description;
 
@@ -83,7 +84,7 @@ class CarouselSlides
         return $this->image;
     }
 
-    public function setImage(string $image): self
+    public function setImage($image): self
     {
         $this->image = $image;
 
