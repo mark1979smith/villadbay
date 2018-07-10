@@ -169,8 +169,9 @@ MSG;
         ], [
             'service_redis'       => $this->container->get('app.redis'),
             'service_aws_s3'      => $this->container->get('app.aws.s3'),
-            'submit_button_label' => 'Create carousel slide',
+            'submit_button_label' => 'Save carousel',
         ]);
+        $newSlideForm = clone $form;
 
         $form->handleRequest($request);
 
@@ -213,6 +214,7 @@ MSG;
             'selectedNav' => $this->selectedNav,
             'carousel'    => $carousel,
             'form'        => $form->createView(),
+            'newSlideForm' => $newSlideForm->createView()
         ]);
     }
 

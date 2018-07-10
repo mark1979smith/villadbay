@@ -6,15 +6,26 @@
     <div class="container">
         <div class="row">
             <div class="col">
-                <h3 class="display-4">Add new slide</h3>
 
+                <h3 class="display-4">Edit existing Slides</h3>
                 {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
                 {%- for key, field in form.title -%}
                     {{ form_row(form.title[key]) }}
                     {{ form_row(form.description[key]) }}
                     {{ form_row(form.image[key]) }}
                 {%- endfor -%}
+                <div class="form-group row">
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-10">
+                        {{ form_widget(form.send) }}
+                        <button class="btn btn-link" data-prototype="{% spaceless %}{{- form_row(newSlideForm.title.vars.prototype)|e('html_attr') -}}{{- form_row(newSlideForm.description.vars.prototype)|e('html_attr') -}}{{- form_row(newSlideForm.image.vars.prototype)|e('html_attr') -}}{% endspaceless %}">Add new slide</button>
+                    </div>
+                </div>
+
                 {{ form_end(form) }}
+
+
+
             </div>
         </div>
     </div>
