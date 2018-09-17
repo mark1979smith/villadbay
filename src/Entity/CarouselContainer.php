@@ -11,6 +11,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class CarouselContainer
 {
+    private $template = '<div class="container"><div class="row"><div class="col"><div id="carouselVillaIndicators" class="carousel slide" data-ride="carousel"><ol class="carousel-indicators">%s</ol><div class="carousel-inner">%s</div><a class="carousel-control-prev" href="#carouselVillaIndicators" role="button" data-slide="prev"><span class="carousel-control-prev-icon" aria-hidden="true"></span><span class="sr-only">Previous</span></a><a class="carousel-control-next" href="#carouselVillaIndicators" role="button" data-slide="next"><span class="carousel-control-next-icon" aria-hidden="true"></span><span class="sr-only">Next</span></a></div></div></div></div>';
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -29,7 +31,8 @@ class CarouselContainer
     private $description;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\CarouselSlides", mappedBy="carousel_id", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\CarouselSlides", mappedBy="carousel_id", orphanRemoval=true,
+     *                                                          fetch="EAGER")
      */
     private $carouselSlides;
 
@@ -96,5 +99,30 @@ class CarouselContainer
         }
 
         return $this;
+    }
+
+    public function __toString()
+    {
+        return sprintf($this->template,
+            $this->renderIndicators(),
+            $this->renderCarouselSlides()
+        );
+    }
+
+    private function renderIndicators()
+    {
+        $str = '';
+        foreach ($this->getCarouselSlides()->getValues() as $index => $carouselSlide) {
+            $str .= '<li data-target="#carouselVillaIndicators" data-slide-to="$index" class="active"></li>';
+        }
+
+        return $str;
+    }
+
+    private function renderCarouselSlides()
+    {
+        $allSlides = $this->getCarouselSlides()->getValues();
+        $firstSlide  = array_shift($allSlides);
+        return $firstSlide->setPosition(1)->__toString() . implode('', $allSlides);
     }
 }

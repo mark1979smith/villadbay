@@ -21,7 +21,7 @@ class Carousel
     /**
      * @return string
      */
-    public function getValue(): string
+    public function getValue(): ?string
     {
         return $this->value;
     }
@@ -36,10 +36,5 @@ class Carousel
         $this->value = $value;
 
         return $this;
-    }
-
-    public function __toString()
-    {
-        return (string) $this->value;
     }
 }
