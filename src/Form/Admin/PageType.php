@@ -81,7 +81,7 @@ class PageType extends AbstractType
                     'required' => false,
                 ],
                 'attr'          => array(
-                    'class' => 'js--text_heading_type col-lg-4 col-md-6 col-sm-12',
+                    'class'                  => 'js--text_heading_type col-lg-4 col-md-6 col-sm-12',
                     'data-form-element-hide' => 'false',
                 ),
             ])
@@ -102,7 +102,7 @@ class PageType extends AbstractType
                     'required' => false,
                 ],
                 'attr'          => array(
-                    'class' => 'js--text_heading_type col-lg-4 col-md-6 col-sm-12',
+                    'class'                  => 'js--text_heading_type col-lg-4 col-md-6 col-sm-12',
                     'data-form-element-hide' => 'false',
                 ),
             ])
@@ -112,20 +112,20 @@ class PageType extends AbstractType
                 'allow_delete'  => true,
                 'prototype'     => true,
                 'entry_options' => [
-                    'choices'  => [
-                        'Black' => 'text-dark',
-                        'Blue' => 'text-primary',
-                        'Green' => 'text-success',
-                        'Red' => 'text-danger',
+                    'choices'     => [
+                        'Black'  => 'text-dark',
+                        'Blue'   => 'text-primary',
+                        'Green'  => 'text-success',
+                        'Red'    => 'text-danger',
                         'Yellow' => 'text-warning',
-                        'White' => 'text-white',
+                        'White'  => 'text-white',
                     ],
-                    'label'    => 'Choose a heading colour',
-                    'required' => false,
+                    'label'       => 'Choose a heading colour',
+                    'required'    => false,
                     'placeholder' => false,
                 ],
                 'attr'          => array(
-                    'class' => 'js--text_heading_type col-lg-4 col-md-6 col-sm-12',
+                    'class'                  => 'js--text_heading_type col-lg-4 col-md-6 col-sm-12',
                     'data-form-element-hide' => 'false',
                 ),
             ])
@@ -135,17 +135,17 @@ class PageType extends AbstractType
                 'allow_delete'  => true,
                 'prototype'     => true,
                 'entry_options' => [
-                    'choices'  => [
-                        'Left' => 'text-left',
+                    'choices'     => [
+                        'Left'   => 'text-left',
                         'Centre' => 'text-center',
-                        'Right' => 'text-right',
+                        'Right'  => 'text-right',
                     ],
-                    'label'    => 'Choose a heading alignment',
-                    'required' => false,
+                    'label'       => 'Choose a heading alignment',
+                    'required'    => false,
                     'placeholder' => false,
                 ],
                 'attr'          => array(
-                    'class' => 'js--text_heading_type col-lg-4 col-md-6 col-sm-12',
+                    'class'                  => 'js--text_heading_type col-lg-4 col-md-6 col-sm-12',
                     'data-form-element-hide' => 'false',
                 ),
             ])
@@ -159,7 +159,7 @@ class PageType extends AbstractType
                     'required' => false,
                 ],
                 'attr'          => array(
-                    'class' => 'js--text_heading_type col-lg-4 col-md-6 col-sm-12',
+                    'class'                  => 'js--text_heading_type col-lg-4 col-md-6 col-sm-12',
                     'data-form-element-hide' => 'false',
                 ),
             ])
@@ -172,7 +172,7 @@ class PageType extends AbstractType
                     'label'    => 'Enter leading text',
                     'required' => false,
                 ],
-                'attr' => [
+                'attr'          => [
                     'data-form-element-hide' => 'false',
                 ],
             ])
@@ -185,7 +185,7 @@ class PageType extends AbstractType
                     'label'    => 'Enter text',
                     'required' => false,
                 ],
-                'attr' => [
+                'attr'          => [
                     'data-form-element-hide' => 'false',
                 ],
 
@@ -201,7 +201,7 @@ class PageType extends AbstractType
                     'data_class' => null,
                 ],
                 'attr'          => [
-                    'aria-describedby' => 'list_group_helper',
+                    'aria-describedby'       => 'list_group_helper',
                     'data-form-element-hide' => 'false',
                 ],
 
@@ -212,20 +212,20 @@ class PageType extends AbstractType
                 'allow_delete'  => true,
                 'prototype'     => true,
                 'entry_options' => [
-                    'label'      => 'Add Panoramic Image',
-                    'required'   => false,
-                    'data_class' => null,
-                    'choices'    => $panoramicImages,
+                    'label'       => 'Add Panoramic Image',
+                    'required'    => false,
+                    'data_class'  => null,
+                    'choices'     => $panoramicImages,
                     'placeholder' => false,
-                    'attr'       => [
+                    'attr'        => [
 
                     ],
                 ],
                 'attr'          => [
-                    'aria-describedby' => 'panoramic_image_helper',
-                    'data-form-element-prefix-markup' => $this->getPanoramicImagesHtml($panoramicImages),
+                    'aria-describedby'                          => 'panoramic_image_helper',
+                    'data-form-element-prefix-markup'           => $this->getPanoramicImagesHtml($panoramicImages),
                     'data-form-element-prefix-markup-append-to' => '.form-group',
-                    'data-form-element-hide' => 'select',
+                    'data-form-element-hide'                    => 'select',
                 ],
 
             ])
@@ -235,48 +235,58 @@ class PageType extends AbstractType
                 'allow_delete'  => true,
                 'prototype'     => true,
                 'entry_options' => [
-                    'label'      => 'Add Background Image',
-                    'required'   => false,
-                    'data_class' => null,
-                    'choices'    => $backgroundImages,
+                    'label'       => 'Add Background Image',
+                    'required'    => false,
+                    'data_class'  => null,
+                    'choices'     => $backgroundImages,
                     'placeholder' => false,
-                    'attr'       => [
+                    'attr'        => [
 
                     ],
                 ],
                 'attr'          => [
-                    'data-form-element-prefix-markup' => $this->getBackgroundImagesHtml($backgroundImages),
+                    'data-form-element-prefix-markup'           => $this->getBackgroundImagesHtml($backgroundImages),
                     'data-form-element-prefix-markup-append-to' => '.form-group',
-                    'data-form-element-hide' => 'select',
+                    'data-form-element-hide'                    => 'select',
                 ],
 
             ])
             ->add('form', CollectionType::class, [
-                'entry_type'     => \App\Form\Admin\Types\FormType::class,
-                'allow_add'      => true,
-                'prototype'      => true,
-                'entry_options'  => [
-                    'label' => 'Add Form',
-                    'data_class' => null,
-                    'choices'    => [
-                        'Search' => 'search-form',
+                'entry_type'    => \App\Form\Admin\Types\FormType::class,
+                'allow_add'     => true,
+                'allow_delete'  => true,
+                'prototype'     => true,
+                'entry_options' => [
+                    'label'       => 'Add Form',
+                    'required'    => false,
+                    'placeholder' => false,
+                    'data_class'  => null,
+                    'choices'     => [
+                        'Search'  => 'search-form',
                         'Contact' => 'contact-form',
                     ],
                 ],
             ])
             ->add('image_carousel', CollectionType::class, [
-                'entry_type'     => \App\Form\Admin\Types\CarouselType::class,
-                'allow_add'      => true,
-                'prototype'      => true,
-                'entry_options'  => [
-                    'label' => 'Add Image Carousel',
-                    'data_class' => null,
-                    'choices'    => $carousels,
+                'entry_type'    => \App\Form\Admin\Types\CarouselType::class,
+                'allow_add'     => true,
+                'allow_delete'  => true,
+                'prototype'     => true,
+                'entry_options' => [
+                    'label'       => 'Add Image Carousel',
+                    'required'    => false,
+                    'data_class'  => null,
+                    'choices'     => $carousels,
+                    'placeholder' => false,
+                    'attr'        => [
+
+                    ],
                 ],
             ])
             ->add('display_order', CollectionType::class, [
                 'entry_type'     => \App\Form\Admin\Types\DisplayOrder::class,
                 'allow_add'      => true,
+                'allow_delete'   => true,
                 'prototype'      => true,
                 'prototype_data' => '#NEWCOUNTER#',
                 'entry_options'  => [
@@ -320,7 +330,7 @@ class PageType extends AbstractType
         /** @var \App\Utils\AwsS3Client $s3Service */
         $s3Service = $container->get('app.aws.s3');
 
-        $cacheKey = 'aws.s3.listobjects.'.$s3Service->getBucket();
+        $cacheKey = 'aws.s3.listobjects.' . $s3Service->getBucket();
         if ($redisService->hasItem($cacheKey)) {
             $response = $redisService->getItem($cacheKey);
         } else {
@@ -366,7 +376,7 @@ class PageType extends AbstractType
         /** @var \App\Utils\AwsS3Client $s3Service */
         $s3Service = $container->get('app.aws.s3');
 
-        $cacheKey = 'aws.s3.listobjects.'.$s3Service->getBucket();
+        $cacheKey = 'aws.s3.listobjects.' . $s3Service->getBucket();
         if ($redisService->hasItem($cacheKey)) {
             $response = $redisService->getItem($cacheKey);
         } else {
@@ -407,9 +417,9 @@ class PageType extends AbstractType
         $html = '<div class="card-deck">';
 
         foreach ($panoImages as $panoImage) {
-            $html .= '<div class="card text-center js--card-pano-image">'.
-                '<div class="card-body" style="background-position: center; background-size: cover; background-image: url('. $panoImage .');"></div>' .
-                '<div class="card-footer btn-group-toggle" data-toggle="buttons"><label class="btn btn-secondary"><input name="do-not-send[]" type="radio" autocomplete="off" value="'. $panoImage .'" /> Select</label></div>' .
+            $html .= '<div class="card text-center js--card-pano-image">' .
+                '<div class="card-body" style="background-position: center; background-size: cover; background-image: url(' . $panoImage . ');"></div>' .
+                '<div class="card-footer btn-group-toggle" data-toggle="buttons"><label class="btn btn-secondary"><input name="do-not-send[]" type="radio" autocomplete="off" value="' . $panoImage . '" /> Select</label></div>' .
                 '</div>';
         }
 
@@ -423,9 +433,9 @@ class PageType extends AbstractType
         $html = '<div class="card-deck">';
 
         foreach ($backgroundImages as $backgroundImage) {
-            $html .= '<div class="card text-center js--card-pano-image">'.
-                '<div class="card-body" style="height: 100px; background-position: center; background-size: contain; background-repeat: no-repeat; background-image: url('. $backgroundImage .');"></div>' .
-                '<div class="card-footer btn-group-toggle" data-toggle="buttons"><label class="btn btn-secondary"><input name="do-not-send[]" type="radio" autocomplete="off" value="'. $backgroundImage .'" /> Select</label></div>' .
+            $html .= '<div class="card text-center js--card-pano-image">' .
+                '<div class="card-body" style="height: 100px; background-position: center; background-size: contain; background-repeat: no-repeat; background-image: url(' . $backgroundImage . ');"></div>' .
+                '<div class="card-footer btn-group-toggle" data-toggle="buttons"><label class="btn btn-secondary"><input name="do-not-send[]" type="radio" autocomplete="off" value="' . $backgroundImage . '" /> Select</label></div>' .
                 '</div>';
         }
 

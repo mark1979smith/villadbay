@@ -16,9 +16,18 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CarouselType extends AbstractType
 {
+    /** @var \App\Form\DataTransformer\CarouselType  */
+    private $transformer;
+
+    public function __construct(\App\Form\DataTransformer\CarouselType $transformer)
+    {
+        $this->transformer = $transformer;
+
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addViewTransformer(new \App\Form\DataTransformer\CarouselType());
+        $builder->addModelTransformer($this->transformer);
     }
 
     public function configureOptions(OptionsResolver $resolver)
