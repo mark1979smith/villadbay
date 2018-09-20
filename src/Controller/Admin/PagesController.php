@@ -8,6 +8,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\CarouselContainer;
 use App\Entity\Page;
 use App\Entity\Page\DisplayOrder;
 use App\Entity\Page\ListGroup;
@@ -189,7 +190,7 @@ class PagesController extends Controller
                 'background_image'        => array_map(function($obj){ return $obj->getBackgroundImage();}, (isset($dbData['background_image']) ? $dbData['background_image'] : [])),
                 'display_order'           => $dbData['display_order'],
                 'form'                    => (isset($dbData['form']) ? $dbData['form'] : []),
-                'image_carousel'          => (isset($dbData['image_carousel']) ? $dbData['image_carousel'] : []),
+                'image_carousel'          => array_map(function($obj){ return $obj->getId();}, (isset($dbData['image_carousel']) ? $dbData['image_carousel'] : [])),
                 'page_preview'            => $page->isPreview(),
             ];
         }

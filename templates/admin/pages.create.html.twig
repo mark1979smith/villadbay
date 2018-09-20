@@ -335,7 +335,6 @@
 
                 var newWidget = fields.find('*[data-prototype]');
                 var htmlStr = '';
-
                 $.each(newWidget, function (a, b) {
                     htmlStr += getElementHtml(fields, b, counter);
                 });
@@ -425,6 +424,7 @@
         }
 
         function getPageData(s) {
+
             var route = "{{ path('admin-page-data')|escape('js') }}";
             $.post(route + '/' + s, {}, function(d) {
                 $('#page_page_type').val(d.page_type);
@@ -444,8 +444,10 @@
                     var c = fieldSplit[1];
                     if (c > 0) {
                         addElementToForm('#' + f + '_container', c);
-                        if (typeof d[f] !== 'undefined' && d[f].hasOwnProperty(c) && typeof d[f][c] === 'string') {
+
+                        if (typeof d[f] !== 'undefined' && d[f].hasOwnProperty(c) && (typeof d[f][c] === 'string' || typeof d[f][c] === 'number')) {
                             $('#page_' + f + '_' + c).val(d[f][c]);
+
                         } else {
                             if (typeof d[f] !== 'undefined' && d[f].hasOwnProperty(c) && $.isArray(d[f][c])) {
                                 $('#page_' + f + '_' + c).val(d[f][c].join(','));
