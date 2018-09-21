@@ -442,11 +442,9 @@
             field.val(value);
             if (tagName !== 'input') {
                 // Ensure the option is available
-                if (tagName === 'select') {
-                    if (!field.find('*[value="' + value + '"]').length) {
-                        field.addClass('is-invalid');
-                        field.after('<div class="invalid-feedback">The live version of this element is no longer available</div>');
-                    }
+                if (!field.find('*[value="' + value + '"]').length) {
+                    field.addClass('is-invalid');
+                    field.after('<div class="invalid-feedback">The live version of this element is no longer available</div>');
                 }
             }
         }
