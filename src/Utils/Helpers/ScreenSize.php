@@ -54,8 +54,12 @@ class ScreenSize
         return $this->size === self::EXTRA_LARGE;
     }
 
-    public function getResponsiveFilename(string $originalFileName): string
+    public function getResponsiveFilename(?string $originalFileName): string
     {
+        if (is_null($originalFileName)) {
+            return (string) $originalFileName;
+        }
+
         if (!$this->isOriginal()) {
             return substr_replace($originalFileName, '--' . $this->size, strrpos($originalFileName, '.'), 0);
         }
