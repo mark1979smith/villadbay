@@ -328,17 +328,19 @@
             e.preventDefault();
             let ele = jQuery(this);
             let displayOrder = $(':input[id^="page_display_order_"][id$="--' + ele.closest('div[data-counter]').data('counter') + '"]:first').val();
-            let newDisplayOrder = (displayOrder-1);
+            let newDisplayOrder = (parseInt(displayOrder)-1);
 
-            let elementsToUpdateUp = $(':input[id^="page_display_order_"][value="' + displayOrder +'"]');
-            let elementsToUpdateDown = $(':input[id^="page_display_order_"][value="' + newDisplayOrder +'"]');
+            if (newDisplayOrder >= 1) {
+                let elementsToUpdateUp = $(':input[id^="page_display_order_"][value="' + displayOrder + '"]');
+                let elementsToUpdateDown = $(':input[id^="page_display_order_"][value="' + newDisplayOrder + '"]');
 
-            jQuery.each(elementsToUpdateUp, function (index) {
-                jQuery(this).val(newDisplayOrder);
-            });
-            jQuery.each(elementsToUpdateDown, function (index) {
-                jQuery(this).val(displayOrder);
-            });
+                jQuery.each(elementsToUpdateUp, function (index) {
+                    jQuery(this).val(newDisplayOrder);
+                });
+                jQuery.each(elementsToUpdateDown, function (index) {
+                    jQuery(this).val(displayOrder);
+                });
+            }
         });
 
         /**
@@ -347,18 +349,20 @@
         $('#form-opt-options').on('click', '.js-nav-link--down', function(e) {
             e.preventDefault();
             let ele = jQuery(this);
-            let displayOrder = ele.closest('div[data-counter]').data('counter');
-            let newDisplayOrder = (displayOrder+1);
+            let displayOrder = $(':input[id^="page_display_order_"][id$="--' + ele.closest('div[data-counter]').data('counter') + '"]:first').val();
+            let newDisplayOrder = (parseInt(displayOrder)+1);
 
-            let elementsToUpdateUp = $(':input[id^="page_display_order_"][value="' + newDisplayOrder +'"]');
-            let elementsToUpdateDown = $(':input[id^="page_display_order_"][value="' + displayOrder +'"]');
+            if (newDisplayOrder <= $('#form-opt-options>div').length) {
+                let elementsToUpdateUp = $(':input[id^="page_display_order_"][value="' + displayOrder + '"]');
+                let elementsToUpdateDown = $(':input[id^="page_display_order_"][value="' + newDisplayOrder + '"]');
 
-            jQuery.each(elementsToUpdateUp, function (index) {
-                jQuery(this).val(displayOrder);
-            });
-            jQuery.each(elementsToUpdateDown, function (index) {
-                jQuery(this).val(newDisplayOrder);
-            });
+                jQuery.each(elementsToUpdateUp, function (index) {
+                    jQuery(this).val(newDisplayOrder);
+                });
+                jQuery.each(elementsToUpdateDown, function (index) {
+                    jQuery(this).val(displayOrder);
+                });
+            }
 
         });
 
