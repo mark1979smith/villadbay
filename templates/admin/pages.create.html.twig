@@ -331,6 +331,7 @@
             let newDisplayOrder = (parseInt(displayOrder)-1);
 
             if (newDisplayOrder >= 1) {
+                /* Update Hidden Ordering values */
                 let elementsToUpdateUp = $(':input[id^="page_display_order_"][value="' + displayOrder + '"]');
                 let elementsToUpdateDown = $(':input[id^="page_display_order_"][value="' + newDisplayOrder + '"]');
 
@@ -340,6 +341,11 @@
                 jQuery.each(elementsToUpdateDown, function (index) {
                     jQuery(this).val(displayOrder);
                 });
+
+                /** Move page elements */
+                let eleToMove = $(ele).closest('*[data-counter]');
+                let nextEle = $(eleToMove).prev();
+                $(eleToMove).insertBefore(nextEle);
             }
         });
 
@@ -353,6 +359,7 @@
             let newDisplayOrder = (parseInt(displayOrder)+1);
 
             if (newDisplayOrder <= $('#form-opt-options>div').length) {
+                /* Update Hidden Ordering values */
                 let elementsToUpdateUp = $(':input[id^="page_display_order_"][value="' + displayOrder + '"]');
                 let elementsToUpdateDown = $(':input[id^="page_display_order_"][value="' + newDisplayOrder + '"]');
 
@@ -362,6 +369,11 @@
                 jQuery.each(elementsToUpdateDown, function (index) {
                     jQuery(this).val(displayOrder);
                 });
+
+                /** Move page elements */
+                let eleToMove = $(ele).closest('*[data-counter]');
+                let nextEle = $(eleToMove).next();
+                $(eleToMove).insertAfter(nextEle);
             }
 
         });
