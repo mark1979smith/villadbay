@@ -277,6 +277,7 @@
                 if ((typeof targetLimit === 'undefined') || (typeof targetLimit !== 'undefined' && targetLimit > existingCount)) {
                     if (targetPageType.indexOf(page_type.val()) > -1) {
                         addElementToForm(ele.data('target'), $(ele.data('target')).data('counter'));
+                        elementActionsUi();
                     } else {
                         $('#modalPageTypeConflict').modal();
                     }
@@ -319,6 +320,8 @@
 
             $(':input[id^="page_display_order_"][id$="--' + displayOrder + '"]').remove();
             ele.closest('div[data-counter]').remove();
+
+            elementActionsUi();
         });
 
         /**
@@ -346,6 +349,8 @@
                 let eleToMove = $(ele).closest('*[data-counter]');
                 let nextEle = $(eleToMove).prev();
                 $(eleToMove).insertBefore(nextEle);
+
+                elementActionsUi();
             }
         });
 
@@ -374,6 +379,8 @@
                 let eleToMove = $(ele).closest('*[data-counter]');
                 let nextEle = $(eleToMove).next();
                 $(eleToMove).insertAfter(nextEle);
+
+                elementActionsUi();
             }
 
         });
@@ -417,7 +424,7 @@
                 $(newElem).prepend('<ul class="nav justify-content-end clearfix">' +
                     '<li class="nav-item"><a href="#" class="nav-link js-nav-link--up"><span class="oi oi-arrow-circle-top"></span></a></li>' +
                     '<li class="nav-item"><a href="#" class="nav-link js-nav-link--down"><span class="oi oi-arrow-circle-bottom"></span></a></li>' +
-                    '<li class="nav-item"><a href="#" class="nav-link js-nav-link--delete"><span class="oi oi-trash"></span></a></li>' +
+                    '<li class="nav-item"><a href="#" class="nav-link js-nav-link--delete text-danger"><span class="oi oi-trash"></span></a></li>' +
                     '</ul>');
 
 
@@ -531,14 +538,9 @@
                     var fieldSplit = field.split("--");
                     var f = fieldSplit[0];
                     var c = fieldSplit[1];
-                    console.log(f);
-                    console.log(c);
-
                     if (c > 0) {
-                        console.log('Adding ' + '#' + f + '_container to form');
                         addElementToForm('#' + f + '_container', c);
                         if (typeof d[f] !== 'undefined' && d[f].hasOwnProperty(c) && (typeof d[f][c] === 'string' || typeof d[f][c] === 'number')) {
-                            console.log('Update #page_' + f + '_' + c + ' with d[f][c] (' + d[f][c] + ')');
                             updateFormFieldValue($('#page_' + f + '_' + c), d[f][c]);
                         } else {
                             if (typeof d[f] !== 'undefined' && d[f].hasOwnProperty(c) && $.isArray(d[f][c])) {
@@ -546,8 +548,7 @@
                             } else {
                                 $.each(d[f], function (a, b) {
                                     ele = $('#page_' + a + '_' + c);
-                                    if (ele.length)
-                                    {
+                                    if (ele.length) {
                                         updateFormFieldValue(ele, b[c]);
                                     }
                                 });
@@ -556,7 +557,15 @@
                     }
                 });
 
+                elementActionsUi();
+
             }, 'json');
+        }
+
+        function elementActionsUi() {
+            $('#form-opt-options>div[data-counter]').find('.js-nav-link--up.text-muted,.js-nav-link--down.text-muted').removeClass('text-muted');
+            $('#form-opt-options>div[data-counter]:first').find('.js-nav-link--up').addClass('text-muted');
+            $('#form-opt-options>div[data-counter]:last').find('.js-nav-link--down').addClass('text-muted');
         }
     </script>
 {%- endblock -%}
