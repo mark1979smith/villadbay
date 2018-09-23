@@ -8,6 +8,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\CarouselContainer;
 use App\Entity\Page;
 use App\Entity\Page\DisplayOrder;
 use App\Entity\Page\ListGroup;
