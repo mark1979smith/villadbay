@@ -503,7 +503,7 @@
         {
             let tagName = field.prop('tagName').toLowerCase();
             field.val(value);
-            if (tagName !== 'input') {
+            if (tagName !== 'input' && tagName !== 'textarea') {
                 // Ensure the option is available
                 if (!field.find('*[value="' + value + '"]').length) {
                     field.addClass('is-invalid');
