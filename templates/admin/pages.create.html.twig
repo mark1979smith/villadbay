@@ -405,8 +405,12 @@
                     '</ul>');
 
 
-                counter++;
-                $('div.jumbotron>div[data-counter]').data('counter', counter);
+                var counters = $('#form-opt-options').find('*[data-counter]').map(function() {
+                    return $(this).data('counter');
+                }).get();
+                var highest = Math.max.apply(Math, counters);
+
+                $('div.jumbotron>div[data-counter]').data('counter', highest+1);
 
 
                 $('.panoramic_image .card-deck .card .btn,.background_image .card-deck .card .btn').on('click', function (e) {
