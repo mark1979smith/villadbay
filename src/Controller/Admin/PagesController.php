@@ -23,6 +23,7 @@ use App\Entity\Page\TextLead;
 use App\Form\Admin\ApprovePageRevision;
 use App\Form\Admin\DeletePageRevision;
 use App\Form\Admin\PageType;
+use App\Utils\Helpers\ScreenSize;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -185,11 +186,11 @@ class PagesController extends Controller
                 'text_leading'            => array_map(function($obj){ return $obj->getTextValue();}, (isset($dbData['text_leading']) ? $dbData['text_leading'] : [])),
                 'paragraph_text'          => array_map(function($obj){ return $obj->getTextValue();}, (isset($dbData['paragraph_text']) ? $dbData['paragraph_text'] : [])),
                 'list_group'              => array_map(function($obj){ return $obj->getListItems();}, (isset($dbData['list_group']) ? $dbData['list_group'] : [])),
-                'panoramic_image'         => array_map(function($obj){ return $obj->getPanoramicImage();}, (isset($dbData['panoramic_image']) ? $dbData['panoramic_image'] : [])),
-                'background_image'        => array_map(function($obj){ return $obj->getBackgroundImage();}, (isset($dbData['background_image']) ? $dbData['background_image'] : [])),
+                'panoramic_image'         => array_map(function($obj){ return $obj->getPanoramicImage(new ScreenSize(ScreenSize::EXTRA_LARGE));}, (isset($dbData['panoramic_image']) ? $dbData['panoramic_image'] : [])),
+                'background_image'        => array_map(function($obj){ return $obj->getBackgroundImage(new ScreenSize(ScreenSize::EXTRA_LARGE));}, (isset($dbData['background_image']) ? $dbData['background_image'] : [])),
                 'display_order'           => $dbData['display_order'],
                 'form'                    => (isset($dbData['form']) ? $dbData['form'] : []),
-                'image_carousel'          => (isset($dbData['image_carousel']) ? $dbData['image_carousel'] : []),
+                'image_carousel'          => array_map(function($obj){ return $obj->getId();}, (isset($dbData['image_carousel']) ? $dbData['image_carousel'] : [])),
                 'page_preview'            => $page->isPreview(),
             ];
         }

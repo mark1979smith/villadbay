@@ -9,43 +9,18 @@
 namespace App\Entity\Page;
 
 
+use App\Utils\Helpers\ScreenSize;
+
 class PanoramicImage
 {
-    /** @var string  */
-    private $template = "<div class=\"container-fluid\"><div class=\"row\"><div class=\"col img-fluid\" id=\"pano\" style=\"background-repeat: no-repeat; height: 320px; background-size: cover; background-position:center; background-image: url('%s');\"></div></div></div>";
+    use InlineStyleResponsive;
 
-    private $inlineStyleTemplate = '#pano {
-            background-image: url(\'%s\');
-            height: 320px !important;
-        }
-
-        @media (max-width: 991px) {
-            #pano {
-                background-image: url(\'%s\');
-                height: 381px !important;
-            }
-        }
-
-        @media (max-width: 767px) {
-            #pano {
-                background-image: url(\'%s\');
-                height: 307px !important;
-            }
-        }
-
-        @media (max-width: 576px) {
-            #pano {
-                background-image: url(\'%s\');
-                height: 230px !important;
-            }
-        }';
+    /** @var string */
+    private $template = "<div class=\"container-fluid\"><div class=\"row\"><div class=\"col img-fluid\" id=\"pano\"></div></div></div>";
 
     public function __toString()
     {
-        return sprintf(
-            $this->getTemplate(),
-            $this->getPanoramicImage()
-        );
+        return $this->getTemplate();
     }
 
     /**
@@ -64,9 +39,9 @@ class PanoramicImage
     /**
      * @param string $template
      *
-     * @return TextHeading
+     * @return \App\Entity\Page\PanoramicImage
      */
-    public function setTemplate(string $template): TextHeading
+    public function setTemplate(string $template): \App\Entity\Page\PanoramicImage
     {
         $this->template = $template;
 
@@ -80,13 +55,9 @@ class PanoramicImage
      *
      * @return null|string
      */
-    public function getPanoramicImage($size = null): ?string
+    public function getPanoramicImage(ScreenSize $size): string
     {
-        if (!is_null($size)) {
-            // Find last occurence of '.' and prepend with '--$size'
-            return substr_replace($this->panoramicImage, '--' . $size, strrpos($this->panoramicImage, '.'), 0);
-        }
-        return $this->panoramicImage;
+        return $size->getResponsiveFilename($this->panoramicImage);
     }
 
     /**
@@ -101,35 +72,48 @@ class PanoramicImage
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getInlineStyleTemplate(): string
+    private function getInlineStyleResponsiveTemplate(?ScreenSize $size): string
     {
-        return $this->inlineStyleTemplate;
+        if (is_null($size)) {
+            return '#pano {
+                background-repeat: no-repeat; 
+                background-size: cover; 
+                background-position:center;
+            }' . PHP_EOL . PHP_EOL;
+        } else {
+            return '@media (' . $size->__toString() . ') {
+            #pano {
+                background-image: url(\'' . $this->getPanoramicImage($size) . '\');
+                height: ' . $this->getInlineHeight($size) . 'px;   
+            }
+        }' . PHP_EOL . PHP_EOL;
+        }
     }
 
-    /**
-     * @param string $inlineStyleTemplate
-     *
-     * @return BackgroundImage
-     */
-    public function setInlineStyleTemplate(string $inlineStyleTemplate): BackgroundImage
+    private function getInlineHeight(ScreenSize $screenSize): string
     {
-        $this->inlineStyleTemplate = $inlineStyleTemplate;
+        switch ($screenSize->__toString()) {
+            case $screenSize::EXTRA_SMALL:
+            default:
+                return '230';
+                break;
 
-        return $this;
+            case $screenSize::SMALL:
+                return '230';
+                break;
+
+            case $screenSize::MEDIUM:
+                return '307';
+                break;
+
+            case $screenSize::LARGE:
+                return '320';
+                break;
+
+            case $screenSize::EXTRA_LARGE:
+                return '381';
+                break;
+        }
     }
 
-    public function __toStyles()
-    {
-        return sprintf(
-            $this->getInlineStyleTemplate(),
-            $this->getPanoramicImage(),
-            $this->getPanoramicImage('lg'),
-            $this->getPanoramicImage('md'),
-            $this->getPanoramicImage('sm'),
-            $this->getPanoramicImage('xs')
-        );
-    }
 }
