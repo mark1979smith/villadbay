@@ -9,6 +9,7 @@
 namespace App\Form\DataTransformer;
 
 
+use App\Utils\Helpers\ScreenSize;
 use Symfony\Component\Form\DataTransformerInterface;
 
 class BackgroundImage implements DataTransformerInterface
@@ -24,7 +25,7 @@ class BackgroundImage implements DataTransformerInterface
             return '';
         }
 
-        return $value->getBackgroundImage();
+        return $value->getBackgroundImage(new ScreenSize(ScreenSize::EXTRA_LARGE));
     }
 
     /**

@@ -9,6 +9,7 @@
 namespace App\Form\DataTransformer;
 
 
+use App\Utils\Helpers\ScreenSize;
 use Symfony\Component\Form\DataTransformerInterface;
 
 class PanoramicImage implements DataTransformerInterface
@@ -24,7 +25,7 @@ class PanoramicImage implements DataTransformerInterface
             return '';
         }
 
-        return $value->getPanoramicImage();
+        return $value->getPanoramicImage(new ScreenSize(ScreenSize::EXTRA_LARGE));
     }
 
     /**

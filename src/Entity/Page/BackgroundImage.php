@@ -9,83 +9,24 @@
 namespace App\Entity\Page;
 
 
+use App\Utils\Helpers\ScreenSize;
+
 class BackgroundImage
 {
-    private $inlineStyleTemplate = 'body {
-        background-image: url(\'https://d3orc742w48r4f.cloudfront.net/images/backgrounds/%s\');
-        background-repeat: no-repeat;
-        background-position: center center;
-        background-attachment: fixed;
-        -webkit-background-size: cover;
-        -moz-background-size: cover;
-        background-size: cover;
-        -o-background-size: cover;
-    }
-     @media (max-width: 991px) {
-        body {
-            background-image: url(\'https://d3orc742w48r4f.cloudfront.net/images/backgrounds/%s\');
-        }
-    }
-
-    @media (max-width: 767px) {
-        body {
-            background-image: url(\'https://d3orc742w48r4f.cloudfront.net/images/backgrounds/%s\');
-        }
-    }
-
-    @media (max-width: 576px) {
-        body {
-            background-image: url(\'https://d3orc742w48r4f.cloudfront.net/images/backgrounds/%s\');
-        }
-
-        .display-1, .display-2, .display-3, .display-4, .display-5 {
-            font-size: x-large;
-            font-weight: bold;
-        }
-    }
-    ';
-
-
+    use InlineStyleResponsive;
 
     private $backgroundImage;
 
-    public function __toString()
-    {
-        return sprintf(
-            $this->getInlineStyleTemplate(),
-            $this->getBackgroundImage(),
-            'lg/'.$this->getBackgroundImage(),
-            'md/'.$this->getBackgroundImage(),
-            'sm/'.$this->getBackgroundImage()
-        );
-    }
-
     /**
-     * @return string
-     */
-    public function getInlineStyleTemplate(): string
-    {
-        return $this->inlineStyleTemplate;
-    }
-
-    /**
-     * @param string $inlineStyleTemplate
+     * If size is defined the filename is amended to suit.
      *
-     * @return BackgroundImage
-     */
-    public function setInlineStyleTemplate(string $inlineStyleTemplate): BackgroundImage
-    {
-        $this->inlineStyleTemplate = $inlineStyleTemplate;
-
-        return $this;
-    }
-
-    /**
+     * @param \App\Utils\Helpers\ScreenSize $size
+     *
      * @return mixed
      */
-    public function getBackgroundImage()
+    public function getBackgroundImage(ScreenSize $size)
     {
-        return $this->backgroundImage;
+        return $size->getResponsiveFilename($this->backgroundImage);
     }
 
     /**
@@ -100,6 +41,25 @@ class BackgroundImage
         return $this;
     }
 
-
+    private function getInlineStyleResponsiveTemplate(?ScreenSize $size)
+    {
+        if (is_null($size)) {
+            return 'body {
+                background-repeat: no-repeat;
+                background-position: center center;
+                background-attachment: fixed;
+                -webkit-background-size: cover;
+                -moz-background-size: cover;
+                background-size: cover;
+                -o-background-size: cover;
+            }' . PHP_EOL . PHP_EOL;
+        } else {
+            return '@media (' . $size->__toString() . ') {
+            body {
+                background-image: url(\'' . $this->getBackgroundImage($size) . '\');
+            }
+        }' . PHP_EOL . PHP_EOL;
+        }
+    }
 
 }

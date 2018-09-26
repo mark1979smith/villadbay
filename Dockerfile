@@ -11,14 +11,15 @@ ENV AWS_ACCESS_KEY_ID 'AKIAJJJOH43PYYUNHUDQ'
 ENV AWS_SECRET_ACCESS_KEY ''
 ENV APP_ENV 'prod'
 ENV APP_DEBUG 'false'
+ENV IMAGE_CDN ''
 
 # CUSTOM SOFTWARE REQS
 RUN  apt-get update && \
         apt-get install -y libmagickwand-dev --no-install-recommends && \
-        apt-get install -y jq && \
+        apt-get install -y jq awscli  && \
         pecl install imagick xdebug && \
-        echo "zend_extension=$(find / -name "xdebug.so")" >> /usr/local/etc/php/conf.d/custom.ini
-        docker-php-ext-enable imagick &&
+        echo "zend_extension=$(find / -name "xdebug.so")" >> /usr/local/etc/php/conf.d/custom.ini && \
+        docker-php-ext-enable imagick
 
 # Create custom PHP settings
 RUN echo "ZGF0ZS50aW1lem9uZSA9IEF1c3RyYWxpYS9CcmlzYmFuZQ==" | base64 --decode >> /usr/local/etc/php/conf.d/custom.ini && \

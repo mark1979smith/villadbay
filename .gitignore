@@ -1,5 +1,6 @@
 .idea/
 composer.phar
+vendor/
 vendor/ocramius/package-versions/src/PackageVersions/Versions.php
 vendor/autoload.php
 vendor/composer/autoload_real.php
