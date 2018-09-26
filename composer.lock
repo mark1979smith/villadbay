@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9d1d7635e8e29dfc0b424f85768ad6ef",
+    "content-hash": "907bbc2b67e8693c6c9d9093e8d74934",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -84,7 +84,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2018-09-21T20:29:41+00:00"
+            "time": "2018-09-25T20:15:23+00:00"
         },
         {
             "name": "doctrine/annotations",
