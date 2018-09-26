@@ -1,0 +1,37 @@
+{% extends 'admin.html.twig' %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1 class="display-3">Manage carousels</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <table class="table table-striped">
+                {% for row in carousels %}
+                <tr>
+                    <td>{{ row.name }}</td>
+                    <td>{{ row.description }}</td>
+                    <td>
+                        <a href="{{ path('admin-carousel-edit', {'id': row.id}) }}">
+                            <button class="btn btn-default"><i class="oi oi-pencil"></i> Edit</button>
+                        </a>
+                        {%  if deleteForm is defined %}
+                        {{ form_start(deleteForm, {'action': path('admin-carousel-delete', {'id': row.id})}) }}
+                            <button type="submit" class="btn btn-link text-danger">
+                                <i class="oi oi-trash"></i> Delete
+                            </button>
+                        {{ form_end(deleteForm) }}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

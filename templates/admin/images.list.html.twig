@@ -1,0 +1,93 @@
+{% extends 'admin.html.twig' %}
+{% import "macro/filesize.html" as filesize %}
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1 class="display-3">Manage images</h1>
+            </div>
+        </div>
+
+        {% for label, imageType in imageTypes %}
+            <div class="row">
+                <div class="col">
+                    <h2 class="display-4">{{ label }}</h2>
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Filename</th>
+                            <th scope="col">Optimised For</th>
+                            <th scope="col">Size</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% if objects[imageType] is defined and objects[imageType]|length > 0 %}
+                            {%  set index = 0 %}
+                            {% for row in objects[imageType] %}
+                                {% if row.Metadata.filename is defined %}
+                                    {%  set index = index + 1 %}
+                                {% endif %}
+                                <tr{% if row.Metadata.filename is defined %} data-row-id="{{ row.Key }}"{% elseif row.Metadata.parent is defined %} data-parent="{{ row.Metadata.parent }}"{% endif %}>
+                                    <td scope="row">{% if row.Metadata.filename is defined %}{{ index }}{% endif %}</td>
+                                    <td>
+                                        <div style="width: 50px; height:50px; background-image: url({{ row.CdnUrl }}); background-repeat: no-repeat; background-position: center center; -webkit-background-size: cover; -moz-background-size: cover; background-size: cover; -o-background-size: cover; float: left; margin-right:10px; "></div>
+                                        {% if row.Metadata.filename is defined %}
+                                            {{ row.Metadata.filename }}
+                                        {% endif %}
+                                    </td>
+                                    <td>{% if row.Key matches '/\-\-xs\./' %}Extra small devices<br/>
+                                            <small>(portrait phones, less than 576px)
+                                            </small>{% elseif row.Key matches '/\-\-sm\./' %}Small devices<br/>
+                                            <small>(landscape phones, 576px and up)
+                                            </small>{% elseif row.Key matches '/\-\-md\./' %}Medium devices<br/>
+                                            <small>(tablets, 768px and up)
+                                            </small>{% elseif row.Key matches '/\-\-lg\./' %}Large devices<br/>
+                                            <small>(desktops, 992px and up)</small>{% else %}Extra large devices<br/>
+                                            <small>(large desktops, 1200px and up)</small>{% endif %}</td>
+                                    <td title="{{ row.Size }} B">{{ filesize.bytesToSize(row.Size) }}</td>
+                                    <td>
+                                        <a href="{{ row.CdnUrl }}"><span class="oi oi-cloud-download"></span> Download</a>
+                                        {% if row.Metadata.filename is defined %}
+                                            <form method="post" action="{{ path('admin-images-delete', {'key': row.Key | base64_encode}) }}" class="form-inline">
+                                                <button type="submit" class="btn btn-link text-danger">
+                                                    <i class="oi oi-trash"></i> Delete
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center bg-light">No Images Found</td>
+                            </tr>
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        {% endfor %}
+
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript">
+    $('tr[data-parent]').hide();
+
+    $('table.table').on('click', 'tr[data-row-id] td', function(e) {
+        if ($(this).find('span.oi').length === 0) {
+            $(this).closest('table').find('tr[data-parent="' + $(this).closest('tr').data('row-id') + '"]').toggle();
+        }
+    });
+
+    $('table.table').on('mouseover', 'tr td', function(e) {
+        if ($(this).find('span.oi').length === 0) {
+            $(this).css('cursor', 'pointer');
+        }
+    });
+</script>
+{% endblock %}

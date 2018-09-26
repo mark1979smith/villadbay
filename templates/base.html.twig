@@ -16,6 +16,17 @@
             }
         }
     </script>
+    <style type="text/css">
+        label.required:after {
+            content: '*';
+        }
+        @media (max-width: 576px) {
+            .display-1, .display-2, .display-3, .display-4, .display-5 {
+                font-size: x-large;
+                font-weight: bold;
+            }
+        }
+    </style>
     {% block stylesheets %}{% endblock %}
 </head>
 <body>
@@ -63,17 +74,6 @@
         </ul>
     </div>
 </nav>
-
-{% if disablePanoramicView is not defined %}
-    <div class="container-fluid">
-
-    <div class="row">
-        <div class="col img-fluid" id="pano" style="background-repeat: no-repeat; height: 320px; background-size: cover; background-position:center;">
-
-        </div>
-    </div>
-</div>
-{% endif %}
 
 {% block body %}
     {% block search_form %}
