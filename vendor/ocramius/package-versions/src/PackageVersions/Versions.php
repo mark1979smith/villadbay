@@ -81,7 +81,7 @@ final class Versions
   'symfony/thanks' => 'v1.0.5@c757ee0c9dcfcc0e9e30fbbbdcadeb9dcc9aaaf4',
   'symfony/var-dumper' => 'v4.0.4@6d63cc74f3e2d4961411ccb77389a00332653104',
   'symfony/web-profiler-bundle' => 'v4.0.4@2074348dba4b49ea86d7ee7eaf1b4fcacc887120',
-  '__root__' => 'dev-_staging@ebb249b0d9f26c2c5897fc00828bbea77e456042',
+  '__root__' => 'No version set (parsed as 1.0.0)@',
 );
 
     private function __construct()
