@@ -9,92 +9,24 @@
 namespace App\Entity\Page;
 
 
+use App\Utils\Helpers\ScreenSize;
+
 class BackgroundImage
 {
-    private $inlineStyleTemplate = 'body {
-        background-image: url(\'%s\');
-        background-repeat: no-repeat;
-        background-position: center center;
-        background-attachment: fixed;
-        -webkit-background-size: cover;
-        -moz-background-size: cover;
-        background-size: cover;
-        -o-background-size: cover;
-    }
-    
-    @media (max-width: 1199px) {
-        body {
-            background-image: url(\'%s\');
-        }
-    }
-
-    @media (max-width: 991px) {
-        body {
-            background-image: url(\'%s\');
-        }
-    }
-
-    @media (max-width: 767px) {
-        body {
-            background-image: url(\'%s\');
-        }
-    }
-
-    @media (max-width: 575px) {
-        body {
-            background-image: url(\'%s\');
-        }
-    }';
-
+    use InlineStyleResponsive;
 
     private $backgroundImage;
-
-    public function __toStyles()
-    {
-        return sprintf(
-            $this->getInlineStyleTemplate(),
-            $this->getBackgroundImage(),
-            $this->getBackgroundImage('lg'),
-            $this->getBackgroundImage('md'),
-            $this->getBackgroundImage('sm'),
-            $this->getBackgroundImage('xs')
-        );
-    }
-
-    /**
-     * @return string
-     */
-    public function getInlineStyleTemplate(): string
-    {
-        return $this->inlineStyleTemplate;
-    }
-
-    /**
-     * @param string $inlineStyleTemplate
-     *
-     * @return BackgroundImage
-     */
-    public function setInlineStyleTemplate(string $inlineStyleTemplate): BackgroundImage
-    {
-        $this->inlineStyleTemplate = $inlineStyleTemplate;
-
-        return $this;
-    }
 
     /**
      * If size is defined the filename is amended to suit.
      *
-     * @param null|string $size
+     * @param \App\Utils\Helpers\ScreenSize $size
      *
      * @return mixed
      */
-    public function getBackgroundImage($size = null)
+    public function getBackgroundImage(ScreenSize $size)
     {
-        if (!is_null($size)) {
-            // Find last occurence of '.' and prepend with '--$size'
-            return substr_replace($this->backgroundImage, '--' . $size, strrpos($this->backgroundImage, '.'), 0);
-        }
-        return $this->backgroundImage;
+        return $size->getResponsiveFilename($this->backgroundImage);
     }
 
     /**
@@ -109,6 +41,25 @@ class BackgroundImage
         return $this;
     }
 
-
+    private function getInlineStyleResponsiveTemplate(?ScreenSize $size)
+    {
+        if (is_null($size)) {
+            return 'body {
+                background-repeat: no-repeat;
+                background-position: center center;
+                background-attachment: fixed;
+                -webkit-background-size: cover;
+                -moz-background-size: cover;
+                background-size: cover;
+                -o-background-size: cover;
+            }' . PHP_EOL . PHP_EOL;
+        } else {
+            return '@media (' . $size->__toString() . ') {
+            body {
+                background-image: url(\'' . $this->getBackgroundImage($size) . '\');
+            }
+        }' . PHP_EOL . PHP_EOL;
+        }
+    }
 
 }

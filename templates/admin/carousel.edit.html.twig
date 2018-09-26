@@ -1,40 +1,31 @@
 {% extends 'admin.html.twig' %}
-{% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
-{% form_theme newSlideForm with ['bootstrap_4_horizontal_layout.html.twig', 'admin/form-themes/fields.html.twig'] %}
+{% form_theme form with ['bootstrap_4_horizontal_layout.html.twig', 'admin/form-themes/fields.html.twig'] %}
 
 
 {% block body %}
     <div class="container">
         <div class="row">
             <div class="col">
-                <h1 class="display-3">Edit carousel</h1>
 
+                <h3 class="display-4">Edit existing Slides</h3>
                 {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-                {{ form_row(form.name) }}
-                {{ form_row(form.description) }}
-                {{ form_row(form.send, {label: 'Edit Carousel'}) }}
+                {%- for key, field in form.title -%}
+                    {{ form_row(form.title[key]) }}
+                    {{ form_row(form.description[key]) }}
+                    {{ form_row(form.image[key]) }}
+                {%- endfor -%}
+                <div class="form-group row">
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-10">
+                        {{ form_widget(form.send) }}
+                        <button class="btn btn-link" data-prototype="{% spaceless %}{{- form_row(newSlideForm.title.vars.prototype)|e('html_attr') -}}{{- form_row(newSlideForm.description.vars.prototype)|e('html_attr') -}}{{- form_row(newSlideForm.image.vars.prototype)|e('html_attr') -}}{% endspaceless %}">Add new slide</button>
+                    </div>
+                </div>
+
                 {{ form_end(form) }}
 
-                {% for carouselSlideForm in carouselSlideForms %}
-                    <h3 class="display-4">Edit existing slide</h3>
-                    {{ form_start(carouselSlideForm, {'attr': {'novalidate': 'novalidate'}}) }}
-
-                    {{ form_end(carouselSlideForm) }}
-                {% endfor %}
-
-            </div>
-        </div>
-    </div>
 
 
-
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                <h3 class="display-4">Add new slide</h3>
-
-                {{ form_start(newSlideForm, {'attr': {'novalidate': 'novalidate'}}) }}
-                {{ form_end(newSlideForm) }}
             </div>
         </div>
     </div>

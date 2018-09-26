@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\CarouselSlides\Image;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -37,6 +38,9 @@ class CarouselSlides
      */
     private $image;
 
+    /** @var int */
+    private $position;
+
     public function getId()
     {
         return $this->id;
@@ -59,7 +63,7 @@ class CarouselSlides
         return $this->title;
     }
 
-    public function setTitle(string $title): self
+    public function setTitle($title): self
     {
         $this->title = $title;
 
@@ -71,7 +75,7 @@ class CarouselSlides
         return $this->description;
     }
 
-    public function setDescription(string $description): self
+    public function setDescription($description): self
     {
         $this->description = $description;
 
@@ -83,10 +87,65 @@ class CarouselSlides
         return $this->image;
     }
 
-    public function setImage(string $image): self
+    public function setImage($image): self
     {
         $this->image = $image;
 
         return $this;
     }
+
+    /**
+     * @return int|null
+     */
+    public function getPosition(): ?int
+    {
+        return $this->position;
+    }
+
+    /**
+     * @param int $position
+     *
+     * @return CarouselSlides
+     */
+    public function setPosition(?int $position): CarouselSlides
+    {
+        $this->position = $position;
+
+        return $this;
+    }
+
+    public function renderSlide($slideNumber)
+    {
+        $this->setPosition($slideNumber);
+        return $this->__toString();
+    }
+
+    public function __toString()
+    {
+        $xlImage = $this->getImage();
+        $lgImage = substr_replace($this->getImage(), '--lg', strrpos($this->getImage(), '.'), 0);
+        $mdImage = substr_replace($this->getImage(), '--md', strrpos($this->getImage(), '.'), 0);
+        $smImage = substr_replace($this->getImage(), '--sm', strrpos($this->getImage(), '.'), 0);
+        $xsImage = substr_replace($this->getImage(), '--xs', strrpos($this->getImage(), '.'), 0);
+
+        $carouselItemClass = ($this->getPosition() == '1' ? ' active' : '');
+        $str = <<<SLIDE
+            <div class="carousel-item{$carouselItemClass}">
+                <picture>
+                    <source media="(min-width: 1200px)" srcset="{$xlImage}">
+                    <source media="(min-width: 992px)" srcset="{$lgImage}">
+                    <source media="(min-width: 768px)" srcset="{$mdImage}">
+                    <source media="(min-width: 576px)" srcset="{$smImage}">
+                    <img class="d-block w-100" src="{$xsImage}" alt="First slide">
+                </picture>
+                <div class="carousel-caption d-none d-md-block">
+                    <h3>{$this->getTitle()}</h3>
+                    <p>{$this->getDescription()}</p>
+                </div>
+            </div>
+SLIDE;
+
+        return $str;
+    }
+
 }

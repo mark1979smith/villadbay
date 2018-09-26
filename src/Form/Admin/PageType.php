@@ -10,16 +10,13 @@ namespace App\Form\Admin;
 
 
 use App\Component\ImageTypes;
-use App\Form\DataTransformer\TextHeadingType;
+use App\Entity\CarouselContainer;
+use Symfony\Component\Cache\CacheItem;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -38,6 +35,7 @@ class PageType extends AbstractType
     {
         $panoramicImages = $this->getPanoramicImages($options['container_interface']);
         $backgroundImages = $this->getBackgroundImages($options['container_interface']);
+        $carousels = $this->getCarousels($options['container_interface']);
         $builder
             ->add('page_route', \App\Form\Admin\Types\PageRoute::class, [
                 'label'   => 'Please select the page to edit',
@@ -83,8 +81,8 @@ class PageType extends AbstractType
                     'required' => false,
                 ],
                 'attr'          => array(
-                    'class' => 'js--text_heading_type col-lg-4 col-md-6 col-sm-12',
-                    'data-form-element-hide' => 'false'
+                    'class'                  => 'js--text_heading_type col-lg-4 col-md-6 col-sm-12',
+                    'data-form-element-hide' => 'false',
                 ),
             ])
             ->add('text_heading_size_class', CollectionType::class, [
@@ -104,8 +102,8 @@ class PageType extends AbstractType
                     'required' => false,
                 ],
                 'attr'          => array(
-                    'class' => 'js--text_heading_type col-lg-4 col-md-6 col-sm-12',
-                    'data-form-element-hide' => 'false'
+                    'class'                  => 'js--text_heading_type col-lg-4 col-md-6 col-sm-12',
+                    'data-form-element-hide' => 'false',
                 ),
             ])
             ->add('text_heading_colour_class', CollectionType::class, [
@@ -114,21 +112,21 @@ class PageType extends AbstractType
                 'allow_delete'  => true,
                 'prototype'     => true,
                 'entry_options' => [
-                    'choices'  => [
-                        'Black' => 'text-dark',
-                        'Blue' => 'text-primary',
-                        'Green' => 'text-success',
-                        'Red' => 'text-danger',
+                    'choices'     => [
+                        'Black'  => 'text-dark',
+                        'Blue'   => 'text-primary',
+                        'Green'  => 'text-success',
+                        'Red'    => 'text-danger',
                         'Yellow' => 'text-warning',
-                        'White' => 'text-white',
+                        'White'  => 'text-white',
                     ],
-                    'label'    => 'Choose a heading colour',
-                    'required' => false,
-                    'placeholder' => false
+                    'label'       => 'Choose a heading colour',
+                    'required'    => false,
+                    'placeholder' => false,
                 ],
                 'attr'          => array(
-                    'class' => 'js--text_heading_type col-lg-4 col-md-6 col-sm-12',
-                    'data-form-element-hide' => 'false'
+                    'class'                  => 'js--text_heading_type col-lg-4 col-md-6 col-sm-12',
+                    'data-form-element-hide' => 'false',
                 ),
             ])
             ->add('text_heading_align_class', CollectionType::class, [
@@ -137,18 +135,18 @@ class PageType extends AbstractType
                 'allow_delete'  => true,
                 'prototype'     => true,
                 'entry_options' => [
-                    'choices'  => [
-                        'Left' => 'text-left',
+                    'choices'     => [
+                        'Left'   => 'text-left',
                         'Centre' => 'text-center',
-                        'Right' => 'text-right',
+                        'Right'  => 'text-right',
                     ],
-                    'label'    => 'Choose a heading alignment',
-                    'required' => false,
-                    'placeholder' => false
+                    'label'       => 'Choose a heading alignment',
+                    'required'    => false,
+                    'placeholder' => false,
                 ],
                 'attr'          => array(
-                    'class' => 'js--text_heading_type col-lg-4 col-md-6 col-sm-12',
-                    'data-form-element-hide' => 'false'
+                    'class'                  => 'js--text_heading_type col-lg-4 col-md-6 col-sm-12',
+                    'data-form-element-hide' => 'false',
                 ),
             ])
             ->add('text_heading_text_value', CollectionType::class, [
@@ -161,8 +159,8 @@ class PageType extends AbstractType
                     'required' => false,
                 ],
                 'attr'          => array(
-                    'class' => 'js--text_heading_type col-lg-4 col-md-6 col-sm-12',
-                    'data-form-element-hide' => 'false'
+                    'class'                  => 'js--text_heading_type col-lg-4 col-md-6 col-sm-12',
+                    'data-form-element-hide' => 'false',
                 ),
             ])
             ->add('text_leading', CollectionType::class, [
@@ -174,9 +172,9 @@ class PageType extends AbstractType
                     'label'    => 'Enter leading text',
                     'required' => false,
                 ],
-                'attr' => [
-                    'data-form-element-hide' => 'false'
-                ]
+                'attr'          => [
+                    'data-form-element-hide' => 'false',
+                ],
             ])
             ->add('paragraph_text', CollectionType::class, [
                 'entry_type'    => \App\Form\Admin\Types\ParagraphText::class,
@@ -187,9 +185,9 @@ class PageType extends AbstractType
                     'label'    => 'Enter text',
                     'required' => false,
                 ],
-                'attr' => [
-                    'data-form-element-hide' => 'false'
-                ]
+                'attr'          => [
+                    'data-form-element-hide' => 'false',
+                ],
 
             ])
             ->add('list_group', CollectionType::class, [
@@ -203,8 +201,8 @@ class PageType extends AbstractType
                     'data_class' => null,
                 ],
                 'attr'          => [
-                    'aria-describedby' => 'list_group_helper',
-                    'data-form-element-hide' => 'false'
+                    'aria-describedby'       => 'list_group_helper',
+                    'data-form-element-hide' => 'false',
                 ],
 
             ])
@@ -214,20 +212,20 @@ class PageType extends AbstractType
                 'allow_delete'  => true,
                 'prototype'     => true,
                 'entry_options' => [
-                    'label'      => 'Add Panoramic Image',
-                    'required'   => false,
-                    'data_class' => null,
-                    'choices'    => $panoramicImages,
+                    'label'       => 'Add Panoramic Image',
+                    'required'    => false,
+                    'data_class'  => null,
+                    'choices'     => $panoramicImages,
                     'placeholder' => false,
-                    'attr'       => [
+                    'attr'        => [
 
                     ],
                 ],
                 'attr'          => [
-                    'aria-describedby' => 'panoramic_image_helper',
-                    'data-form-element-prefix-markup' => $this->getPanoramicImagesHtml($panoramicImages),
+                    'aria-describedby'                          => 'panoramic_image_helper',
+                    'data-form-element-prefix-markup'           => $this->getPanoramicImagesHtml($panoramicImages),
                     'data-form-element-prefix-markup-append-to' => '.form-group',
-                    'data-form-element-hide' => 'select'
+                    'data-form-element-hide'                    => 'select',
                 ],
 
             ])
@@ -237,50 +235,58 @@ class PageType extends AbstractType
                 'allow_delete'  => true,
                 'prototype'     => true,
                 'entry_options' => [
-                    'label'      => 'Add Background Image',
-                    'required'   => false,
-                    'data_class' => null,
-                    'choices'    => $backgroundImages,
+                    'label'       => 'Add Background Image',
+                    'required'    => false,
+                    'data_class'  => null,
+                    'choices'     => $backgroundImages,
                     'placeholder' => false,
-                    'attr'       => [
+                    'attr'        => [
 
                     ],
                 ],
                 'attr'          => [
-                    'data-form-element-prefix-markup' => $this->getBackgroundImagesHtml($backgroundImages),
+                    'data-form-element-prefix-markup'           => $this->getBackgroundImagesHtml($backgroundImages),
                     'data-form-element-prefix-markup-append-to' => '.form-group',
-                    'data-form-element-hide' => 'select'
+                    'data-form-element-hide'                    => 'select',
                 ],
 
             ])
             ->add('form', CollectionType::class, [
-                'entry_type'     => \App\Form\Admin\Types\FormType::class,
-                'allow_add'      => true,
-                'prototype'      => true,
-                'entry_options'  => [
-                    'label' => 'Add Form',
-                    'data_class' => null,
-                    'choices'    => [
-                        'Search' => 'search-form',
+                'entry_type'    => \App\Form\Admin\Types\FormType::class,
+                'allow_add'     => true,
+                'allow_delete'  => true,
+                'prototype'     => true,
+                'entry_options' => [
+                    'label'       => 'Add Form',
+                    'required'    => false,
+                    'placeholder' => false,
+                    'data_class'  => null,
+                    'choices'     => [
+                        'Search'  => 'search-form',
                         'Contact' => 'contact-form',
                     ],
                 ],
             ])
             ->add('image_carousel', CollectionType::class, [
-                'entry_type'     => \App\Form\Admin\Types\CarouselType::class,
-                'allow_add'      => true,
-                'prototype'      => true,
-                'entry_options'  => [
-                    'label' => 'Add Image Carousel',
-                    'data_class' => null,
-                    'choices'    => [
-                        'Main Carousel' => 'image-carousel',
+                'entry_type'    => \App\Form\Admin\Types\CarouselType::class,
+                'allow_add'     => true,
+                'allow_delete'  => true,
+                'prototype'     => true,
+                'entry_options' => [
+                    'label'       => 'Add Image Carousel',
+                    'required'    => false,
+                    'data_class'  => null,
+                    'choices'     => $carousels,
+                    'placeholder' => false,
+                    'attr'        => [
+
                     ],
                 ],
             ])
             ->add('display_order', CollectionType::class, [
                 'entry_type'     => \App\Form\Admin\Types\DisplayOrder::class,
                 'allow_add'      => true,
+                'allow_delete'   => true,
                 'prototype'      => true,
                 'prototype_data' => '#NEWCOUNTER#',
                 'entry_options'  => [
@@ -296,6 +302,26 @@ class PageType extends AbstractType
 
     }
 
+    private function getCarousels(ContainerInterface $container)
+    {
+        /** @var \Doctrine\Common\Persistence\ManagerRegistry $db */
+        $db = $container->get('doctrine');
+        $carousels = $db->getRepository(CarouselContainer::class)
+            ->findAll();
+
+        $entries = [];
+        if (is_iterable($carousels)) {
+            /** @var CarouselContainer $carousel */
+            foreach ($carousels as $carousel) {
+                $entries[$carousel->getName()] = $carousel->getId();
+            }
+        }
+
+        return $entries;
+
+
+    }
+
     private function getBackgroundImages(ContainerInterface $container)
     {
         /** @var \App\Utils\Redis $redisService */
@@ -304,9 +330,9 @@ class PageType extends AbstractType
         /** @var \App\Utils\AwsS3Client $s3Service */
         $s3Service = $container->get('app.aws.s3');
 
-        $cacheKey = 'aws.s3.listobjects.'.$s3Service->getBucket() . md5(time());
+        $cacheKey = 'aws.s3.listobjects.' . $s3Service->getBucket();
         if ($redisService->hasItem($cacheKey)) {
-            $response = $redisService->getItem($cacheKey)->get();
+            $response = $redisService->getItem($cacheKey);
         } else {
             $response = $s3Service->getImagesBasedOnConfig([
                 'Bucket' => $s3Service->getBucket(),
@@ -318,16 +344,26 @@ class PageType extends AbstractType
             $redisService->save($cacheItem);
         }
 
+        switch (get_class($response)) {
+            case \Aws\Result::class:
+                $serviceData = $response->get('Contents');
+                break;
+
+            case CacheItem::class:
+                $serviceData = $response->get();
+                break;
+        }
+
         $backgroundImages = [];
-        if ($response instanceof \Aws\Result) {
-            if (is_iterable($response->get('Contents'))) {
-                foreach ($response->get('Contents') as $asset) {
-                    if ($this->filterByPath($asset, 'images/backgrounds')) {
-                        $backgroundImages[] = $s3Service->getImageCdn() . DIRECTORY_SEPARATOR . $asset['Key'];
-                    }
+
+        if (is_iterable($serviceData)) {
+            foreach ($serviceData as $asset) {
+                if ($this->filterByPath($asset, 'images/backgrounds')) {
+                    $backgroundImages[] = $s3Service->getImageCdn() . DIRECTORY_SEPARATOR . $asset['Key'];
                 }
             }
         }
+
 
         return array_combine($backgroundImages, $backgroundImages);
     }
@@ -340,9 +376,9 @@ class PageType extends AbstractType
         /** @var \App\Utils\AwsS3Client $s3Service */
         $s3Service = $container->get('app.aws.s3');
 
-        $cacheKey = 'aws.s3.listobjects.'.$s3Service->getBucket();
+        $cacheKey = 'aws.s3.listobjects.' . $s3Service->getBucket();
         if ($redisService->hasItem($cacheKey)) {
-            $response = $redisService->getItem($cacheKey)->get();
+            $response = $redisService->getItem($cacheKey);
         } else {
             $response = $s3Service->getImagesBasedOnConfig([
                 'Bucket' => $s3Service->getBucket(),
@@ -355,16 +391,23 @@ class PageType extends AbstractType
         }
 
         $panoImages = [];
-        if ($response instanceof \Aws\Result) {
-            if (is_iterable($response->get('Contents'))) {
-                foreach ($response->get('Contents') as $asset) {
-                    if ($this->filterByPath($asset, 'images/pano')) {
-                        $panoImages[] = $s3Service->getImageCdn() . DIRECTORY_SEPARATOR . $asset['Key'];
-                    }
+        switch (get_class($response)) {
+            case \Aws\Result::class:
+                $serviceData = $response->get('Contents');
+                break;
+
+            case CacheItem::class:
+                $serviceData = $response->get();
+                break;
+        }
+
+        if (is_iterable($serviceData)) {
+            foreach ($serviceData as $asset) {
+                if ($this->filterByPath($asset, 'images/pano')) {
+                    $panoImages[] = $s3Service->getImageCdn() . DIRECTORY_SEPARATOR . $asset['Key'];
                 }
             }
         }
-
 
         return array_combine($panoImages, $panoImages);
     }
@@ -374,9 +417,9 @@ class PageType extends AbstractType
         $html = '<div class="card-deck">';
 
         foreach ($panoImages as $panoImage) {
-            $html .= '<div class="card text-center js--card-pano-image">'.
-                '<div class="card-body" style="background-position: center; background-size: cover; background-image: url('. $panoImage .');"></div>' .
-                '<div class="card-footer btn-group-toggle" data-toggle="buttons"><label class="btn btn-secondary"><input name="do-not-send[]" type="radio" autocomplete="off" value="'. $panoImage .'" /> Select</label></div>' .
+            $html .= '<div class="card text-center js--card-pano-image">' .
+                '<div class="card-body" style="background-position: center; background-size: cover; background-image: url(' . $panoImage . ');"></div>' .
+                '<div class="card-footer btn-group-toggle" data-toggle="buttons"><label class="btn btn-secondary"><input name="do-not-send[]" type="radio" autocomplete="off" value="' . $panoImage . '" /> Select</label></div>' .
                 '</div>';
         }
 
@@ -390,9 +433,9 @@ class PageType extends AbstractType
         $html = '<div class="card-deck">';
 
         foreach ($backgroundImages as $backgroundImage) {
-            $html .= '<div class="card text-center js--card-pano-image">'.
-                '<div class="card-body" style="height: 100px; background-position: center; background-size: contain; background-repeat: no-repeat; background-image: url('. $backgroundImage .');"></div>' .
-                '<div class="card-footer btn-group-toggle" data-toggle="buttons"><label class="btn btn-secondary"><input name="do-not-send[]" type="radio" autocomplete="off" value="'. $backgroundImage .'" /> Select</label></div>' .
+            $html .= '<div class="card text-center js--card-pano-image">' .
+                '<div class="card-body" style="height: 100px; background-position: center; background-size: contain; background-repeat: no-repeat; background-image: url(' . $backgroundImage . ');"></div>' .
+                '<div class="card-footer btn-group-toggle" data-toggle="buttons"><label class="btn btn-secondary"><input name="do-not-send[]" type="radio" autocomplete="off" value="' . $backgroundImage . '" /> Select</label></div>' .
                 '</div>';
         }
 

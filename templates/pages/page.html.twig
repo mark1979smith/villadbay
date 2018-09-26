@@ -1,7 +1,11 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-    {{ page|replace({'#search-form#': block('search_form') })|replace({'#contact-form#': block('contact_form')})|replace({'#image-carousel#': block('image_carousel')})|raw }}
+    {% if page is defined %}
+        {{ page|replace({'#search-form#': block('search_form') })|replace({'#contact-form#': block('contact_form')})|raw }}
+    {% endif %}
 {% endblock %}
 {% block stylesheets %}
-    {{ styles|raw }}
+    {% if styles is defined %}
+        {{ styles|raw }}
+    {% endif %}
 {% endblock %}
