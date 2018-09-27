@@ -233,5 +233,10 @@ class Page
         }
     }
 
+    public function getPreview(): ?bool
+    {
+        return $this->preview;
+    }
+
 }
 

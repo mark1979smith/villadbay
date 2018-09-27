@@ -167,7 +167,6 @@ MSG;
             'description' => $dbData['description'],
             'image'       => $dbData['image'],
         ], [
-            'service_redis'       => $this->container->get('app.redis'),
             'service_aws_s3'      => $this->container->get('app.aws.s3'),
             'submit_button_label' => 'Save carousel',
         ]);
