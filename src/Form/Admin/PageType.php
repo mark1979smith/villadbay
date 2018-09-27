@@ -324,25 +324,9 @@ class PageType extends AbstractType
 
     private function getBackgroundImages(ContainerInterface $container)
     {
-        /** @var \App\Utils\Redis $redisService */
-        $redisService = $container->get('app.redis');
-
         /** @var \App\Utils\AwsS3Client $s3Service */
         $s3Service = $container->get('app.aws.s3');
-
-        $cacheKey = 'aws.s3.listobjects.' . $s3Service->getBucket();
-        if ($redisService->hasItem($cacheKey)) {
-            $response = $redisService->getItem($cacheKey);
-        } else {
-            $response = $s3Service->getImagesBasedOnConfig([
-                'Bucket' => $s3Service->getBucket(),
-            ]);
-
-            $cacheItem = $redisService->getItem($cacheKey);
-            $cacheItem->set($response);
-
-            $redisService->save($cacheItem);
-        }
+        $response = $s3Service->getImagesBasedOnConfig();
 
         switch (get_class($response)) {
             case \Aws\Result::class:
@@ -370,25 +354,9 @@ class PageType extends AbstractType
 
     private function getPanoramicImages(ContainerInterface $container)
     {
-        /** @var \App\Utils\Redis $redisService */
-        $redisService = $container->get('app.redis');
-
         /** @var \App\Utils\AwsS3Client $s3Service */
         $s3Service = $container->get('app.aws.s3');
-
-        $cacheKey = 'aws.s3.listobjects.' . $s3Service->getBucket();
-        if ($redisService->hasItem($cacheKey)) {
-            $response = $redisService->getItem($cacheKey);
-        } else {
-            $response = $s3Service->getImagesBasedOnConfig([
-                'Bucket' => $s3Service->getBucket(),
-            ]);
-
-            $cacheItem = $redisService->getItem($cacheKey);
-            $cacheItem->set($response);
-
-            $redisService->save($cacheItem);
-        }
+        $response = $s3Service->getImagesBasedOnConfig();
 
         $panoImages = [];
         switch (get_class($response)) {

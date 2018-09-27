@@ -13,7 +13,7 @@ use App\Entity\Image\Type;
 use App\Form\Admin\ImageTypesType;
 use Aws\S3\S3Client;
 use function GuzzleHttp\default_ca_bundle;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -155,12 +155,7 @@ class ImagesController extends Controller
 
         $awsListingData = [];
 
-        $coreData = [
-            'Prefix'     => 'images/',
-            'Bucket'     => $s3Service->getBucket(),
-            'MaxKeys'    => 1000,
-        ];
-        $awsData = $s3Service->getImagesBasedOnConfig($coreData);
+        $awsData = $s3Service->getImagesBasedOnConfig();
 
         foreach ($twigData['imageTypes'] as $imageType) {
             foreach ($awsData as $data) {
@@ -249,11 +244,6 @@ class ImagesController extends Controller
         $redisService = $this->container->get('app.redis');
         $redisService->invalidateTag($s3Service::CACHE_TAG_ASSET_LIST);
 
-        $coreData = [
-            'Prefix'     => 'images/',
-            'Bucket'     => $s3Service->getBucket(),
-            'MaxKeys'    => 1000,
-        ];
-        $s3Service->getImagesBasedOnConfig($coreData);
+        $s3Service->getImagesBasedOnConfig();
     }
 }

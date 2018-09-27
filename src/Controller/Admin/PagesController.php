@@ -25,7 +25,7 @@ use App\Form\Admin\ApprovePageRevision;
 use App\Form\Admin\DeletePageRevision;
 use App\Form\Admin\PageType;
 use App\Utils\Helpers\ScreenSize;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;

@@ -14,7 +14,7 @@ use App\Form\Admin\CarouselSlideType;
 use App\Form\Admin\CarouselType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\ORMException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -167,7 +167,6 @@ MSG;
             'description' => $dbData['description'],
             'image'       => $dbData['image'],
         ], [
-            'service_redis'       => $this->container->get('app.redis'),
             'service_aws_s3'      => $this->container->get('app.aws.s3'),
             'submit_button_label' => 'Save carousel',
         ]);

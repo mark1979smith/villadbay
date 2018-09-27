@@ -31,7 +31,6 @@ class CarouselSlideType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setRequired('service_redis');
         $resolver->setRequired('service_aws_s3');
         $resolver->setDefaults(array(
             'submit_button_label' => 'Edit carousel slide'
@@ -43,7 +42,7 @@ class CarouselSlideType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         /** @var ContainerInterface $container */
-        $carouselImages = $this->getCarouselImages($options['service_redis'], $options['service_aws_s3']);
+        $carouselImages = $this->getCarouselImages($options['service_aws_s3']);
         $builder->add('title', CollectionType::class, [
             'entry_type' => CarouselTitleType::class,
             'allow_add'     => true,
@@ -81,21 +80,9 @@ class CarouselSlideType extends AbstractType
         ->add('send', SubmitType::class, ['label' => $options['submit_button_label']]);
     }
 
-    private function getCarouselImages(\App\Utils\Redis $redisService, \App\Utils\AwsS3Client $s3Service)
+    private function getCarouselImages(\App\Utils\AwsS3Client $s3Service)
     {
-        $cacheKey = 'aws.s3.listobjects.' . $s3Service->getBucket();
-        if ($redisService->hasItem($cacheKey)) {
-            $response = $redisService->getItem($cacheKey)->get();
-        } else {
-            $response = $s3Service->getImagesBasedOnConfig([
-                'Bucket' => $s3Service->getBucket(),
-            ]);
-
-            $cacheItem = $redisService->getItem($cacheKey);
-            $cacheItem->set($response);
-
-            $redisService->save($cacheItem);
-        }
+        $response = $s3Service->getImagesBasedOnConfig();
 
         $carouselImageKeys = [];
         $carouselImageValues = [];
