@@ -13,7 +13,7 @@ use App\Entity\Image\Type;
 use App\Form\Admin\ImageTypesType;
 use Aws\S3\S3Client;
 use function GuzzleHttp\default_ca_bundle;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
