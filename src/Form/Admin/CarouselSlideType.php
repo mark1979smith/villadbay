@@ -80,7 +80,7 @@ class CarouselSlideType extends AbstractType
         ->add('send', SubmitType::class, ['label' => $options['submit_button_label']]);
     }
 
-    private function getCarouselImages(\App\Utils\AwsS3Client $s3Service)
+    private function getCarouselImages(\App\Utils\AwsS3Client $s3Service): array
     {
         $response = $s3Service->getImagesBasedOnConfig();
 
@@ -89,7 +89,7 @@ class CarouselSlideType extends AbstractType
         if (is_iterable($response)) {
             foreach ($response as $asset) {
                 if ($this->filterByPath($asset, 'images/' . Type::TYPE_CAROUSEL)) {
-                    $carouselImageKeys[] = $asset['CdnUrl'];
+                    $carouselImageKeys[] = $asset['Key'];
                     $carouselImageValues[] = $asset['Metadata']['filename'];
                 }
             }
