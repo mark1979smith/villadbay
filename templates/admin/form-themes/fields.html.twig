@@ -3,7 +3,7 @@
         {%- for child in form %}
             <div class="col-3 float-left">
                 <div class="card px-3 pt-3 my-2 mx-0">
-                    <img class="card-img-top" src="{{ child.vars.value }}" alt="Card image cap"/>
+                    <img class="card-img-top" src="{{ cdn_url(child.vars.value) }}" alt="Card image cap"/>
                     <div class="card-body px-0 py-2">
                         <label class="text-truncate col-12 p-0 m-0">
                             <input type="radio" name="{{ child.vars.full_name }}" value="{{ child.vars.value }}"{% if child.vars.checked %} checked="checked"{% endif %} />
