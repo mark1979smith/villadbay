@@ -11,7 +11,9 @@
 
 namespace Symfony\Bundle\MakerBundle\Doctrine;
 
+use Doctrine\Common\Persistence\Mapping\MappingException as CommonMappingException;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\MappingException;
 use Symfony\Bundle\MakerBundle\Exception\RuntimeCommandException;
 use Symfony\Bundle\MakerBundle\FileManager;
 use Symfony\Bundle\MakerBundle\Generator;
@@ -26,21 +28,23 @@ final class EntityRegenerator
     private $doctrineHelper;
     private $fileManager;
     private $generator;
-    private $projectDirectory;
     private $overwrite;
 
-    public function __construct(DoctrineHelper $doctrineHelper, FileManager $fileManager, Generator $generator, string $projectDirectory, bool $overwrite)
+    public function __construct(DoctrineHelper $doctrineHelper, FileManager $fileManager, Generator $generator, bool $overwrite)
     {
         $this->doctrineHelper = $doctrineHelper;
         $this->fileManager = $fileManager;
         $this->generator = $generator;
-        $this->projectDirectory = $projectDirectory;
         $this->overwrite = $overwrite;
     }
 
     public function regenerateEntities(string $classOrNamespace)
     {
-        $metadata = $this->doctrineHelper->getMetadata($classOrNamespace, true);
+        try {
+            $metadata = $this->doctrineHelper->getMetadata($classOrNamespace);
+        } catch (MappingException | CommonMappingException $mappingException) {
+            $metadata = $this->doctrineHelper->getMetadata($classOrNamespace, true);
+        }
 
         if ($metadata instanceof ClassMetadata) {
             $metadata = [$metadata];
@@ -60,6 +64,8 @@ final class EntityRegenerator
                 $classPath = $this->getPathOfClass($classMetadata->name);
             }
 
+            $mappedFields = $this->getMappedFieldsInEntity($classMetadata);
+
             if ($classMetadata->customRepositoryClassName) {
                 $this->generateRepository($classMetadata);
             }
@@ -67,12 +73,37 @@ final class EntityRegenerator
             $manipulator = $this->createClassManipulator($classPath);
             $operations[$classPath] = $manipulator;
 
+            $embeddedClasses = [];
+
+            foreach ($classMetadata->embeddedClasses as $fieldName => $mapping) {
+                $className = $mapping['class'];
+
+                $embeddedClasses[$fieldName] = $this->getPathOfClass($className);
+
+                $operations[$embeddedClasses[$fieldName]] = $this->createClassManipulator($embeddedClasses[$fieldName]);
+
+                $manipulator->addEmbeddedEntity($fieldName, $className);
+            }
+
             foreach ($classMetadata->fieldMappings as $fieldName => $mapping) {
+                // skip embedded fields
+                if (false !== strpos($fieldName, '.')) {
+                    list($fieldName, $embeddedFiledName) = explode('.', $fieldName);
+
+                    $operations[$embeddedClasses[$fieldName]]->addEntityField($embeddedFiledName, $mapping);
+
+                    continue;
+                }
+
+                if (!\in_array($fieldName, $mappedFields)) {
+                    continue;
+                }
+
                 $manipulator->addEntityField($fieldName, $mapping);
             }
 
             $getIsNullable = function (array $mapping) {
-                if (!isset($mapping['joinColumns'][0]) || !isset($mapping['joinColumns'][0]['nullable'])) {
+                if (!isset($mapping['joinColumns'][0]['nullable'])) {
                     // the default for relationships IS nullable
                     return true;
                 }
@@ -81,6 +112,10 @@ final class EntityRegenerator
             };
 
             foreach ($classMetadata->associationMappings as $fieldName => $mapping) {
+                if (!\in_array($fieldName, $mappedFields)) {
+                    continue;
+                }
+
                 switch ($mapping['type']) {
                     case ClassMetadata::MANY_TO_ONE:
                         $relation = (new RelationManyToOne())
@@ -199,5 +234,37 @@ final class EntityRegenerator
         );
 
         $this->generator->writeChanges();
+    }
+
+    private function getMappedFieldsInEntity(ClassMetadata $classMetadata)
+    {
+        /* @var $classReflection \ReflectionClass */
+        $classReflection = $classMetadata->reflClass;
+
+        $targetFields = array_merge(
+            array_keys($classMetadata->fieldMappings),
+            array_keys($classMetadata->associationMappings)
+        );
+
+        if ($classReflection) {
+            // exclude traits
+            $traitProperties = [];
+
+            foreach ($classReflection->getTraits() as $trait) {
+                foreach ($trait->getProperties() as $property) {
+                    $traitProperties[] = $property->getName();
+                }
+            }
+
+            $targetFields = array_diff($targetFields, $traitProperties);
+
+            // exclude inherited properties
+            $targetFields = array_filter($targetFields, function ($field) use ($classReflection) {
+                return $classReflection->hasProperty($field) &&
+                    $classReflection->getProperty($field)->getDeclaringClass()->getName() == $classReflection->getName();
+            });
+        }
+
+        return $targetFields;
     }
 }

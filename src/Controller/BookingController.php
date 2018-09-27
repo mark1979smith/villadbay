@@ -73,7 +73,6 @@ class BookingController extends Controller
                     'form'                 => $form->createView(),
                     'searchData'           => $results,
                     'availableData'        => $availability,
-                    'disablePanoramicView' => true,
                     'selectedNav'          => 'rooms',
                 ));
             } else {
@@ -90,8 +89,6 @@ class BookingController extends Controller
      */
     public function thanks()
     {
-        return $this->render('booking/thanks.html.twig', [
-            'disablePanoramicView' => true,
-        ]);
+        return $this->render('booking/thanks.html.twig', []);
     }
 }

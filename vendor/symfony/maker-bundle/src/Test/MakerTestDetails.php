@@ -24,7 +24,11 @@ final class MakerTestDetails
 
     private $deletedFiles = [];
 
+    private $filesToRevert = [];
+
     private $replacements = [];
+
+    private $postMakeReplacements = [];
 
     private $preMakeCommands = [];
 
@@ -38,7 +42,11 @@ final class MakerTestDetails
 
     private $commandAllowedToFail = false;
 
+    private $snapshotSuffix = '';
+
     private $requiredPhpVersion;
+
+    private $guardAuthenticators = [];
 
     /**
      * @param MakerInterface $maker
@@ -62,6 +70,46 @@ final class MakerTestDetails
         $this->fixtureFilesPath = $fixtureFilesPath;
 
         return $this;
+    }
+
+    public function changeRootNamespace(string $rootNamespace): self
+    {
+        $rootNamespace = trim($rootNamespace, '\\');
+
+        // to bypass read before flush issue
+        $this->snapshotSuffix = $rootNamespace;
+
+        return $this
+            ->addReplacement(
+                'composer.json',
+                '"App\\\\": "src/"',
+                '"'.$rootNamespace.'\\\\": "src/"'
+            )
+            ->addReplacement(
+                'src/Kernel.php',
+                'namespace App',
+                'namespace '.$rootNamespace
+            )
+            ->addReplacement(
+                'bin/console',
+                'use App\\Kernel',
+                'use '.$rootNamespace.'\\Kernel'
+            )
+            ->addReplacement(
+                'public/index.php',
+                'use App\\Kernel',
+                'use '.$rootNamespace.'\\Kernel'
+            )
+            ->addReplacement(
+                'config/services.yaml',
+                'App\\',
+                $rootNamespace.'\\'
+            )
+            ->addReplacement(
+                'phpunit.xml.dist',
+                '<env name="KERNEL_CLASS" value="App\\Kernel" />',
+                '<env name="KERNEL_CLASS" value="'.$rootNamespace.'\\Kernel" />'
+            );
     }
 
     public function addPreMakeCommand(string $preMakeCommand): self
@@ -90,9 +138,32 @@ final class MakerTestDetails
         return $this->deletedFiles;
     }
 
+    public function revertFileAfterFinish(string $filename): self
+    {
+        $this->filesToRevert[] = $filename;
+
+        return $this;
+    }
+
+    public function getFilesToRevert(): array
+    {
+        return $this->filesToRevert;
+    }
+
     public function addReplacement(string $filename, string $find, string $replace): self
     {
         $this->replacements[] = [
+            'filename' => $filename,
+            'find' => $find,
+            'replace' => $replace,
+        ];
+
+        return $this;
+    }
+
+    public function addPostMakeReplacement(string $filename, string $find, string $replace): self
+    {
+        $this->postMakeReplacements[] = [
             'filename' => $filename,
             'find' => $find,
             'replace' => $replace,
@@ -117,6 +188,13 @@ final class MakerTestDetails
                 getenv('TEST_DATABASE_DSN')
             )
         ;
+
+        // use MySQL 5.6, which is what's currently available on Travis
+        $this->addReplacement(
+            'config/packages/doctrine.yaml',
+            "server_version: '5.7'",
+            "server_version: '5.6'"
+        );
 
         // this looks silly, but it's the only way to drop the database *for sure*,
         // as doctrine:database:drop will error if there is no database
@@ -188,6 +266,14 @@ final class MakerTestDetails
         return $this;
     }
 
+    public function setGuardAuthenticator(string $firewallName, string $id): self
+    {
+        $this->guardAuthenticators[$firewallName] = $id;
+        $this->revertFileAfterFinish('config/packages/security.yaml');
+
+        return $this;
+    }
+
     public function getInputs(): array
     {
         return $this->inputs;
@@ -202,7 +288,7 @@ final class MakerTestDetails
     {
         // for cache purposes, only the dependencies are important
         // shortened to avoid long paths on Windows
-        return 'maker_'.substr(md5(serialize($this->getDependencies())), 0, 10);
+        return 'maker_'.substr(md5(serialize($this->getDependencies()).$this->snapshotSuffix), 0, 10);
     }
 
     public function getPreMakeCommands(): array
@@ -218,6 +304,11 @@ final class MakerTestDetails
     public function getReplacements(): array
     {
         return $this->replacements;
+    }
+
+    public function getPostMakeReplacements(): array
+    {
+        return $this->postMakeReplacements;
     }
 
     public function getMaker(): MakerInterface
@@ -258,5 +349,10 @@ final class MakerTestDetails
     public function isSupportedByCurrentPhpVersion(): bool
     {
         return null === $this->requiredPhpVersion || \PHP_VERSION_ID >= $this->requiredPhpVersion;
+    }
+
+    public function getGuardAuthenticators(): array
+    {
+        return $this->guardAuthenticators;
     }
 }

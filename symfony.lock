@@ -44,6 +44,9 @@
             "ref": "c1431086fec31f17fbcfe6d6d7e92059458facc1"
         }
     },
+    "doctrine/event-manager": {
+        "version": "v1.0.0"
+    },
     "doctrine/inflector": {
         "version": "v1.2.0"
     },
@@ -58,6 +61,12 @@
     },
     "doctrine/orm": {
         "version": "v2.6.0"
+    },
+    "doctrine/persistence": {
+        "version": "v1.0.1"
+    },
+    "doctrine/reflection": {
+        "version": "v1.0.0"
     },
     "guzzlehttp/guzzle": {
         "version": "6.3.0"
@@ -83,6 +92,12 @@
     "ocramius/proxy-manager": {
         "version": "2.1.1"
     },
+    "pdepend/pdepend": {
+        "version": "2.5.2"
+    },
+    "phpmd/phpmd": {
+        "version": "2.6.0"
+    },
     "psr/cache": {
         "version": "1.0.1"
     },
@@ -107,6 +122,15 @@
             "ref": "aaddfdf43cdecd4cf91f992052d76c2cadc04543"
         }
     },
+    "squizlabs/php_codesniffer": {
+        "version": "3.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "3.0",
+            "ref": "0dc9cceda799fd3a08b96987e176a261028a3709"
+        }
+    },
     "symfony/asset": {
         "version": "v4.0.4"
     },
@@ -127,6 +151,15 @@
     },
     "symfony/debug": {
         "version": "v4.0.2"
+    },
+    "symfony/debug-bundle": {
+        "version": "4.1",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "4.1",
+            "ref": "f8863cbad2f2e58c4b65fa1eac892ab189971bea"
+        }
     },
     "symfony/dependency-injection": {
         "version": "v4.0.2"
@@ -179,9 +212,6 @@
     "symfony/intl": {
         "version": "v4.0.2"
     },
-    "symfony/lts": {
-        "version": "4-dev"
-    },
     "symfony/maker-bundle": {
         "version": "1.0",
         "recipe": {
@@ -196,6 +226,9 @@
     },
     "symfony/orm-pack": {
         "version": "v1.0.5"
+    },
+    "symfony/polyfill-ctype": {
+        "version": "v1.8.0"
     },
     "symfony/polyfill-intl-icu": {
         "version": "v1.6.0"

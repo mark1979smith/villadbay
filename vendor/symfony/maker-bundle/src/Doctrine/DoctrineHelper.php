@@ -11,10 +11,12 @@
 
 namespace Symfony\Bundle\MakerBundle\Doctrine;
 
+use Doctrine\Common\Persistence\Mapping\AbstractClassMetadataFactory;
 use Doctrine\Common\Persistence\Mapping\Driver\MappingDriver;
 use Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\MappingException;
 use Doctrine\ORM\Tools\DisconnectedClassMetadataFactory;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Bundle\MakerBundle\Util\ClassNameDetails;
@@ -29,12 +31,18 @@ use Symfony\Bundle\MakerBundle\Util\ClassNameDetails;
 final class DoctrineHelper
 {
     /**
+     * @var string
+     */
+    private $entityNamespace;
+
+    /**
      * @var ManagerRegistry
      */
     private $registry;
 
-    public function __construct(ManagerRegistry $registry = null)
+    public function __construct(string $entityNamespace, ManagerRegistry $registry = null)
     {
+        $this->entityNamespace = trim($entityNamespace, '\\');
         $this->registry = $registry;
     }
 
@@ -52,6 +60,11 @@ final class DoctrineHelper
     private function isDoctrineInstalled(): bool
     {
         return null !== $this->registry;
+    }
+
+    public function getEntityNamespace(): string
+    {
+        return $this->entityNamespace;
     }
 
     /**
@@ -94,7 +107,7 @@ final class DoctrineHelper
 
             /* @var ClassMetadata $metadata */
             foreach (array_keys($allMetadata) as $classname) {
-                $entityClassDetails = new ClassNameDetails($classname, 'App\\Entity');
+                $entityClassDetails = new ClassNameDetails($classname, $this->entityNamespace);
                 $entities[] = $entityClassDetails->getRelativeName();
             }
         }
@@ -114,18 +127,28 @@ final class DoctrineHelper
 
         /** @var EntityManagerInterface $em */
         foreach ($this->getRegistry()->getManagers() as $em) {
+            $cmf = $em->getMetadataFactory();
+
             if ($disconnected) {
+                try {
+                    $loaded = $cmf->getAllMetadata();
+                } catch (MappingException $e) {
+                    $loaded = $cmf instanceof AbstractClassMetadataFactory ? $cmf->getLoadedMetadata() : [];
+                }
+
                 $cmf = new DisconnectedClassMetadataFactory();
                 $cmf->setEntityManager($em);
-            } else {
-                $cmf = $em->getMetadataFactory();
+
+                foreach ($loaded as $m) {
+                    $cmf->setMetadataFor($m->getName(), $m);
+                }
             }
 
             foreach ($cmf->getAllMetadata() as $m) {
                 if (null === $classOrNamespace) {
                     $metadata[$m->getName()] = $m;
                 } else {
-                    if ($m->getName() == $classOrNamespace) {
+                    if ($m->getName() === $classOrNamespace) {
                         return $m;
                     }
 

@@ -82,15 +82,18 @@ final class ClassSourceManipulator
         return $this->sourceCode;
     }
 
-    public function addEntityField(string $propertyName, array $columnOptions)
+    public function addEntityField(string $propertyName, array $columnOptions, array $comments = [])
     {
-        $typeHint = self::getEntityTypeHint($columnOptions['type']);
-        $nullable = isset($columnOptions['nullable']) ? $columnOptions['nullable'] : false;
-        $isId = (bool) isset($columnOptions['id']) && $columnOptions['id'];
+        $typeHint = $this->getEntityTypeHint($columnOptions['type']);
+        $nullable = $columnOptions['nullable'] ?? false;
+        $isId = (bool) ($columnOptions['id'] ?? false);
 
-        $this->addProperty($propertyName, [
-            $this->buildAnnotationLine('@ORM\Column', $columnOptions),
-        ]);
+        $comments[] = $this->buildAnnotationLine('@ORM\Column', $columnOptions);
+        $defaultValue = null;
+        if ('array' === $typeHint) {
+            $defaultValue = new Node\Expr\Array_([], ['kind' => Node\Expr\Array_::KIND_SHORT]);
+        }
+        $this->addProperty($propertyName, $comments, $defaultValue);
 
         $this->addGetter(
             $propertyName,
@@ -104,6 +107,46 @@ final class ClassSourceManipulator
         if (!$isId) {
             $this->addSetter($propertyName, $typeHint, $nullable);
         }
+    }
+
+    public function addEmbeddedEntity(string $propertyName, string $className)
+    {
+        $typeHint = $this->addUseStatementIfNecessary($className);
+
+        $annotations = [
+            $this->buildAnnotationLine(
+                '@ORM\\Embedded',
+                [
+                    'class' => $className,
+                ]
+            ),
+        ];
+
+        $this->addProperty($propertyName, $annotations);
+
+        // logic to avoid re-adding the same ArrayCollection line
+        $addEmbedded = true;
+        if ($this->getConstructorNode()) {
+            // We print the constructor to a string, then
+            // look for "$this->propertyName = "
+
+            $constructorString = $this->printer->prettyPrint([$this->getConstructorNode()]);
+            if (false !== strpos($constructorString, sprintf('$this->%s = ', $propertyName))) {
+                $addEmbedded = false;
+            }
+        }
+
+        if ($addEmbedded) {
+            $this->addStatementToConstructor(
+                new Node\Stmt\Expression(new Node\Expr\Assign(
+                    new Node\Expr\PropertyFetch(new Node\Expr\Variable('this'), $propertyName),
+                    new Node\Expr\New_(new Node\Name($typeHint))
+                ))
+            );
+        }
+
+        $this->addGetter($propertyName, $typeHint, false);
+        $this->addSetter($propertyName, $typeHint, false);
     }
 
     public function addManyToOneRelation(RelationManyToOne $manyToOne)
@@ -126,7 +169,82 @@ final class ClassSourceManipulator
         $this->addCollectionRelation($manyToMany);
     }
 
-    private function addProperty(string $name, array $annotationLines = [])
+    public function addInterface(string $interfaceName)
+    {
+        $this->addUseStatementIfNecessary($interfaceName);
+
+        /*
+         * Changing the interface with this method, causes a problem
+         * with the "diff" pretty printer: it appears to rewrite
+         * all the internal class source, which removes line breaks.
+         *
+         * For that reason, we work around:
+         *  See: https://github.com/nikic/PHP-Parser/pull/527
+         */
+        //$this->getClassNode()->implements[] = new Node\Name(Str::getShortClassName($interfaceName));
+        //$this->updateSourceCodeFromNewStmts();
+
+        // purposely only works in simple cases: no extends or implements
+        $newCode = str_replace(
+            sprintf('class %s', $this->getClassNode()->name->toString()),
+            sprintf('class %s implements %s', $this->getClassNode()->name->toString(), Str::getShortClassName($interfaceName)),
+            $this->sourceCode
+        );
+        $this->setSourceCode($newCode);
+    }
+
+    public function addAccessorMethod(string $propertyName, string $methodName, $returnType, bool $isReturnTypeNullable, array $commentLines = [], $typeCast = null)
+    {
+        $this->addCustomGetter($propertyName, $methodName, $returnType, $isReturnTypeNullable, $commentLines, $typeCast);
+    }
+
+    public function addGetter(string $propertyName, $returnType, bool $isReturnTypeNullable, array $commentLines = [])
+    {
+        $methodName = 'get'.Str::asCamelCase($propertyName);
+
+        $this->addCustomGetter($propertyName, $methodName, $returnType, $isReturnTypeNullable, $commentLines);
+    }
+
+    public function addSetter(string $propertyName, $type, bool $isNullable, array $commentLines = [])
+    {
+        $builder = $this->createSetterNodeBuilder($propertyName, $type, $isNullable, $commentLines);
+        $this->makeMethodFluent($builder);
+        $this->addMethod($builder->getNode());
+    }
+
+    public function addMethodBuilder(Builder\Method $methodBuilder)
+    {
+        $this->addMethod($methodBuilder->getNode());
+    }
+
+    public function createMethodBuilder(string $methodName, $returnType, bool $isReturnTypeNullable, array $commentLines = []): Builder\Method
+    {
+        $methodNodeBuilder = (new Builder\Method($methodName))
+            ->makePublic()
+        ;
+
+        if (null !== $returnType) {
+            $methodNodeBuilder->setReturnType($isReturnTypeNullable ? new Node\NullableType($returnType) : $returnType);
+        }
+
+        if ($commentLines) {
+            $methodNodeBuilder->setDocComment($this->createDocBlock($commentLines));
+        }
+
+        return $methodNodeBuilder;
+    }
+
+    public function createMethodLevelCommentNode(string $comment)
+    {
+        return $this->createSingleLineCommentNode($comment, self::CONTEXT_CLASS_METHOD);
+    }
+
+    public function createMethodLevelBlankLine()
+    {
+        return $this->createBlankLineNode(self::CONTEXT_CLASS_METHOD);
+    }
+
+    public function addProperty(string $name, array $annotationLines = [], $defaultValue = null)
     {
         if ($this->propertyExists($name)) {
             // we never overwrite properties
@@ -137,18 +255,34 @@ final class ClassSourceManipulator
         if ($annotationLines && $this->useAnnotations) {
             $newPropertyBuilder->setDocComment($this->createDocBlock($annotationLines));
         }
+
+        if (null !== $defaultValue) {
+            $newPropertyBuilder->setDefault($defaultValue);
+        }
         $newPropertyNode = $newPropertyBuilder->getNode();
 
         $this->addNodeAfterProperties($newPropertyNode);
     }
 
-    private function addGetter(string $propertyName, $returnType, bool $isReturnTypeNullable, array $commentLines = [])
+    private function addCustomGetter(string $propertyName, string $methodName, $returnType, bool $isReturnTypeNullable, array $commentLines = [], $typeCast = null)
     {
-        $methodName = 'get'.Str::asCamelCase($propertyName);
+        $propertyFetch = new Node\Expr\PropertyFetch(new Node\Expr\Variable('this'), $propertyName);
+
+        if (null !== $typeCast) {
+            switch ($typeCast) {
+                case 'string':
+                    $propertyFetch = new Node\Expr\Cast\String_($propertyFetch);
+                    break;
+                default:
+                    // implement other cases if/when the library needs them
+                    throw new \Exception('Not implemented');
+            }
+        }
+
         $getterNodeBuilder = (new Builder\Method($methodName))
             ->makePublic()
             ->addStmt(
-                new Node\Stmt\Return_(new Node\Expr\PropertyFetch(new Node\Expr\Variable('this'), $propertyName))
+                new Node\Stmt\Return_($propertyFetch)
             )
         ;
 
@@ -161,13 +295,6 @@ final class ClassSourceManipulator
         }
 
         $this->addMethod($getterNodeBuilder->getNode());
-    }
-
-    private function addSetter(string $propertyName, $type, bool $isNullable, array $commentLines = [])
-    {
-        $builder = $this->createSetterNodeBuilder($propertyName, $type, $isNullable, $commentLines);
-        $this->makeMethodFluent($builder);
-        $this->addMethod($builder->getNode());
     }
 
     private function createSetterNodeBuilder(string $propertyName, $type, bool $isNullable, array $commentLines = [])
@@ -204,14 +331,11 @@ final class ClassSourceManipulator
     private function buildAnnotationLine(string $annotationClass, array $options)
     {
         $formattedOptions = array_map(function ($option, $value) {
-            if (is_array($value)) {
+            if (\is_array($value)) {
                 if (!isset($value[0])) {
                     return sprintf('%s={%s}', $option, implode(', ', array_map(function ($val, $key) {
                         return sprintf('"%s" = %s', $key, $this->quoteAnnotationValue($val));
                     }, $value, array_keys($value))));
-
-                    // associative array: we'll add this if/when we need it
-                    throw new \Exception('Not currently supported');
                 }
 
                 return sprintf('%s={%s}', $option, implode(', ', array_map(function ($val) {
@@ -227,7 +351,7 @@ final class ClassSourceManipulator
 
     private function quoteAnnotationValue($value)
     {
-        if (is_bool($value)) {
+        if (\is_bool($value)) {
             return $value ? 'true' : 'false';
         }
 
@@ -235,11 +359,11 @@ final class ClassSourceManipulator
             return 'null';
         }
 
-        if (is_int($value)) {
+        if (\is_int($value)) {
             return $value;
         }
 
-        if (is_array($value)) {
+        if (\is_array($value)) {
             throw new \Exception('Invalid value: loop before quoting.');
         }
 
@@ -495,7 +619,20 @@ final class ClassSourceManipulator
     private function addStatementToConstructor(Node\Stmt $stmt)
     {
         if (!$this->getConstructorNode()) {
-            $constructorNode = $getterNodeBuilder = (new Builder\Method('__construct'))->makePublic()->getNode();
+            $constructorNode = (new Builder\Method('__construct'))->makePublic()->getNode();
+
+            // add call to parent::__construct() if there is a need to
+            try {
+                $ref = new \ReflectionClass($this->getThisFullClassName());
+
+                if ($ref->getParentClass() && $ref->getParentClass()->getConstructor()) {
+                    $constructorNode->stmts[] = new Node\Stmt\Expression(
+                        new Node\Expr\StaticCall(new Node\Name('parent'), new Node\Identifier('__construct'))
+                    );
+                }
+            } catch (\ReflectionException $e) {
+            }
+
             $this->addNodeAfterProperties($constructorNode);
         }
 
@@ -608,10 +745,10 @@ final class ClassSourceManipulator
             $this->oldTokens
         );
 
-        // this fake property is a placeholder for a linebreak
-        $newCode = str_replace('    private $__EXTRA__LINE;', '', $newCode);
-        $newCode = str_replace('use __EXTRA__LINE;', '', $newCode);
-        $newCode = str_replace('        $__EXTRA__LINE;', '', $newCode);
+        // replace the 3 "fake" items that may be in the code (allowing for different indentation)
+        $newCode = preg_replace('/(\ |\t)*private\ \$__EXTRA__LINE;/', '', $newCode);
+        $newCode = preg_replace('/use __EXTRA__LINE;/', '', $newCode);
+        $newCode = preg_replace('/(\ |\t)*\$__EXTRA__LINE;/', '', $newCode);
 
         // process comment lines
         foreach ($this->pendingComments as $i => $comment) {
@@ -734,7 +871,7 @@ final class ClassSourceManipulator
                 // just not needed yet
                 throw new \Exception('not supported');
             case self::CONTEXT_CLASS_METHOD:
-                return BuilderHelpers::normalizeStmt(new Node\Expr\Variable(sprintf('__COMMENT__VAR_%d', (count($this->pendingComments) - 1))));
+                return BuilderHelpers::normalizeStmt(new Node\Expr\Variable(sprintf('__COMMENT__VAR_%d', \count($this->pendingComments) - 1)));
             default:
                 throw new \Exception('Unknown context: '.$context);
         }
@@ -744,7 +881,12 @@ final class ClassSourceManipulator
     {
         $docBlock = "/**\n";
         foreach ($commentLines as $commentLine) {
-            $docBlock .= " * $commentLine\n";
+            if ($commentLine) {
+                $docBlock .= " * $commentLine\n";
+            } else {
+                // avoid the empty, extra space on blank lines
+                $docBlock .= " *\n";
+            }
         }
         $docBlock .= "\n */";
 
@@ -781,7 +923,7 @@ final class ClassSourceManipulator
         $newStatements[] = $methodNode;
 
         if (null === $existingIndex) {
-            // just them on the end!
+            // add them to the end!
 
             $classNode->stmts = array_merge($classNode->stmts, $newStatements);
         } else {
@@ -819,6 +961,7 @@ final class ClassSourceManipulator
 
             case 'array':
             case 'simple_array':
+            case 'json':
                 return 'array';
 
             case 'boolean':
@@ -836,19 +979,17 @@ final class ClassSourceManipulator
             case 'datetimetz':
             case 'date':
             case 'time':
-                return '\DateTimeInterface';
+                return '\\'.\DateTimeInterface::class;
 
             case 'datetime_immutable':
             case 'datetimetz_immutable':
             case 'date_immutable':
             case 'time_immutable':
-                return '\DateTimeImmutable';
+                return '\\'.\DateTimeImmutable::class;
 
             case 'dateinterval':
-                return '\DateInterval';
+                return '\\'.\DateInterval::class;
 
-            case 'json_array':
-            case 'json':
             case 'object':
             case 'decimal':
             case 'binary':
@@ -997,13 +1138,13 @@ final class ClassSourceManipulator
 
     private function methodExists(string $methodName): bool
     {
-        return false === $this->getMethodIndex($methodName) ? false : true;
+        return false !== $this->getMethodIndex($methodName);
     }
 
     private function getMethodIndex(string $methodName)
     {
         foreach ($this->getClassNode()->stmts as $i => $node) {
-            if ($node instanceof Node\Stmt\ClassMethod && $node->name->toString() === $methodName) {
+            if ($node instanceof Node\Stmt\ClassMethod && strtolower($node->name->toString()) === strtolower($methodName)) {
                 return $i;
             }
         }

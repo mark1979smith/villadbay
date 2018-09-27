@@ -1,0 +1,61 @@
+{% extends 'admin.html.twig' %}
+{% form_theme form with ['bootstrap_4_horizontal_layout.html.twig', 'admin/form-themes/fields.html.twig'] %}
+
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+
+                <h3 class="display-4">Edit existing Slides</h3>
+                {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+                {%- for key, field in form.title -%}
+                    {{ form_row(form.title[key]) }}
+                    {{ form_row(form.description[key]) }}
+                    {{ form_row(form.image[key]) }}
+                {%- endfor -%}
+                <div class="form-group row">
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-10">
+                        {{ form_widget(form.send) }}
+                        <button class="btn btn-link"
+                                data-prototype="{% spaceless %}{{- form_row(newSlideForm.title.vars.prototype)|e('html_attr') -}}{{- form_row(newSlideForm.description.vars.prototype)|e('html_attr') -}}{{- form_row(newSlideForm.image.vars.prototype)|e('html_attr') -}}{% endspaceless %}">
+                            Add new slide
+                        </button>
+                    </div>
+                </div>
+
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{%- block javascripts -%}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            let carouselSlideForm = $('form[name="carousel_slide"]');
+            carouselSlideForm.on('click', ':radio', function () {
+                applyCardClick($(this));
+            });
+            if (carouselSlideForm.find(':radio:checked').length > 0) {
+                carouselSlideForm.find(':radio:checked').closest('.card').addClass('border-success');
+            }
+
+            $('button[data-prototype]').on('click', function (e) {
+                e.preventDefault();
+                let ele = $(this);
+                $(ele.data('prototype')).insertBefore(ele.closest('.form-group'));
+            });
+        });
+
+        function applyCardClick(ele) {
+
+            $(ele).closest('.card').find('label').removeClass('active');
+            $(ele).closest('form').find('.card').removeClass('border-success');
+            $(ele).closest('.card').find(':radio').attr('checked', 'checked');
+            $(ele).closest('.card').find(':radio[checked="checked"]').closest('label').addClass('active');
+            $(ele).closest('.card').addClass('border-success');
+        }
+    </script>
+{%- endblock -%}

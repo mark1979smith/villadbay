@@ -146,7 +146,6 @@ class PagesController extends Controller
 
         if (null !== $page) {
             $viewData['selectedNav'] = $route;
-            $viewData['disablePanoramicView'] = true;
 
             $pageContent = $page->__toString();
             $viewData['page'] = $pageContent;
