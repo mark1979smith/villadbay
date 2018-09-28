@@ -132,11 +132,11 @@ class CarouselSlides
         $str = <<<SLIDE
             <div class="carousel-item{$carouselItemClass}">
                 <picture>
-                    <source media="(min-width: 1200px)" srcset="{$xlImage}">
-                    <source media="(min-width: 992px)" srcset="{$lgImage}">
-                    <source media="(min-width: 768px)" srcset="{$mdImage}">
-                    <source media="(min-width: 576px)" srcset="{$smImage}">
-                    <img class="d-block w-100" src="{$xsImage}" alt="First slide">
+                    <source media="(min-width: 1200px)" srcset="{{ cdn_url('{$xlImage}') }}">
+                    <source media="(min-width: 992px)" srcset="{{ cdn_url('{$lgImage}') }}">
+                    <source media="(min-width: 768px)" srcset="{{ cdn_url('{$mdImage}') }}">
+                    <source media="(min-width: 576px)" srcset="{{ cdn_url('{$smImage}') }}">
+                    <img class="d-block w-100" src="{{ cdn_url('{$xsImage}') }}" alt="First slide">
                 </picture>
                 <div class="carousel-caption d-none d-md-block">
                     <h3>{$this->getTitle()}</h3>
