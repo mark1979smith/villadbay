@@ -45,7 +45,11 @@
             $('button[data-prototype]').on('click', function (e) {
                 e.preventDefault();
                 let ele = $(this);
-                $(ele.data('prototype')).insertBefore(ele.closest('.form-group'));
+                let counter = ele.closest('form').find('fieldset').length;
+                $('html,body').animate({
+                    scrollTop: $(ele).offset().top
+                }, 1500);
+                $(ele.data('prototype').toString().replace(/__name__/g, counter)).insertBefore(ele.closest('.form-group'));
             });
         });
 
