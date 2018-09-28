@@ -123,7 +123,7 @@ class PagesController extends Controller
                     }
 
                     $page->setData($form->getData());
-                    $page->setPublish(new \DateTime());
+                    $page->setPublish(new \DateTimeImmutable());
                     $page->setPreview(true);
                 }
 

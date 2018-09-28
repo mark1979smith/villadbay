@@ -46,7 +46,7 @@ class Page
     private $data;
 
     /**
-     * @ORM\Column(type="datetimetz")
+     * @ORM\Column(type="datetime_immutable")
      * @var \DateTime
      */
     private $publish;
@@ -152,7 +152,7 @@ class Page
      *
      * @return Page
      */
-    public function setPublish(\DateTime $publish): Page
+    public function setPublish(\DateTimeImmutable $publish): Page
     {
         $this->publish = $publish;
 

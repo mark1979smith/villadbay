@@ -47,12 +47,12 @@ class Booking
     private $emailAddress;
 
     /**
-     * @ORM\Column(type="datetimetz", nullable=true, options={"default" : null})
+     * @ORM\Column(type="datetime_immutable")
      */
     private $checkIn;
 
     /**
-     * @ORM\Column(type="datetimetz", nullable=true, options={"default" : null})
+     * @ORM\Column(type="datetime_immutable")
      */
     private $checkOut;
 
@@ -226,7 +226,7 @@ class Booking
     }
 
     /**
-     * @return mixed
+     * @return \DateTimeImmutable
      */
     public function getCheckIn()
     {
@@ -234,11 +234,11 @@ class Booking
     }
 
     /**
-     * @param mixed $checkIn
+     * @param \DateTimeImmutable $checkIn
      *
      * @return Booking
      */
-    public function setCheckIn($checkIn)
+    public function setCheckIn(\DateTimeImmutable $checkIn)
     {
         $this->checkIn = $checkIn;
 
@@ -246,7 +246,7 @@ class Booking
     }
 
     /**
-     * @return mixed
+     * @return \DateTimeImmutable
      */
     public function getCheckOut()
     {
@@ -254,11 +254,11 @@ class Booking
     }
 
     /**
-     * @param mixed $checkOut
+     * @param \DateTimeImmutable $checkOut
      *
      * @return Booking
      */
-    public function setCheckOut($checkOut)
+    public function setCheckOut(\DateTimeImmutable $checkOut)
     {
         $this->checkOut = $checkOut;
 
