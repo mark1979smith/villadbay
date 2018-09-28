@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% block body %}
     {% if page is defined %}
-        {{ page|replace({'#search-form#': block('search_form') })|replace({'#contact-form#': block('contact_form')})|raw }}
+        {{ include(template_from_string(page|replace({'#search-form#': block('search_form') })|replace({'#contact-form#': block('contact_form')})|raw)) }}
     {% endif %}
 {% endblock %}
 {% block stylesheets %}
