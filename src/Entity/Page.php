@@ -46,7 +46,7 @@ class Page
     private $data;
 
     /**
-     * @ORM\Column(type="datetimetz")
+     * @ORM\Column(type="datetimetz_immutable")
      * @var \DateTime
      */
     private $publish;

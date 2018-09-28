@@ -47,12 +47,12 @@ class Booking
     private $emailAddress;
 
     /**
-     * @ORM\Column(type="datetimetz", nullable=true, options={"default" : null})
+     * @ORM\Column(type="datetimetz_immutable")
      */
     private $checkIn;
 
     /**
-     * @ORM\Column(type="datetimetz", nullable=true, options={"default" : null})
+     * @ORM\Column(type="datetimetz_immutable")
      */
     private $checkOut;
 
