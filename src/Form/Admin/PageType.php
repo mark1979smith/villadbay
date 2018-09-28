@@ -11,7 +11,6 @@ namespace App\Form\Admin;
 
 use App\Component\ImageTypes;
 use App\Entity\CarouselContainer;
-use Symfony\Component\Cache\CacheItem;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -326,17 +325,7 @@ class PageType extends AbstractType
     {
         /** @var \App\Utils\AwsS3Client $s3Service */
         $s3Service = $container->get('app.aws.s3');
-        $response = $s3Service->getImagesBasedOnConfig();
-
-        switch (get_class($response)) {
-            case \Aws\Result::class:
-                $serviceData = $response->get('Contents');
-                break;
-
-            case CacheItem::class:
-                $serviceData = $response->get();
-                break;
-        }
+        $serviceData = $s3Service->getImagesBasedOnConfig();
 
         $backgroundImages = [];
 
@@ -356,19 +345,9 @@ class PageType extends AbstractType
     {
         /** @var \App\Utils\AwsS3Client $s3Service */
         $s3Service = $container->get('app.aws.s3');
-        $response = $s3Service->getImagesBasedOnConfig();
+        $serviceData = $s3Service->getImagesBasedOnConfig();
 
         $panoImages = [];
-        switch (get_class($response)) {
-            case \Aws\Result::class:
-                $serviceData = $response->get('Contents');
-                break;
-
-            case CacheItem::class:
-                $serviceData = $response->get();
-                break;
-        }
-
         if (is_iterable($serviceData)) {
             foreach ($serviceData as $asset) {
                 if ($this->filterByPath($asset, 'images/pano')) {

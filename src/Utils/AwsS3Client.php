@@ -168,7 +168,7 @@ class AwsS3Client
         return $this;
     }
 
-    public function getImagesBasedOnConfig(array $config = [])
+    public function getImagesBasedOnConfig(array $config = []): array
     {
         if (!isset($config['Bucket'])) {
             $config['Bucket'] = $this->getBucket();
@@ -178,7 +178,7 @@ class AwsS3Client
         }
         $cacheKey = 'aws.s3.listobjects.' . $this->getBucket() . '-' . md5(serialize($config));
         if ($this->getCache()->hasItem($cacheKey)) {
-            /** \Aws\Result $results */
+            /** array $results */
             $results = $this->getCache()->getItem($cacheKey)->get();
             return $results;
         } else {
