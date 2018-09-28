@@ -56,7 +56,7 @@
         function applyCardClick(ele) {
 
             $(ele).closest('.card').find('label').removeClass('active');
-            $(ele).closest('form').find('.card').removeClass('border-success');
+            $(ele).closest('fieldset').find('.card').removeClass('border-success');
             $(ele).closest('.card').find(':radio').attr('checked', 'checked');
             $(ele).closest('.card').find(':radio[checked="checked"]').closest('label').addClass('active');
             $(ele).closest('.card').addClass('border-success');
