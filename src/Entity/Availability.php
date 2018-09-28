@@ -16,10 +16,10 @@ class Availability
     /** @var bool */
     protected $available;
 
-    /** @var \DateTime */
+    /** @var \DateTimeImmutable */
     protected $dateStart;
 
-    /** @var \DateTime */
+    /** @var \DateTimeImmutable */
     protected $dateEnd;
 
     /** @var string */
@@ -32,19 +32,19 @@ class Availability
     protected $price;
 
     /**
-     * @return \DateTime
+     * @return \DateTimeImmutable
      */
-    public function getDateStart(): \DateTime
+    public function getDateStart(): \DateTimeImmutable
     {
         return $this->dateStart;
     }
 
     /**
-     * @param \DateTime $dateStart
+     * @param \DateTimeImmutable $dateStart
      *
      * @return Availability
      */
-    public function setDateStart(\DateTime $dateStart): Availability
+    public function setDateStart(\DateTimeImmutable $dateStart): Availability
     {
         $this->dateStart = $dateStart;
 
@@ -52,9 +52,9 @@ class Availability
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTimeImmutable
      */
-    public function getDateEnd(): \DateTime
+    public function getDateEnd(): \DateTimeImmutable
     {
         return $this->dateEnd;
     }
@@ -64,7 +64,7 @@ class Availability
      *
      * @return Availability
      */
-    public function setDateEnd(\DateTime $dateEnd): Availability
+    public function setDateEnd(\DateTimeImmutable $dateEnd): Availability
     {
         $this->dateEnd = $dateEnd;
 

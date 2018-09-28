@@ -15,7 +15,7 @@ class Search
     /**
      * @Assert\Date()
      * @Assert\GreaterThanOrEqual("today")
-     * @var \DateTime
+     * @var \DateTimeImmutable
      */
     protected $dateStart;
 
@@ -29,7 +29,7 @@ class Search
      *     propertyPath="dateStart",
      *     message="A minimum 1 night stay is required."
      * )
-     * @var \DateTime
+     * @var \DateTimeImmutable
      */
     protected $dateEnd;
 
@@ -44,19 +44,19 @@ class Search
     protected $childCount;
 
     /**
-     * @return \DateTime
+     * @return \DateTimeImmutable
      */
-    public function getDateStart(): ?\DateTime
+    public function getDateStart(): ?\DateTimeImmutable
     {
         return $this->dateStart;
     }
 
     /**
-     * @param \DateTime $dateStart
+     * @param \DateTimeImmutable $dateStart
      *
      * @return Search
      */
-    public function setDateStart(\DateTime $dateStart): Search
+    public function setDateStart(\DateTimeImmutable $dateStart): Search
     {
         $this->dateStart = $dateStart;
 
@@ -64,19 +64,19 @@ class Search
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTimeImmutable|null
      */
-    public function getDateEnd(): ?\DateTime
+    public function getDateEnd(): ?\DateTimeImmutable
     {
         return $this->dateEnd;
     }
 
     /**
-     * @param \DateTime $dateEnd
+     * @param \DateTimeImmutable $dateEnd
      *
      * @return Search
      */
-    public function setDateEnd(\DateTime $dateEnd): Search
+    public function setDateEnd(\DateTimeImmutable $dateEnd): Search
     {
         $this->dateEnd = $dateEnd;
 
