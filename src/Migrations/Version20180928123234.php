@@ -38,105 +38,89 @@ final class Version20180928123234 extends AbstractMigration implements Container
         /** @var CarouselContainer $carouselContainer */
         $carouselContainer = new $carouselContainerClassName;
         $carouselContainer->setName('Our Villa');
-        $this->getEntityManager()->persist($carouselContainer);
 
         $carouselSlidesClassName = $this->getEntityManager()->getRepository(CarouselSlides::class)->getClassName();
         /** @var CarouselSlides $carouselSlides */
         $carouselSlides = new $carouselSlidesClassName;
-        $carouselSlides->setCarouselId($carouselContainer)
-            ->setImage('images/carousel/8144771dbbc5ba13a64d6b76b5bf0b47.jpeg')
-            ->setPosition(1);
+        $carouselSlides->setImage('images/carousel/8144771dbbc5ba13a64d6b76b5bf0b47.jpeg');
         $this->getEntityManager()->persist($carouselSlides);
+        $carouselContainer->addCarouselSlide($carouselSlides);
 
         $carouselSlides = new $carouselSlidesClassName;
-        $carouselSlides->setCarouselId($carouselContainer)
-            ->setImage('images/carousel/e26c6d1ba38a47c6c2ea185a9f9a01c4.jpeg')
-            ->setPosition(2);
+        $carouselSlides->setImage('images/carousel/e26c6d1ba38a47c6c2ea185a9f9a01c4.jpeg');
         $this->getEntityManager()->persist($carouselSlides);
+        $carouselContainer->addCarouselSlide($carouselSlides);
 
         $carouselSlides = new $carouselSlidesClassName;
-        $carouselSlides->setCarouselId($carouselContainer)
-            ->setImage('images/carousel/8ae7c70fc01343a733423745b666f2bc.jpeg')
-            ->setPosition(3);
+        $carouselSlides->setImage('images/carousel/8ae7c70fc01343a733423745b666f2bc.jpeg');
         $this->getEntityManager()->persist($carouselSlides);
+        $carouselContainer->addCarouselSlide($carouselSlides);
 
         $carouselSlides = new $carouselSlidesClassName;
-        $carouselSlides->setCarouselId($carouselContainer)
-            ->setImage('images/carousel/73d5d5ce3baca995f18ee7c0bece1093.jpeg')
-            ->setPosition(4);
+        $carouselSlides->setImage('images/carousel/73d5d5ce3baca995f18ee7c0bece1093.jpeg');
         $this->getEntityManager()->persist($carouselSlides);
+        $carouselContainer->addCarouselSlide($carouselSlides);
 
         $carouselSlides = new $carouselSlidesClassName;
-        $carouselSlides->setCarouselId($carouselContainer)
-            ->setImage('images/carousel/51bf751a6468018bdd6084ebac60d396.jpeg')
-            ->setPosition(5);
+        $carouselSlides->setImage('images/carousel/51bf751a6468018bdd6084ebac60d396.jpeg');
         $this->getEntityManager()->persist($carouselSlides);
+        $carouselContainer->addCarouselSlide($carouselSlides);
 
         $carouselSlides = new $carouselSlidesClassName;
-        $carouselSlides->setCarouselId($carouselContainer)
-            ->setImage('images/carousel/68b396a4064a7fc581575eeee2a5120b.jpeg')
-            ->setPosition(6);
+        $carouselSlides->setImage('images/carousel/68b396a4064a7fc581575eeee2a5120b.jpeg');
         $this->getEntityManager()->persist($carouselSlides);
+        $carouselContainer->addCarouselSlide($carouselSlides);
 
         $carouselSlides = new $carouselSlidesClassName;
-        $carouselSlides->setCarouselId($carouselContainer)
-            ->setImage('images/carousel/48feb56f98b7cfbb95a1542240b97abb.jpeg')
-            ->setPosition(7);
+        $carouselSlides->setImage('images/carousel/48feb56f98b7cfbb95a1542240b97abb.jpeg');
         $this->getEntityManager()->persist($carouselSlides);
+        $carouselContainer->addCarouselSlide($carouselSlides);
 
         $carouselSlides = new $carouselSlidesClassName;
-        $carouselSlides->setCarouselId($carouselContainer)
-            ->setImage('images/carousel/9cedf82a08b3f1c4ca9eff52760d87cd.jpeg')
-            ->setPosition(8);
+        $carouselSlides->setImage('images/carousel/9cedf82a08b3f1c4ca9eff52760d87cd.jpeg');
         $this->getEntityManager()->persist($carouselSlides);
+        $carouselContainer->addCarouselSlide($carouselSlides);
 
         $carouselSlides = new $carouselSlidesClassName;
-        $carouselSlides->setCarouselId($carouselContainer)
-            ->setImage('images/carousel/bb93edfe1fe404be10b40eb9158fcf7d.jpeg')
-            ->setPosition(9);
+        $carouselSlides->setImage('images/carousel/bb93edfe1fe404be10b40eb9158fcf7d.jpeg');
         $this->getEntityManager()->persist($carouselSlides);
+        $carouselContainer->addCarouselSlide($carouselSlides);
 
         $carouselSlides = new $carouselSlidesClassName;
-        $carouselSlides->setCarouselId($carouselContainer)
-            ->setImage('images/carousel/d86f2cea976a9edac387bc798aff5197.jpeg')
-            ->setPosition(10);
+        $carouselSlides->setImage('images/carousel/d86f2cea976a9edac387bc798aff5197.jpeg');
         $this->getEntityManager()->persist($carouselSlides);
+        $carouselContainer->addCarouselSlide($carouselSlides);
 
         $carouselSlides = new $carouselSlidesClassName;
-        $carouselSlides->setCarouselId($carouselContainer)
-            ->setImage('images/carousel/27fa5e5325847db75a57331eb2c259c2.jpeg')
-            ->setPosition(11);
+        $carouselSlides->setImage('images/carousel/27fa5e5325847db75a57331eb2c259c2.jpeg');
         $this->getEntityManager()->persist($carouselSlides);
+        $carouselContainer->addCarouselSlide($carouselSlides);
 
         $carouselSlides = new $carouselSlidesClassName;
-        $carouselSlides->setCarouselId($carouselContainer)
-            ->setImage('images/carousel/a726f76d96b188cc2e047ec5e0571c39.jpeg')
-            ->setPosition(12);
+        $carouselSlides->setImage('images/carousel/a726f76d96b188cc2e047ec5e0571c39.jpeg');
         $this->getEntityManager()->persist($carouselSlides);
+        $carouselContainer->addCarouselSlide($carouselSlides);
 
         $carouselSlides = new $carouselSlidesClassName;
-        $carouselSlides->setCarouselId($carouselContainer)
-            ->setImage('images/carousel/a7bd669f84016a4a055d71f3500d8f4c.jpeg')
-            ->setPosition(13);
+        $carouselSlides->setImage('images/carousel/a7bd669f84016a4a055d71f3500d8f4c.jpeg');
         $this->getEntityManager()->persist($carouselSlides);
+        $carouselContainer->addCarouselSlide($carouselSlides);
 
         $carouselSlides = new $carouselSlidesClassName;
-        $carouselSlides->setCarouselId($carouselContainer)
-            ->setImage('images/carousel/8f087120c8e12e416c1a5ceed2693f8f.jpeg')
-            ->setPosition(14);
+        $carouselSlides->setImage('images/carousel/8f087120c8e12e416c1a5ceed2693f8f.jpeg');
         $this->getEntityManager()->persist($carouselSlides);
+        $carouselContainer->addCarouselSlide($carouselSlides);
 
         $carouselSlides = new $carouselSlidesClassName;
-        $carouselSlides->setCarouselId($carouselContainer)
-            ->setImage('images/carousel/5dd1b7fa071d9cfe5254cd6c06e67ac8.jpeg')
-            ->setPosition(15);
+        $carouselSlides->setImage('images/carousel/5dd1b7fa071d9cfe5254cd6c06e67ac8.jpeg');
         $this->getEntityManager()->persist($carouselSlides);
+        $carouselContainer->addCarouselSlide($carouselSlides);
 
         $carouselSlides = new $carouselSlidesClassName;
-        $carouselSlides->setCarouselId($carouselContainer)
-            ->setImage('images/carousel/72db37029f7f34d8442391129e4c17a9.jpeg')
-            ->setPosition(16);
+        $carouselSlides->setImage('images/carousel/72db37029f7f34d8442391129e4c17a9.jpeg');
         $this->getEntityManager()->persist($carouselSlides);
+        $carouselContainer->addCarouselSlide($carouselSlides);
+        $this->getEntityManager()->persist($carouselContainer);
 
         $className = $this->getEntityManager()->getRepository(Page::class)->getClassName();
         /**
