@@ -9,12 +9,14 @@ use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
 final class Version20180928123234 extends AbstractMigration implements ContainerAwareInterface
 {
+    use ContainerAwareTrait;
 
 
     public function up(Schema $schema) : void
