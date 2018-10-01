@@ -217,9 +217,11 @@ class Page
         foreach ($this->getData()['display_order'] as $key => $order) {
             if (stristr($key, '--')) {
                 $keyParts = explode('--', $key);
-                $object = $this->getData()[$keyParts[0]][$keyParts[1]];
-                if (is_object($object) && method_exists($object, '__toStyles')) {
-                    $styles[] = $object->__toStyles();
+                if (isset($this->getData()[$keyParts[0]][$keyParts[1]])) {
+                    $object = $this->getData()[$keyParts[0]][$keyParts[1]];
+                    if (is_object($object) && method_exists($object, '__toStyles')) {
+                        $styles[] = $object->__toStyles();
+                    }
                 }
             }
         }
