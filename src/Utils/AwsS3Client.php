@@ -202,11 +202,7 @@ class AwsS3Client
                                 $headData = ['Bucket' => $this->getBucket(), 'Key' => $asset['Key']];
                                 $this->profiles[] = array_merge(['_method' => __METHOD__ . ' headObject'], $headData);
                                 $headers = $s3Client->headObject($headData);
-                                $awsListingData[$key] = array_merge($asset, [
-                                    'CdnUrl' => $this->getImageCdn() . DIRECTORY_SEPARATOR . $asset['Key'],
-                                    'DisplayKey' => basename($asset['Key']),
-                                    'Metadata' => $headers->get('Metadata')
-                                ]);
+
                                 if (isset($headers->get('Metadata')['filename'])) {
                                     // This is the uploaded image
                                     $orderByAssetName[$key] = $asset['Key'];
@@ -223,7 +219,15 @@ class AwsS3Client
                                     } else if (strpos($asset['Key'], '--lg.')) {
                                         $orderByAssetType[$key] = 5;
                                     }
+                                } else {
+                                    // Skip assets without these metadata fields
+                                    continue;
                                 }
+                                $awsListingData[$key] = array_merge($asset, [
+                                    'CdnUrl' => $this->getImageCdn() . DIRECTORY_SEPARATOR . $asset['Key'],
+                                    'DisplayKey' => basename($asset['Key']),
+                                    'Metadata' => $headers->get('Metadata')
+                                ]);
                             }
                         }
                     }
