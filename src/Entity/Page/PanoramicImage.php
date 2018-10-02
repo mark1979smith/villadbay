@@ -83,8 +83,8 @@ class PanoramicImage
         } else {
             return '@media (' . $size->__toString() . ') {
             #pano {
-                background-image: url(\'' . $this->getPanoramicImage($size) . '\');
-                height: ' . $this->getInlineHeight($size) . 'px;   
+                background-image: url(\'{{ cdn_url("'. $this->getPanoramicImage($size) . '") }}\');
+                height: ' . $this->getInlineHeight($size) . 'px;
             }
         }' . PHP_EOL . PHP_EOL;
         }
