@@ -328,17 +328,19 @@ class PageType extends AbstractType
         $serviceData = $s3Service->getImagesBasedOnConfig();
 
         $backgroundImages = [];
+        $backgroundImagesWithCdn = [];
 
         if (is_iterable($serviceData)) {
             foreach ($serviceData as $asset) {
                 if ($this->filterByPath($asset, 'images/backgrounds')) {
-                    $backgroundImages[] = $s3Service->getImageCdn() . DIRECTORY_SEPARATOR . $asset['Key'];
+                    $backgroundImages[] = $asset['Key'];
+                    $backgroundImagesWithCdn[] = $s3Service->getImageCdn() . DIRECTORY_SEPARATOR . $asset['Key'];
                 }
             }
         }
 
 
-        return array_combine($backgroundImages, $backgroundImages);
+        return array_combine($backgroundImages, $backgroundImagesWithCdn);
     }
 
     private function getPanoramicImages(ContainerInterface $container)
@@ -348,15 +350,17 @@ class PageType extends AbstractType
         $serviceData = $s3Service->getImagesBasedOnConfig();
 
         $panoImages = [];
+        $panoImagesWithCdn = [];
         if (is_iterable($serviceData)) {
             foreach ($serviceData as $asset) {
                 if ($this->filterByPath($asset, 'images/pano')) {
-                    $panoImages[] = $s3Service->getImageCdn() . DIRECTORY_SEPARATOR . $asset['Key'];
+                    $panoImages[] = $asset['Key'];
+                    $panoImagesWithCdn[] = $s3Service->getImageCdn() . DIRECTORY_SEPARATOR . $asset['Key'];
                 }
             }
         }
 
-        return array_combine($panoImages, $panoImages);
+        return array_combine($panoImages, $panoImagesWithCdn);
     }
 
     private function getPanoramicImagesHtml(array $panoImages)
