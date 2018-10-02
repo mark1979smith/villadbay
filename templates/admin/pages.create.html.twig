@@ -514,7 +514,7 @@
                 // Ensure the option is available
                 if (!field.find('*[value="' + value + '"]').length) {
                     field.addClass('is-invalid');
-                    field.after('<div class="invalid-feedback">The live version of this element is no longer available</div>');
+                    field.after('<div class="invalid-feedback">The live version (' + value + ') of this element is no longer available</div>');
                 }
             }
         }
