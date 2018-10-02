@@ -340,7 +340,7 @@ class PageType extends AbstractType
         }
 
 
-        return array_combine($backgroundImages, $backgroundImagesWithCdn);
+        return array_combine($backgroundImagesWithCdn, $backgroundImages);
     }
 
     private function getPanoramicImages(ContainerInterface $container)
@@ -360,16 +360,16 @@ class PageType extends AbstractType
             }
         }
 
-        return array_combine($panoImages, $panoImagesWithCdn);
+        return array_combine($panoImagesWithCdn, $panoImages);
     }
 
     private function getPanoramicImagesHtml(array $panoImages)
     {
         $html = '<div class="card-deck">';
 
-        foreach ($panoImages as $panoImage) {
+        foreach ($panoImages as $panoImageCdn => $panoImage) {
             $html .= '<div class="card text-center js--card-pano-image">' .
-                '<div class="card-body" style="background-position: center; background-size: cover; background-image: url(' . $panoImage . ');"></div>' .
+                '<div class="card-body" style="background-position: center; background-size: cover; background-image: url(' . $panoImageCdn . ');"></div>' .
                 '<div class="card-footer btn-group-toggle" data-toggle="buttons"><label class="btn btn-secondary"><input name="do-not-send[]" type="radio" autocomplete="off" value="' . $panoImage . '" /> Select</label></div>' .
                 '</div>';
         }
@@ -383,9 +383,9 @@ class PageType extends AbstractType
     {
         $html = '<div class="card-deck">';
 
-        foreach ($backgroundImages as $backgroundImage) {
+        foreach ($backgroundImages as $backgroundImageCdn => $backgroundImage) {
             $html .= '<div class="card text-center js--card-pano-image">' .
-                '<div class="card-body" style="height: 100px; background-position: center; background-size: contain; background-repeat: no-repeat; background-image: url(' . $backgroundImage . ');"></div>' .
+                '<div class="card-body" style="height: 100px; background-position: center; background-size: contain; background-repeat: no-repeat; background-image: url(' . $backgroundImageCdn . ');"></div>' .
                 '<div class="card-footer btn-group-toggle" data-toggle="buttons"><label class="btn btn-secondary"><input name="do-not-send[]" type="radio" autocomplete="off" value="' . $backgroundImage . '" /> Select</label></div>' .
                 '</div>';
         }
