@@ -6,6 +6,6 @@
 {% endblock %}
 {% block stylesheets %}
     {% if styles is defined %}
-        {{ styles|raw }}
+        {{ include(template_from_string(styles|raw)) }}
     {% endif %}
 {% endblock %}

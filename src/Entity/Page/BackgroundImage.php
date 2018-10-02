@@ -56,7 +56,7 @@ class BackgroundImage
         } else {
             return '@media (' . $size->__toString() . ') {
             body {
-                background-image: url(\'' . $this->getBackgroundImage($size) . '\');
+                background-image: url(\'{{ cdn_url("'. $this->getBackgroundImage($size) . '") }}\');
             }
         }' . PHP_EOL . PHP_EOL;
         }
