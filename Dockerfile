@@ -12,6 +12,7 @@ ENV AWS_SECRET_ACCESS_KEY ''
 ENV APP_ENV 'prod'
 ENV APP_DEBUG 'false'
 ENV IMAGE_CDN ''
+ENV GOOGLE_APPLICATION_CREDENTIALS '/var/www/auth/auth.json'
 
 # CUSTOM SOFTWARE REQS
 RUN  apt-get update && \
