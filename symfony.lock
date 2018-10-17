@@ -68,6 +68,12 @@
     "doctrine/reflection": {
         "version": "v1.0.0"
     },
+    "firebase/php-jwt": {
+        "version": "v5.0.0"
+    },
+    "google/auth": {
+        "version": "v1.4.0"
+    },
     "guzzlehttp/guzzle": {
         "version": "6.3.0"
     },
