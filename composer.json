@@ -6,7 +6,7 @@
         "ext-iconv": "*",
         "ext-imagick": "*",
         "aws/aws-sdk-php": "^3.52",
-        "google/auth": "^1.4",
+        "google/apiclient": "^2.0",
         "sensio/framework-extra-bundle": "^5.0",
         "symfony/asset": "^4.0",
         "symfony/console": "^4.0",
