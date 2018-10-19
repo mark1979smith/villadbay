@@ -1,0 +1,6 @@
+services:
+    app.google_api:
+        class: Google_Client
+        public: true
+        calls:
+            - [setAuthConfig, ['%env(GOOGLE_APPLICATION_CREDENTIALS)%']]

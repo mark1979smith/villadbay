@@ -14,6 +14,8 @@ ENV APP_DEBUG 'false'
 ENV IMAGE_CDN ''
 ENV GOOGLE_APPLICATION_CREDENTIALS '/var/www/auth/auth.json'
 
+VOLUME /var/www/auth
+
 # CUSTOM SOFTWARE REQS
 RUN  apt-get update && \
         apt-get install -y libmagickwand-dev --no-install-recommends && \
