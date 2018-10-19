@@ -1,6 +1,10 @@
+imports:
+    - { resource: params.php }
 services:
     app.google_api:
         class: Google_Client
         public: true
         calls:
             - [setAuthConfig, ['%env(GOOGLE_APPLICATION_CREDENTIALS)%']]
+            - [setRedirectUri, ['https://%host%/login_check']]
+            - [setScopes, [!php/const \Google_Service_Oauth2::USERINFO_PROFILE]]
