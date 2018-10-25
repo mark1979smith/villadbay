@@ -50,6 +50,14 @@ services:
         alias: App\Utils\Redis
         public: true
 
+
+    App\Security\LogoutSuccessHandler:
+        class: App\Security\LogoutSuccessHandler
+        public: true
+        arguments:
+          ['@app.redis']
+
+
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
     App\Controller\:
@@ -80,3 +88,6 @@ services:
                 # optional priority
                 # priority: 300
         public: true
+
+
+    Symfony\Component\Security\Core\User\UserInterface: '@App\Security\SocialUser'
