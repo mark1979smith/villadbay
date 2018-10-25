@@ -217,6 +217,12 @@ final class ClassSourceManipulator
         $this->addMethod($methodBuilder->getNode());
     }
 
+    public function addMethodBody(Builder\Method $methodBuilder, string $methodBody)
+    {
+        $nodes = $this->parser->parse($methodBody);
+        $methodBuilder->addStmts($nodes);
+    }
+
     public function createMethodBuilder(string $methodName, $returnType, bool $isReturnTypeNullable, array $commentLines = []): Builder\Method
     {
         $methodNodeBuilder = (new Builder\Method($methodName))
@@ -441,7 +447,7 @@ final class ClassSourceManipulator
 
     private function addCollectionRelation(BaseCollectionRelation $relation)
     {
-        $typeHint = $this->addUseStatementIfNecessary($relation->getTargetClassName());
+        $typeHint = $relation->isSelfReferencing() ? 'self' : $this->addUseStatementIfNecessary($relation->getTargetClassName());
 
         $arrayCollectionTypeHint = $this->addUseStatementIfNecessary(ArrayCollection::class);
         $collectionTypeHint = $this->addUseStatementIfNecessary(Collection::class);
@@ -662,7 +668,7 @@ final class ClassSourceManipulator
      *
      * @return string The alias to use when referencing this class
      */
-    private function addUseStatementIfNecessary(string $class): string
+    public function addUseStatementIfNecessary(string $class): string
     {
         $shortClassName = Str::getShortClassName($class);
         if ($this->isInSameNamespace($class)) {
