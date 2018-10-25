@@ -7,4 +7,4 @@ services:
         calls:
             - [setAuthConfig, ['%env(GOOGLE_APPLICATION_CREDENTIALS)%']]
             - [setRedirectUri, ['https://%host%/login_check']]
-            - [setScopes, [!php/const \Google_Service_Oauth2::USERINFO_PROFILE]]
+            - [addScope, [ !php/const \Google_Service_Oauth2::USERINFO_EMAIL  ] ]
