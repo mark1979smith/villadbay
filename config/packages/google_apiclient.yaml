@@ -5,6 +5,6 @@ services:
         class: Google_Client
         public: true
         calls:
-            - [setAuthConfig, ['%env(GOOGLE_APPLICATION_CREDENTIALS)%']]
+            - [setAuthConfig, ['%app.google.auth%']]
             - [setRedirectUri, ['https://%host%/login_check']]
             - [addScope, [ !php/const \Google_Service_Oauth2::USERINFO_EMAIL  ] ]
