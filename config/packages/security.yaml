@@ -1,54 +1,44 @@
 security:
     # https://symfony.com/doc/current/book/security.html#where-do-users-come-from-user-providers
     providers:
-        webservice:
-            id: App\Security\User\WebserviceUserProvider
+        # used to reload user from session & other features (e.g. switch_user)
+        app_user_provider:
+            id: App\Security\UserProvider
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        login:
+        allow_anonymous:
             pattern: ^/login
             anonymous: ~
-        admin_login:
-            pattern: ^/admin/login
-            anonymous: ~
-        admin:
-            pattern: ^/admin
-            form_login:
-                login_path: /admin/login
-                check_path: /admin/login_check
-        development:
-            host: ^dev\.villadbay\.com$
-            form_login: ~
-        staging:
-            host: ^staging\.villadbay\.com$
-            http_basic: ~
-        preprod:
-            host: ^preprod\.villadbay\.com$
-            http_basic: ~
+        pre_production:
+            host: ^(preprod|staging|dev)\.villadbay\.com$
+            guard:
+                authenticators:
+                    - App\Security\TokenAuthenticator
+            logout:
+                path: app_logout
+                success_handler: 'App\Security\LogoutSuccessHandler'
         main:
             anonymous: ~
-
-            # activate different ways to authenticate
-
-            # http_basic: ~
-            # https://symfony.com/doc/current/book/security.html#a-configuring-how-your-users-will-authenticate
-
-            # form_login: ~
-            # https://symfony.com/doc/current/cookbook/security/form_login_setup.html
+            guard:
+                authenticators:
+                    - App\Security\TokenAuthenticator
+            logout:
+                path: app_logout
+                success_handler: 'App\Security\LogoutSuccessHandler'
     encoders:
         Symfony\Component\Security\Core\User\User:
             algorithm: bcrypt
             cost: 12
     access_control:
         # require ROLE_SUPERADMIN for dev domain
-        - { path: ^/admin, roles: ROLE_SUPERADMIN, host: ^dev\.villadbay\.com$}
-        # require ROLE_ADMIN for dev domain
-        - { path: ^/, roles: ROLE_ADMIN, host: ^staging\.villadbay\.com$}
-        - { path: ^/, roles: ROLE_ADMIN, host: ^preprod\.villadbay\.com$}
+        - { path: ^/, roles: ROLE_SUPERADMIN, host: ^dev\.villadbay\.com$, allow_if: "request.getPathInfo() matches '#^/login#' or request.getPathInfo() matches '#^/logout$#'" }
+        # require ROLE_ADMIN for staging and preprod domain
+        - { path: ^/, roles: ROLE_ADMIN, host: ^staging\.villadbay\.com$, allow_if: "request.getPathInfo() matches '#^/login#' or request.getPathInfo() matches '#^/logout$#'" }
+        - { path: ^/, roles: ROLE_ADMIN, host: ^preprod\.villadbay\.com$, allow_if: "request.getPathInfo() matches '#^/login#' or request.getPathInfo() matches '#^/logout$#'" }
         # require ROLE_ADMIN for /admin*
-        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/admin, roles: ROLE_ADMIN, allow_if: "request.getPathInfo() matches '#^/admin/login#'" }
 
     role_hierarchy:
         ROLE_USER: ROLE_GUEST
