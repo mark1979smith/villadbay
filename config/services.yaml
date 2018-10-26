@@ -2,6 +2,11 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: 'en_GB'
+    app.redis.host: 'redis'
+    app.redis.port: '6379'
+    app.aws.s3.version: 'latest'
+    app.aws.s3.region: 'ap-southeast-2'
+    app.google.auth: '%kernel.project_dir%/auth/auth.json'
 
 services:
     # default configuration for services in *this* file
@@ -29,10 +34,10 @@ services:
         class: App\Utils\AwsS3Client
         public: true
         arguments:
-            $version: '%env(AWS_S3_VERSION)%'
-            $region: '%env(AWS_S3_REGION)%'
-            $bucket: '%env(AWS_S3_BUCKET)%'
-            $imageCdn: '%env(IMAGE_CDN)%'
+            $version: '%app.aws.s3.version%'
+            $region: '%app.aws.s3.region%'
+            $bucket: '%app.aws.s3.bucket%'
+            $imageCdn: '%app.aws.imagecdn%'
             $cacheHandler: '@app.redis'
 
     app.aws.s3:
@@ -43,8 +48,8 @@ services:
         class: App\Utils\Redis
         public: true
         arguments:
-            $redisHost: '%env(REDIS_HOST)%'
-            $redisPort: '%env(REDIS_PORT)%'
+            $redisHost: '%app.redis.host%'
+            $redisPort: '%app.redis.port%'
 
     app.redis:
         alias: App\Utils\Redis
@@ -57,6 +62,9 @@ services:
         arguments:
           ['@app.redis']
 
+    app.user:
+        alias: App\Security\SocialUser
+        public: true
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
@@ -90,4 +98,4 @@ services:
         public: true
 
 
-    Symfony\Component\Security\Core\User\UserInterface: '@App\Security\SocialUser'
+    Symfony\Component\Security\Core\User\UserInterface: '@app.user'

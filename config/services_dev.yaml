@@ -1,0 +1,4 @@
+parameters:
+    app.aws.imagecdn: 'https://d1dkx0epoz0ees.cloudfront.net'
+    app.aws.s3.bucket: 'villadbay-dev'
+
