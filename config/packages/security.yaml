@@ -19,6 +19,7 @@ security:
             logout:
                 path: app_logout
                 success_handler: 'App\Security\LogoutSuccessHandler'
+            user_checker: App\Security\UserChecker
         main:
             anonymous: ~
             guard:
