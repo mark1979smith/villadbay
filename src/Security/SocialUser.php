@@ -2,6 +2,7 @@
 
 namespace App\Security;
 
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -215,6 +216,10 @@ class SocialUser implements UserInterface, EquatableInterface
      */
     public function isEqualTo(UserInterface $user)
     {
-        return ($this->getToken() === $user->getToken());
+        if ($this->getToken() !== $user->getToken()) {
+            throw new AuthenticationException('User changed');
+        }
+
+        return true;
     }
 }

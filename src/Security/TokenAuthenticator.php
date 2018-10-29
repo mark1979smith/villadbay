@@ -39,7 +39,10 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
      */
     public function supports(Request $request)
     {
-        return $request->hasSession() && $request->cookies->has('token');
+        return $request->hasSession()
+            && $request->cookies->has('token')
+            && self::encryptToKey($request) === ($token = $request->cookies->get('token'))
+            && $this->redisService->hasItem($token);
     }
 
     /**
