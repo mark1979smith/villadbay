@@ -73,10 +73,7 @@
             </li>
         </ul>
         {% if (app.user) %}
-        <span class="navbar-text">
-            Welcome {{ app.user.firstName ~ " " ~ app.user.surname }}! <a href="{{ path('app_logout') }}">Logout?</a>
-            <img src="{{ app.user.avatar }}" class="rounded mx-auto" height="24"/>
-        </span>
+            {{ include(template_from_string(nav_greeting(app.user))) }}
         {% endif %}
     </div>
 </nav>
