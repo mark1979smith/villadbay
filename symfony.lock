@@ -68,6 +68,24 @@
     "doctrine/reflection": {
         "version": "v1.0.0"
     },
+    "firebase/php-jwt": {
+        "version": "v5.0.0"
+    },
+    "google/apiclient": {
+        "version": "2.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "2.0",
+            "ref": "49c5d7a66d863d28513979bf0666dc77599100c0"
+        }
+    },
+    "google/apiclient-services": {
+        "version": "v0.72"
+    },
+    "google/auth": {
+        "version": "v1.4.0"
+    },
     "guzzlehttp/guzzle": {
         "version": "6.3.0"
     },
@@ -79,6 +97,9 @@
     },
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
+    },
+    "monolog/monolog": {
+        "version": "1.23.0"
     },
     "mtdowling/jmespath.php": {
         "version": "2.4.0"
@@ -97,6 +118,9 @@
     },
     "phpmd/phpmd": {
         "version": "2.6.0"
+    },
+    "phpseclib/phpseclib": {
+        "version": "2.0.11"
     },
     "psr/cache": {
         "version": "1.0.1"
@@ -172,6 +196,9 @@
     },
     "symfony/event-dispatcher": {
         "version": "v4.0.2"
+    },
+    "symfony/expression-language": {
+        "version": "v4.1.6"
     },
     "symfony/filesystem": {
         "version": "v4.0.2"

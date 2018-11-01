@@ -1,0 +1,10 @@
+imports:
+    - { resource: params.php }
+services:
+    app.google_api:
+        class: Google_Client
+        public: true
+        calls:
+            - [setAuthConfig, ['%app.google.auth%']]
+            - [setRedirectUri, ['https://%host%/login_check']]
+            - [addScope, [ !php/const \Google_Service_Oauth2::USERINFO_EMAIL  ] ]

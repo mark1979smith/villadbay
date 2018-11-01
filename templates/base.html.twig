@@ -58,7 +58,7 @@
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
+        <ul class="navbar-nav mr-auto">
             <li class="nav-item{% if selectedNav is defined and selectedNav == 'home' %} active{% endif %}">
                 <a href="{{ path('home') }}" class="nav-link">Home</a>
             </li>
@@ -72,6 +72,9 @@
                 <a href="{{ path('contact') }}" class="nav-link">Contact</a>
             </li>
         </ul>
+        {% if (app.user) %}
+            {{ include(template_from_string(nav_greeting(app.user))) }}
+        {% endif %}
     </div>
 </nav>
 

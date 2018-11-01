@@ -1,17 +1,6 @@
 FROM zfce/base-application:latest
 
-ENV DEV_MODE false
-ENV DATABASE_URL ''
-ENV REDIS_HOST 'redis'
-ENV REDIS_PORT '6379'
-ENV AWS_S3_VERSION 'latest'
-ENV AWS_S3_REGION 'ap-southeast-2'
-ENV AWS_S3_BUCKET 'villadbay'
-ENV AWS_ACCESS_KEY_ID 'AKIAJJJOH43PYYUNHUDQ'
-ENV AWS_SECRET_ACCESS_KEY ''
-ENV APP_ENV 'prod'
-ENV APP_DEBUG 'false'
-ENV IMAGE_CDN ''
+VOLUME /var/www/auth
 
 # CUSTOM SOFTWARE REQS
 RUN  apt-get update && \

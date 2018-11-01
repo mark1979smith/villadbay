@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="jumbotron mt-3">
+                    <div class="container">
+                        <h1 class="display-3">Login</h1>
+                        <p>Login to share your name and email address with us so we can provide you are more customised experience.</p>
+                        <a href="{{ url('login-with-google') }}">
+                            <img src="{{ asset('images/btn_google_signin.png') }}" alt="Login with your Google account" />
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

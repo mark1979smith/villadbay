@@ -33,7 +33,7 @@ class Redis
     private function get()
     {
         $this->profiles[] = ['_method' => __METHOD__];
-        
+
         $redisConnection = RedisAdapter::createConnection(
             'redis://' . $this->redisHost . ':' . $this->redisPort . '/cache/',
             [
@@ -133,7 +133,22 @@ class Redis
      */
     public function save(CacheItemInterface $cacheItem)
     {
-        $this->profiles[] = ['_method' => __METHOD__];
+        $this->profiles[] = ['_method' => __METHOD__, 'data' => $cacheItem->get()];
         return $this->get()->save($cacheItem);
+    }
+
+    /**
+     * @param string $key
+     *
+     * @return bool
+     */
+    public function deleteItem(string $key)
+    {
+        $this->profiles[] = ['_method' => __METHOD__];
+        try {
+            return $this->get()->deleteItem($key);
+        } catch (\Psr\Cache\InvalidArgumentException $e) {
+            $this->profiles[] = ['_method' => __METHOD__, 'error' => $e->getMessage()];
+        }
     }
 }
