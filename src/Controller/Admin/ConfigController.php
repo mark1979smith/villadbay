@@ -96,7 +96,7 @@ class ConfigController extends AbstractController
             throw new AccessDeniedException('Unable to access this page!');
         }
 
-        /** @var \App\Entity\Config $entity */
+        /** @var \App\Entity\Config $configEntry */
         $configEntry = $this->getDoctrine()
             ->getRepository(Config::class)
             ->findOneBySlug($slug);
@@ -115,8 +115,12 @@ class ConfigController extends AbstractController
 
             /** @var Config $entity */
             $entity = $form->getData();
+            $em->detach($entity);
+
+            $entity = new Config();
             $entity->setSlug($form->getData()->getSlug());
             $entity->setValue($form->getData()->getValue());
+            $entity->setConfigGroup($configEntry->getConfigGroup());
 
             $em->persist($entity);
             $em->flush();
