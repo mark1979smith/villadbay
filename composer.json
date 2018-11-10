@@ -8,7 +8,7 @@
         "ext-http": "*",
         "google/apiclient": "^2.0",
         "sensio/framework-extra-bundle": "^5.0",
-        "skipton-io/base-application": "*"
+        "skipton-io/base-application": "*",
         "symfony/asset": "^4.0",
         "symfony/console": "^4.0",
         "symfony/expression-language": "^4.0",
