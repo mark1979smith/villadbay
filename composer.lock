@@ -2609,13 +2609,13 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/mark1979smith/skipton.io.git",
-                "reference": "6037aaabc4dbf04c44ea0059c5424f259210e1ce"
+                "url": "git@bitbucket.org:zfce/base-application.git",
+                "reference": "f0c64c26ce5d667a5d77d9d2729d804598baad7b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mark1979smith/skipton.io/zipball/6037aaabc4dbf04c44ea0059c5424f259210e1ce",
-                "reference": "6037aaabc4dbf04c44ea0059c5424f259210e1ce",
+                "url": "https://bitbucket.org/zfce/base-application/get/f0c64c26ce5d667a5d77d9d2729d804598baad7b.zip",
+                "reference": "f0c64c26ce5d667a5d77d9d2729d804598baad7b",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -2629,11 +2629,11 @@
             },
             "type": "library",
             "notification-url": "https://repo.packagist.com/skipton-io/downloads/",
+            "homepage": "https://bitbucket.org/zfce/base-application",
             "support": {
-                "source": "https://github.com/mark1979smith/skipton.io/tree/master",
-                "issues": "https://github.com/mark1979smith/skipton.io/issues"
+                "source": "https://bitbucket.org/zfce/base-application/src/f0c64c26ce5d667a5d77d9d2729d804598baad7b/?at=master"
             },
-            "time": "2018-11-10T16:20:16+00:00"
+            "time": "2018-11-11T14:41:38+00:00"
         },
         {
             "name": "symfony/asset",
