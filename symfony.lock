@@ -146,6 +146,9 @@
             "ref": "aaddfdf43cdecd4cf91f992052d76c2cadc04543"
         }
     },
+    "skipton-io/base-application": {
+        "version": "dev-master"
+    },
     "squizlabs/php_codesniffer": {
         "version": "3.0",
         "recipe": {
