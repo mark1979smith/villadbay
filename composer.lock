@@ -2728,12 +2728,12 @@
             "source": {
                 "type": "git",
                 "url": "git@bitbucket.org:zfce/base-application.git",
-                "reference": "93aaf2d82ccbdadbc0aad02c6fa6a5ae45c41d02"
+                "reference": "73441c8fd75f6a9b7ae03176d584fab300ee514b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://bitbucket.org/zfce/base-application/get/93aaf2d82ccbdadbc0aad02c6fa6a5ae45c41d02.zip",
-                "reference": "93aaf2d82ccbdadbc0aad02c6fa6a5ae45c41d02",
+                "url": "https://bitbucket.org/zfce/base-application/get/73441c8fd75f6a9b7ae03176d584fab300ee514b.zip",
+                "reference": "73441c8fd75f6a9b7ae03176d584fab300ee514b",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -2792,16 +2792,6 @@
                 },
                 "symfony-public-dir": "html"
             },
-            "autoload": {
-                "psr-4": {
-                    "App\\": "src/"
-                }
-            },
-            "autoload-dev": {
-                "psr-4": {
-                    "App\\Tests\\": "tests/"
-                }
-            },
             "notification-url": "https://repo.packagist.com/skipton-io/downloads/",
             "scripts": {
                 "auto-scripts": {
@@ -2817,9 +2807,9 @@
             },
             "homepage": "https://bitbucket.org/zfce/base-application",
             "support": {
-                "source": "https://bitbucket.org/zfce/base-application/src/93aaf2d82ccbdadbc0aad02c6fa6a5ae45c41d02/?at=master"
+                "source": "https://bitbucket.org/zfce/base-application/src/73441c8fd75f6a9b7ae03176d584fab300ee514b/?at=master"
             },
-            "time": "2018-11-12T13:49:49+00:00"
+            "time": "2018-11-12T14:16:40+00:00"
         },
         {
             "name": "squizlabs/php_codesniffer",
