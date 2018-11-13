@@ -87,7 +87,7 @@ class UserController extends Controller
             $response->headers->setCookie(new Cookie('token', $token));
             $response->send();
 
-            /** @var \App\Utils\Redis $redis */
+            /** @var \App\Component\Redis $redis */
             $redis = $this->container->get('app.redis');
             $cacheItem = $redis->getItem($token);
             $cacheItem->set($user);

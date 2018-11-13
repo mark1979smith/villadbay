@@ -12,14 +12,14 @@ namespace App\Form\DataTransformer;
 use App\Utils\Helpers\ScreenSize;
 use Symfony\Component\Form\DataTransformerInterface;
 
+/**
+ * Class PanoramicImage
+ *
+ * @package App\Form\DataTransformer
+ */
 class PanoramicImage implements DataTransformerInterface
 {
-    /**
-     * @param \App\Entity\Page\PanoramicImage|string|null $value
-     *
-     * @return string
-     */
-    public function transform($value)
+    public function transform($value): string
     {
         if (null === $value || "" === $value) {
             return '';
@@ -28,13 +28,8 @@ class PanoramicImage implements DataTransformerInterface
         return $value->getPanoramicImage(new ScreenSize(ScreenSize::EXTRA_LARGE));
     }
 
-    /**
-     * @param string $value
-     *
-     * @return \App\Entity\Page\PanoramicImage
-     */
-    public function reverseTransform($value)
+    public function reverseTransform($value): \App\Component\Page\PanoramicImage
     {
-        return (new \App\Entity\Page\PanoramicImage())->setPanoramicImage($value);
+        return (new \App\Component\Page\PanoramicImage())->setPanoramicImage($value);
     }
 }

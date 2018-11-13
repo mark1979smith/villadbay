@@ -1,24 +1,24 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Mark
- * Date: 01/07/2018
- * Time: 21:26
- */
 
 namespace App\Form\DataTransformer;
 
 
+use App\Component\CarouselSlides\Description;
 use Symfony\Component\Form\DataTransformerInterface;
 
+/**
+ * Class CarouselSlideDescription
+ *
+ * @package App\Form\DataTransformer
+ */
 class CarouselSlideDescription implements DataTransformerInterface
 {
-    public function transform($value)
+    public function transform($value): Description
     {
-        return (new \App\Entity\CarouselSlides\Description())->setValue($value);
+        return (new Description())->setValue($value);
     }
 
-    public function reverseTransform($value)
+    public function reverseTransform($value): string
     {
         if (null === $value || "" === $value) {
             return '';

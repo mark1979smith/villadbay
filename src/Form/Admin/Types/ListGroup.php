@@ -24,7 +24,7 @@ class ListGroup extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => \App\Entity\Page\ListGroup::class,
+            'data_class' => \App\Component\Page\ListGroup::class,
         ));
     }
 

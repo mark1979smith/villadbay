@@ -9,11 +9,17 @@
 namespace App\Form\DataTransformer;
 
 
+use App\Component\CarouselSlides\Title;
 use Symfony\Component\Form\DataTransformerInterface;
 
+/**
+ * Class CarouselSlideHeading
+ *
+ * @package App\Form\DataTransformer
+ */
 class CarouselSlideHeading implements DataTransformerInterface
 {
-    public function transform($value)
+    public function transform($value): string
     {
         if (null === $value || "" === $value) {
             return '';
@@ -27,9 +33,8 @@ class CarouselSlideHeading implements DataTransformerInterface
 
     }
 
-    public function reverseTransform($value)
+    public function reverseTransform($value): Title
     {
-        dump($value);
-        return (new \App\Entity\CarouselSlides\Title())->setValue($value);
+        return (new Title())->setValue($value);
     }
 }

@@ -10,18 +10,14 @@ namespace App\Form\Admin;
 
 
 use App\Component\ImageTypes;
-use App\Entity\CarouselSlides;
-use App\Entity\Image\Type;
+use App\Component\Image\Type;
 use App\Form\Admin\Types\CarouselDescriptionType;
 use App\Form\Admin\Types\CarouselImageType;
 use App\Form\Admin\Types\CarouselTitleType;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -80,7 +76,7 @@ class CarouselSlideType extends AbstractType
         ->add('send', SubmitType::class, ['label' => $options['submit_button_label']]);
     }
 
-    private function getCarouselImages(\App\Utils\AwsS3Client $s3Service): array
+    private function getCarouselImages(\App\Component\AwsS3Client $s3Service): array
     {
         $response = $s3Service->getImagesBasedOnConfig();
 

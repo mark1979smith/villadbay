@@ -3,7 +3,7 @@
 namespace App\Security;
 
 
-use App\Utils\Redis;
+use App\Component\Redis;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccountStatusException;
 use Symfony\Component\Security\Core\Exception\AuthenticationExpiredException;

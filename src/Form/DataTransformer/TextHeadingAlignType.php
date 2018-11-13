@@ -8,18 +8,17 @@
 
 namespace App\Form\DataTransformer;
 
-use App\Entity\Page\TextHeading;
-
+use App\Component\Page\TextHeading\AlignClass;
 use Symfony\Component\Form\DataTransformerInterface;
 
+/**
+ * Class TextHeadingAlignType
+ *
+ * @package App\Form\DataTransformer
+ */
 class TextHeadingAlignType implements DataTransformerInterface
 {
-    /**
-     * @param TextHeading\AlignClass|null $value
-     *
-     * @return string
-     */
-    public function transform($value)
+    public function transform($value): string
     {
         if (null === $value || "" === $value) {
             return '';
@@ -28,13 +27,8 @@ class TextHeadingAlignType implements DataTransformerInterface
         return $value->getValue();
     }
 
-    /**
-     * @param string $value
-     *
-     * @return TextHeading\AlignClass
-     */
-    public function reverseTransform($value)
+    public function reverseTransform($value): AlignClass
     {
-        return (new TextHeading\AlignClass())->setValue($value);
+        return (new AlignClass())->setValue($value);
     }
 }

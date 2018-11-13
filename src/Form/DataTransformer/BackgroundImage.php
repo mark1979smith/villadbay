@@ -12,13 +12,14 @@ namespace App\Form\DataTransformer;
 use App\Utils\Helpers\ScreenSize;
 use Symfony\Component\Form\DataTransformerInterface;
 
+/**
+ * Class BackgroundImage
+ *
+ * @package App\Form\DataTransformer
+ */
 class BackgroundImage implements DataTransformerInterface
 {
-    /**
-     * @param \App\Entity\Page\BackgroundImage|string|null $value
-     *
-     * @return string
-     */
+
     public function transform($value)
     {
         if (null === $value || "" === $value) {
@@ -28,13 +29,8 @@ class BackgroundImage implements DataTransformerInterface
         return $value->getBackgroundImage(new ScreenSize(ScreenSize::EXTRA_LARGE));
     }
 
-    /**
-     * @param string $value
-     *
-     * @return \App\Entity\Page\BackgroundImage
-     */
-    public function reverseTransform($value)
+    public function reverseTransform($value): \App\Component\Page\BackgroundImage
     {
-        return (new \App\Entity\Page\BackgroundImage())->setBackgroundImage($value);
+        return (new \App\Component\Page\BackgroundImage())->setBackgroundImage($value);
     }
 }

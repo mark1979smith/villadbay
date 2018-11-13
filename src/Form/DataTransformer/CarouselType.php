@@ -12,21 +12,27 @@ use App\Entity\CarouselContainer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\DataTransformerInterface;
 
-
+/**
+ * Class CarouselType
+ *
+ * @package App\Form\DataTransformer
+ */
 class CarouselType implements DataTransformerInterface
 {
+    /** @var \Doctrine\ORM\EntityManagerInterface */
+    protected $entityManager;
+
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
     }
 
     /**
-     *
-     * @param \App\Entity\Page\Carousel $value
+     * @param \App\Component\Page\Carousel $value
      *
      * @return string
      */
-    public function transform($value)
+    public function transform($value): string
     {
         if (is_null($value)) {
             return '';
@@ -35,11 +41,6 @@ class CarouselType implements DataTransformerInterface
 
     }
 
-    /**
-     * @param string $value
-     *
-     * @return string
-     */
     public function reverseTransform($value)
     {
         if (null === $value || is_string($value)) {

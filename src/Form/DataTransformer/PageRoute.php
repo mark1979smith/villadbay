@@ -18,12 +18,7 @@ use Symfony\Component\Form\DataTransformerInterface;
  */
 class PageRoute implements DataTransformerInterface
 {
-    /**
-     * @param \App\Entity\Page\PageRoute|string|null $value
-     *
-     * @return string
-     */
-    public function transform($value)
+    public function transform($value): string
     {
         if (null === $value || "" === $value) {
             return '';
@@ -32,13 +27,8 @@ class PageRoute implements DataTransformerInterface
         return $value->getPageRoute();
     }
 
-    /**
-     * @param string $value
-     *
-     * @return \App\Entity\Page\PageType
-     */
-    public function reverseTransform($value)
+    public function reverseTransform($value): \App\Component\Page\PageRoute
     {
-        return (new \App\Entity\Page\PageRoute())->setPageRoute($value);
+        return (new \App\Component\Page\PageRoute())->setPageRoute($value);
     }
 }
