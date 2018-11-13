@@ -8,7 +8,11 @@
 
 namespace App\Component\Helpers;
 
-
+/**
+ * Class Data
+ *
+ * @package App\Component\Helpers
+ */
 class Data
 {
     /**
