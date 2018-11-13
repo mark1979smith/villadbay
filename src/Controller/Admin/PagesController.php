@@ -26,7 +26,7 @@ use App\Component\Page\TextLead;
 use App\Form\Admin\ApprovePageRevision;
 use App\Form\Admin\DeletePageRevision;
 use App\Form\Admin\PageType;
-use App\Utils\Helpers\ScreenSize;
+use App\Component\Helpers\ScreenSize;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;

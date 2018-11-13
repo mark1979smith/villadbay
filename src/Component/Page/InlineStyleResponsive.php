@@ -9,7 +9,7 @@
 namespace App\Component\Page;
 
 
-use App\Utils\Helpers\ScreenSize;
+use App\Component\Helpers\ScreenSize;
 
 /**
  * Trait InlineStyleResponsive

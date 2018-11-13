@@ -9,7 +9,7 @@
 namespace App\Component\Page;
 
 
-use App\Utils\Helpers\ScreenSize;
+use App\Component\Helpers\ScreenSize;
 
 /**
  * Class BackgroundImage
@@ -22,13 +22,6 @@ class BackgroundImage
 
     private $backgroundImage;
 
-    /**
-     * If size is defined the filename is amended to suit.
-     *
-     * @param \App\Utils\Helpers\ScreenSize $size
-     *
-     * @return mixed
-     */
     public function getBackgroundImage(ScreenSize $size): string
     {
         return $size->getResponsiveFilename($this->backgroundImage);

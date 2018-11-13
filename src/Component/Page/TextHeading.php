@@ -23,7 +23,7 @@ use App\Component\Page\TextHeading\AlignClass;
 class TextHeading
 {
     /** @var string  */
-    private $template = "<div class=\"container\"><div class=\"row\"><div class=\"col\"><%s class=\"%s\">%s</%s></div></div></div>";
+    private $template = "<div class=\"container\"><div class=\"row\"><div class=\"col\"><%s class=\"%s\">%s<\/%s></div></div></div>";
 
     /** @var null|Type;  */
     private $type;

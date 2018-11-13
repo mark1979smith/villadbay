@@ -10,8 +10,8 @@ namespace App\Controller;
 
 use App\Component\Availability;
 use App\Component\Contact;
-use App\Entity\Page;
 use App\Component\Search;
+use App\Entity\Page;
 use App\Form\SearchType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;

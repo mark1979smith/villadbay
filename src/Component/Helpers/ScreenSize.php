@@ -1,10 +1,10 @@
 <?php
-namespace App\Utils\Helpers;
+namespace App\Component\Helpers;
 
 /**
  * Class ScreenSize
  *
- * @package App\Utils\Helpers
+ * @package App\Component\Helpers
  */
 class ScreenSize
 {

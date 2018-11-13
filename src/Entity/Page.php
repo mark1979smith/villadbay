@@ -10,7 +10,7 @@ namespace App\Entity;
 
 
 use App\Component\Page\TextHeading;
-use App\Utils\Helpers\Data;
+use App\Component\Helpers\Data;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\Index;

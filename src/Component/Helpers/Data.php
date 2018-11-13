@@ -6,7 +6,7 @@
  * Time: 15:15
  */
 
-namespace App\Utils\Helpers;
+namespace App\Component\Helpers;
 
 
 class Data

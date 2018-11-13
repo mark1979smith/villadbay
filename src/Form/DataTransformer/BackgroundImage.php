@@ -9,7 +9,7 @@
 namespace App\Form\DataTransformer;
 
 
-use App\Utils\Helpers\ScreenSize;
+use App\Component\Helpers\ScreenSize;
 use Symfony\Component\Form\DataTransformerInterface;
 
 /**
