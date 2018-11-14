@@ -2728,12 +2728,12 @@
             "source": {
                 "type": "git",
                 "url": "git@bitbucket.org:zfce/base-application.git",
-                "reference": "73441c8fd75f6a9b7ae03176d584fab300ee514b"
+                "reference": "0b8ceed5baa67cdeef2070352c5db87a1cf1e2de"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://bitbucket.org/zfce/base-application/get/73441c8fd75f6a9b7ae03176d584fab300ee514b.zip",
-                "reference": "73441c8fd75f6a9b7ae03176d584fab300ee514b",
+                "url": "https://bitbucket.org/zfce/base-application/get/0b8ceed5baa67cdeef2070352c5db87a1cf1e2de.zip",
+                "reference": "0b8ceed5baa67cdeef2070352c5db87a1cf1e2de",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -2777,6 +2777,7 @@
             },
             "require-dev": {
                 "phpmd/phpmd": "2.6.0",
+                "phpspec/phpspec": "^5.1",
                 "squizlabs/php_codesniffer": "3.3.0",
                 "symfony/debug-bundle": "^v4.0",
                 "symfony/dotenv": "^4.0",
@@ -2791,6 +2792,11 @@
                     "allow-contrib": false
                 },
                 "symfony-public-dir": "html"
+            },
+            "autoload": {
+                "psr-0": {
+                    "": "src"
+                }
             },
             "notification-url": "https://repo.packagist.com/skipton-io/downloads/",
             "scripts": {
@@ -2807,9 +2813,9 @@
             },
             "homepage": "https://bitbucket.org/zfce/base-application",
             "support": {
-                "source": "https://bitbucket.org/zfce/base-application/src/73441c8fd75f6a9b7ae03176d584fab300ee514b/?at=master"
+                "source": "https://bitbucket.org/zfce/base-application/src/0b8ceed5baa67cdeef2070352c5db87a1cf1e2de/?at=master"
             },
-            "time": "2018-11-12T14:16:40+00:00"
+            "time": "2018-11-14T16:06:59+00:00"
         },
         {
             "name": "squizlabs/php_codesniffer",
