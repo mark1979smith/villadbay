@@ -24,7 +24,7 @@ class PageRoute implements DataTransformerInterface
             return '';
         }
 
-        return $value->getPageRoute();
+        return (string) $value->getPageRoute();
     }
 
     public function reverseTransform($value): \App\Component\Page\PageRoute
