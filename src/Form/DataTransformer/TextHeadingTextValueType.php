@@ -25,7 +25,7 @@ class TextHeadingTextValueType implements DataTransformerInterface
             return '';
         }
 
-        return $value->getValue();
+        return (string) $value->getValue();
     }
 
     public function reverseTransform($value): TextValue

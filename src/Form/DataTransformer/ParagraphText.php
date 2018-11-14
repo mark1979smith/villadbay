@@ -24,7 +24,7 @@ class ParagraphText implements DataTransformerInterface
             return '';
         }
 
-        return $value->getTextValue();
+        return (string) $value->getTextValue();
     }
 
     public function reverseTransform($value): \App\Component\Page\ParagraphText

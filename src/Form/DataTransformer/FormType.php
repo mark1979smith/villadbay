@@ -31,6 +31,6 @@ class FormType implements DataTransformerInterface
             return (string) $value;
         }
 
-        return $value->getFormType();
+        return (string) $value->getFormType();
     }
 }

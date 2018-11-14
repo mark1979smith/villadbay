@@ -37,7 +37,7 @@ class CarouselType implements DataTransformerInterface
         if (is_null($value)) {
             return '';
         }
-        return $value->getValue();
+        return (string) $value->getValue();
 
     }
 

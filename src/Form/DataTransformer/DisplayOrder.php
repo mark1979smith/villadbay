@@ -30,7 +30,7 @@ class DisplayOrder implements DataTransformerInterface
             return (string) $value;
         }
 
-        return $value->getDisplayOrder();
+        return (string) $value->getDisplayOrder();
 
     }
 }

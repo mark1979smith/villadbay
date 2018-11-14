@@ -24,7 +24,7 @@ class TextHeadingSizeType implements DataTransformerInterface
             return '';
         }
 
-        return $value->getValue();
+        return (string) $value->getValue();
     }
 
     public function reverseTransform($value): SizeClass

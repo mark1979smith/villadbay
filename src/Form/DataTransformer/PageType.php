@@ -23,7 +23,7 @@ class PageType implements DataTransformerInterface
             return '';
         }
 
-        return $value->getPageType();
+        return (string) $value->getPageType();
     }
 
     public function reverseTransform($value): \App\Component\Page\PageType

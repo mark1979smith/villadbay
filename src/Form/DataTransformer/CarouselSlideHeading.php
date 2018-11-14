@@ -29,7 +29,7 @@ class CarouselSlideHeading implements DataTransformerInterface
             return $value;
         }
 
-        return $value->getValue();
+        return (string) $value->getValue();
 
     }
 

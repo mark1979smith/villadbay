@@ -30,6 +30,6 @@ class CarouselSlideImage implements DataTransformerInterface
             return '';
         }
 
-        return $value->getValue();
+        return (string) $value->getValue();
     }
 }

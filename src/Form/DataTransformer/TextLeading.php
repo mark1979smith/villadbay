@@ -25,7 +25,7 @@ class TextLeading implements DataTransformerInterface
             return '';
         }
 
-        return $value->getTextValue();
+        return (string) $value->getTextValue();
     }
 
     public function reverseTransform($value): TextLead

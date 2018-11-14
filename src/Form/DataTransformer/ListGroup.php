@@ -24,7 +24,7 @@ class ListGroup implements DataTransformerInterface
             return '';
         }
 
-        return implode(',', $value->getListItems());
+        return implode(',', (array) $value->getListItems());
     }
 
     public function reverseTransform($value): \App\Component\Page\ListGroup
