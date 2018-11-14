@@ -12,3 +12,9 @@ framework:
     #fragments: ~
     php_errors:
         log: true
+        
+    cache:
+        pools:
+            cache.annotations:
+                adapter: cache.adapter.redis
+                default_lifetime: 3600
