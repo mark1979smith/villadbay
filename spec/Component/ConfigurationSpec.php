@@ -1,6 +1,6 @@
 <?php
 
-namespace spec\Component;
+namespace spec\App\Component;
 
 use App\Component\Configuration;
 use App\Entity\Config;
