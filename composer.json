@@ -23,8 +23,7 @@
         "symfony/twig-bundle": "^4.0",
         "symfony/validator": "^4.0",
         "symfony/yaml": "^4.0",
-        "sensio/framework-extra-bundle": "^5.0",
-        "skipton-io/base-application": "dev-master"
+        "sensio/framework-extra-bundle": "^5.0"
     },
     "require-dev": {
         "symfony/dotenv": "^4.0",
