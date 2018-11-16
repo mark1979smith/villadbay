@@ -40,16 +40,14 @@
     "scripts": {
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
-            "assets:install --symlink --relative %SYMFONY_PUBLIC_DIR%": "symfony-cmd"
+            "assets:install --symlink --relative %SYMFONY_PUBLIC_DIR%": "symfony-cmd",
+            "phpspec run"
         },
         "post-install-cmd": [
             "@auto-scripts"
         ],
         "post-update-cmd": [
             "@auto-scripts"
-        ],
-        "test": [
-            "phpspec run"
         ]
     },
     "conflict": {
