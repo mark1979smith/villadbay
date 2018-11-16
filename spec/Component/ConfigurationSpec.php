@@ -21,7 +21,7 @@ class ConfigurationSpec extends ObjectBehavior
     {
         $this->beConstructedWith($this->getData());
 
-        $this->render()->shouldBe('test1');
+        $this->render()->shouldBe('test');
     }
 
     function getData()
