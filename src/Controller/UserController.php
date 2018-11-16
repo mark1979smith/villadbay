@@ -84,7 +84,7 @@ class UserController extends Controller
             }
 
             $token = TokenAuthenticator::encryptToKey($request);
-            $response->headers->setCookie(new Cookie('token', $token));
+            $response->headers->setCookie(new Cookie('token', $token, 0, '/', null, true, true, false, Cookie::SAMESITE_LAX));
             $response->send();
 
             /** @var \App\Component\Redis $redis */
