@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Component\Configuration;
 use App\Entity\Config;
 use App\Form\Admin\Config\EntryType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -31,10 +32,13 @@ class ConfigController extends AbstractController
         $entities = $this->getDoctrine()
             ->getRepository(Config::class)
             ->findAll();
+        $configuration = new Configuration($entities);
+
+
         $form = $this->createForm(EntryType::class);
         return $this->render('admin/config/index.html.twig', [
             'selectedNav' => 'admin-config',
-            'existingConfig' => $entities,
+            'existingConfig' => $configuration->getLatestRevision(),
             'form' => $form->createView()
         ]);
     }
@@ -73,6 +77,7 @@ class ConfigController extends AbstractController
             }
 
             $entity->setValue($form->getData()->getValue());
+            $entity->setCreated(new \DateTimeImmutable());
 
             $em->persist($entity);
             $em->flush();
@@ -121,6 +126,7 @@ class ConfigController extends AbstractController
             $entity->setSlug($form->getData()->getSlug());
             $entity->setValue($form->getData()->getValue());
             $entity->setConfigGroup($configEntry->getConfigGroup());
+            $entity->setCreated(new \DateTimeImmutable());
 
             $em->persist($entity);
             $em->flush();

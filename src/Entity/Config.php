@@ -27,6 +27,11 @@ class Config
     private $value;
 
     /**
+     * @ORM\Column(type="datetime_immutable")
+     */
+    private $created;
+
+    /**
      * @ORM\Column(type="boolean")
      */
     private $is_read_only = false;
@@ -89,4 +94,25 @@ class Config
 
         return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getCreated()
+    {
+        return $this->created;
+    }
+
+    /**
+     * @param mixed $created
+     *
+     * @return Config
+     */
+    public function setCreated($created)
+    {
+        $this->created = $created;
+
+        return $this;
+    }
+
 }
