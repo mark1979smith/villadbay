@@ -97,4 +97,17 @@ class ConfigGroup
 
         return $this;
     }
+
+    public function getSlug(): string
+    {
+        $nonAllowedRegex = '/[\s]/i';
+        $slug = preg_replace($nonAllowedRegex, '-', $this->getName());
+
+        return strtolower($slug);
+    }
+
+    public function __toString()
+    {
+        return $this->getName();
+    }
 }

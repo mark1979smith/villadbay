@@ -2,11 +2,13 @@
 
 namespace App\Controller\Admin;
 
-use App\Component\Configuration;
+use App\Component\Config\Entry;
+use App\Component\Config\Groups as ConfigGroups;
 use App\Entity\Config;
-use App\Form\Admin\Config\EntryType;
+use App\Entity\ConfigGroup;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -23,29 +25,31 @@ class ConfigController extends AbstractController
     /**
      * @Route("/", name="admin_config")
      */
-    public function index(AuthorizationCheckerInterface $authorizationChecker)
+    public function index(AuthorizationCheckerInterface $authorizationChecker): Response
     {
         if (false === $authorizationChecker->isGranted('ROLE_ADMIN')) {
             throw new AccessDeniedException('Unable to access this page!');
         }
 
-        $entities = $this->getDoctrine()
+        $configEntries = $this->getDoctrine()
             ->getRepository(Config::class)
             ->findAll();
-        $configuration = new Configuration($entities);
+        $configEntries = new Entry($configEntries);
 
+        $configGroups = $this->getDoctrine()
+            ->getRepository(ConfigGroup::class)
+            ->findAll();
+        $configGroups = new ConfigGroups($configGroups);
 
-        $form = $this->createForm(EntryType::class);
         return $this->render('admin/config/index.html.twig', [
-            'selectedNav' => 'admin-config',
-            'existingConfig' => $configuration->getLatestRevision(),
-            'form' => $form->createView()
+            'selectedNav'          => 'admin-config',
+            'existingConfigGroups' => $configGroups->getGroups(),
+            'existingConfig'       => $configEntries->getLatestRevision(),
         ]);
     }
 
     /**
-     * @Route("/add", name="admin_config_add")
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @Route("/add/{configGroupName}", name="admin_config_add")
      */
     public function add(Request $request, AuthorizationCheckerInterface $authorizationChecker)
     {
@@ -53,30 +57,35 @@ class ConfigController extends AbstractController
             throw new AccessDeniedException('Unable to access this page!');
         }
 
+        /** @var \Doctrine\ORM\EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
+        $configGroup = $em->getRepository(ConfigGroup::class)
+            ->findOneBy(['name' => base64_decode($request->get('configGroupName'))]);
+        if (!($configGroup instanceof ConfigGroup)) {
+            throw new \LogicException('Config Group cannot be found');
+        }
+
         $configEntry = new Config();
-        $form = $this->createForm(EntryType::class, $configEntry);
+        $configEntry->setConfigGroup($configGroup);
+        $form = $this->createForm(\App\Form\Admin\Config\Entry\CreateType::class, $configEntry,
+            ['config_groups' => $this->getConfigGroups()]);
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            /** @var \Doctrine\ORM\EntityManager $em */
-            $em = $this->getDoctrine()->getManager();
-
-            /** @var Config $entity */
-            $entity = $form->getData();
-            $slug = $entity->getSlug();
-
-            /** @var \App\Entity\Config $entity */
-            $entity = $this->getDoctrine()
-                ->getRepository(Config::class)
-                ->findOneBySlug($slug);
-
-            if (is_null($entity)) {
-                $entity = new Config();
-                $entity->setSlug($slug);
+        if ($request->isMethod(Request::METHOD_POST)
+            && $form->isSubmitted()
+            && $form->isValid()) {
+            // Ensure primary data does not exists
+            $existingConfig = $em->getRepository(Config::class)
+                ->findOneBySlug($form->getData()->getSlug());
+            if (!is_null($existingConfig)) {
+                throw new \LogicException('Slug exists');
             }
 
+            $entity = new Config();
+            $entity->setSlug($form->getData()->getSlug());
             $entity->setValue($form->getData()->getValue());
+            $entity->setConfigGroup($form->getData()->getConfigGroup());
             $entity->setCreated(new \DateTimeImmutable());
 
             $em->persist($entity);
@@ -85,15 +94,15 @@ class ConfigController extends AbstractController
             return $this->redirectToRoute('admin_config');
         }
 
+
         return $this->render('admin/config/add.html.twig', [
             'selectedNav' => 'admin-config',
-            'form' => $form->createView()
+            'form'        => $form->createView(),
         ]);
     }
 
     /**
      * @Route("/edit/{slug}", name="admin_config_edit")
-     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function edit($slug, Request $request, AuthorizationCheckerInterface $authorizationChecker)
     {
@@ -110,22 +119,19 @@ class ConfigController extends AbstractController
             throw new \InvalidArgumentException('Slug cannot be found');
         }
 
-        $form = $this->createForm(EntryType::class, $configEntry);
+        $form = $this->createForm(\App\Form\Admin\Config\Entry\EditType::class, $configEntry);
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($request->isMethod(Request::METHOD_POST)
+            && $form->isSubmitted()
+            && $form->isValid()) {
             /** @var \Doctrine\ORM\EntityManager $em */
             $em = $this->getDoctrine()->getManager();
 
-            /** @var Config $entity */
             $entity = $form->getData();
             $em->detach($entity);
-
-            $entity = new Config();
-            $entity->setSlug($form->getData()->getSlug());
             $entity->setValue($form->getData()->getValue());
-            $entity->setConfigGroup($configEntry->getConfigGroup());
             $entity->setCreated(new \DateTimeImmutable());
 
             $em->persist($entity);
@@ -136,13 +142,12 @@ class ConfigController extends AbstractController
 
         return $this->render('admin/config/add.html.twig', [
             'selectedNav' => 'admin-config',
-            'form' => $form->createView()
+            'form'        => $form->createView(),
         ]);
     }
 
     /**
      * @Route("/delete/{slug}", name="admin_config_delete")
-     * @param \Symfony\Component\HttpFoundation\Request $request
      */
     public function delete($slug, AuthorizationCheckerInterface $authorizationChecker)
     {
@@ -153,14 +158,22 @@ class ConfigController extends AbstractController
         /** @var \Doctrine\ORM\EntityManager $em */
         $em = $this->getDoctrine()->getManager();
 
-        /** @var \App\Entity\Config $entity */
-        $entity = $this->getDoctrine()
+        /** @var array $entities */
+        $entities = $this->getDoctrine()
             ->getRepository(Config::class)
-            ->findOneBySlug($slug);
+            ->findBy(['slug' => $slug]);
 
-        $em->remove($entity);
+        foreach ($entities as $entity) {
+            $em->remove($entity);
+        }
         $em->flush();
 
         return $this->redirectToRoute('admin_config');
     }
+
+    protected function getConfigGroups(): array
+    {
+        return $this->getDoctrine()->getRepository(ConfigGroup::class)->findAll();
+    }
+
 }

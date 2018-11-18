@@ -1,16 +1,15 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: mark.smith
- * Date: 02/05/2018
- * Time: 13:15
- */
 
 namespace App\Twig;
 
-class Base64 extends \Twig_Extension implements \Twig_ExtensionInterface
+/**
+ * Class Base64Extension
+ *
+ * @package App\Twig
+ */
+class Base64Extension extends \Twig_Extension implements \Twig_ExtensionInterface
 {
-    public function getFilters()
+    public function getFilters(): array
     {
         return array(
             new \Twig_SimpleFilter('base64_encode', 'base64_encode'),
@@ -18,7 +17,7 @@ class Base64 extends \Twig_Extension implements \Twig_ExtensionInterface
         );
     }
 
-    public function getName()
+    public function getName(): string
     {
         return "base64";
     }

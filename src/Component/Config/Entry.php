@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Component;
+namespace App\Component\Config;
 
 use App\Entity\Config;
 
 /**
- * Class Configuration
+ * Class Entry
  *
  * @package App\Component
  */
-class Configuration
+class Entry
 {
     /** @var \ArrayIterator */
     protected $data;
@@ -59,11 +59,23 @@ class Configuration
          * @var \ArrayIterator $revisions
          */
         foreach ($array as $slug => $revisions) {
-            $revisions->uasort(function ($a, $b) {
+            $revisions->uasort(function (Config $a, Config $b) {
                 return ($a->getCreated() > $b->getCreated()) ? -1 : 1;
             });
         }
 
         return $array;
+    }
+
+    public function getGroups(): \ArrayIterator
+    {
+        $groups = new \ArrayIterator();
+        /** @var \ArrayIterator $revisionSet */
+        foreach($this->getData() as $slug => $revisionSet)
+        {
+            $groups->append($revisionSet->current()->getConfigGroup());
+        }
+
+        return $groups;
     }
 }

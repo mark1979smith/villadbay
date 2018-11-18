@@ -1,19 +1,19 @@
 <?php
 
-namespace spec\App\Component;
+namespace spec\App\Component\Config;
 
-use App\Component\Configuration;
+use App\Component\Config\Entry;
 use App\Entity\Config;
 use App\Entity\ConfigGroup;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
 /**
- * Class ConfigurationSpec
+ * Class EntrySpec
  *
  * @package spec\App\Component
  */
-class ConfigurationSpec extends ObjectBehavior
+class EntrySpec extends ObjectBehavior
 {
     function let()
     {
@@ -22,9 +22,8 @@ class ConfigurationSpec extends ObjectBehavior
 
     function it_is_initializable()
     {
-        $this->shouldHaveType(Configuration::class);
+        $this->shouldHaveType(Entry::class);
     }
-
     function it_should_have_3_entries()
     {
         $this->callOnWrappedObject('getData')->offsetGet('test-123')->shouldHaveCount(3);

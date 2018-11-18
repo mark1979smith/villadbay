@@ -1,5 +1,6 @@
 <?php
-namespace App\Form\Admin\Config;
+
+namespace App\Form\Admin\Config\Entry;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -7,22 +8,22 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 /**
- * Class EntryType
+ * Class CreateType
  *
  * @package App\Form\Admin\Config
  */
-class EntryType extends AbstractType
+class EditType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('slug', TextType::class)
             ->add('value', TextType::class)
             ->add('save', SubmitType::class, [
-                'label' => 'Create new entry',
+                'label' => 'Save entry',
                 'attr'  => [
                     'class' => 'btn btn-success',
                 ],
             ]);
+
     }
 }
