@@ -3,6 +3,7 @@
 namespace App\Twig;
 
 use App\Component\Config\Entry;
+use App\Component\Helpers\Data;
 use Doctrine\ORM\EntityManagerInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -30,8 +31,21 @@ class ConfigExtension  extends AbstractExtension
             new TwigFunction('config', array($this, 'configEntry')),
         );
     }
-    public function ConfigEntry(string $slug = null): string
+
+    public function getFilters()
+    {
+        return [
+            new \Twig_SimpleFilter('config_filter_var', [$this, 'configFilterValue']),
+        ];
+    }
+
+    public function configEntry(string $slug = null): string
     {
         return ($this->entries->offsetExists($slug) ? $this->entries->offsetGet($slug) : '');
+    }
+
+    public function configFilterValue($string): string
+    {
+        return Data::getAfterSubstring($string, ':');
     }
 }

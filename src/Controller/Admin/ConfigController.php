@@ -110,16 +110,21 @@ class ConfigController extends AbstractController
             throw new AccessDeniedException('Unable to access this page!');
         }
 
-        /** @var \App\Entity\Config $configEntry */
+        /** @var array $configEntry */
         $configEntry = $this->getDoctrine()
             ->getRepository(Config::class)
-            ->findOneBySlug($slug);
+            ->findBy(['slug' => $slug]);
 
         if (is_null($configEntry)) {
             throw new \InvalidArgumentException('Slug cannot be found');
         }
 
-        $form = $this->createForm(\App\Form\Admin\Config\Entry\EditType::class, $configEntry);
+        $config = new Entry($configEntry);
+        /** @var Config $data */
+        $data = $config->getLatestRevision($slug);
+        $form = $this->createForm(\App\Form\Admin\Config\Entry\EditType::class, $data, [
+            'config_options' => $data->getOpts()
+        ]);
 
         $form->handleRequest($request);
 

@@ -24,7 +24,7 @@ final class Version20181109140903 extends AbstractMigration implements Container
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('CREATE TABLE config (id INT AUTO_INCREMENT NOT NULL, config_group_id INT NOT NULL, slug VARCHAR(50) NOT NULL, value VARCHAR(255) DEFAULT NULL, is_read_only TINYINT(1) NOT NULL, created DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\', INDEX IDX_D48A2F7C439C3799 (config_group_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE config (id INT AUTO_INCREMENT NOT NULL, config_group_id INT NOT NULL, slug VARCHAR(50) NOT NULL, opts LONGTEXT NOT NULL COMMENT \'(DC2Type:simple_array)\', value VARCHAR(255) DEFAULT NULL, is_read_only TINYINT(1) NOT NULL, created DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\', INDEX IDX_D48A2F7C439C3799 (config_group_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
         $this->addSql('CREATE TABLE config_group (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(50) NOT NULL, description VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
         $this->addSql('ALTER TABLE config ADD CONSTRAINT FK_D48A2F7C439C3799 FOREIGN KEY (config_group_id) REFERENCES config_group (id)');
     }
@@ -49,11 +49,18 @@ final class Version20181109140903 extends AbstractMigration implements Container
         $className = $this->getEntityManager()->getRepository(Config::class)->getClassName();
         /** @var \App\Entity\Config $configEntry */
         $configEntry = new $className;
-        $configEntry->setSlug('nav.class');
+        $configEntry->setSlug('nav.class.core');
         $configEntry->setCreated(new \DateTimeImmutable());
-        $configEntry->setValue('navbar navbar-expand-sm navbar-dark bg-primary');
+        $configEntry->setOpts(['navbar navbar-expand-sm navbar-dark:Dark','navbar navbar-expand-sm navbar-light:Light']);
+        $configEntry->setValue('navbar navbar-expand-sm navbar-dark');
         $this->getEntityManager()->persist($configEntry);
-
+        $configGroup->addConfigEntry($configEntry);
+        $configEntry = new $className;
+        $configEntry->setSlug('nav.class.colour');
+        $configEntry->setCreated(new \DateTimeImmutable());
+        $configEntry->setOpts(['bg-primary:Blue','bg-secondary:Dark Grey','bg-success:Green','bg-danger:Red','bg-warning:Yellow','bg-info:Light Blue','bg-light:Light Grey','bg-dark:Black','bg-white:White']);
+        $configEntry->setValue('bg-primary');
+        $this->getEntityManager()->persist($configEntry);
         $configGroup->addConfigEntry($configEntry);
         $this->getEntityManager()->persist($configGroup);
 

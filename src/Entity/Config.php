@@ -22,6 +22,11 @@ class Config
     private $slug;
 
     /**
+     * @ORM\Column(type="simple_array")
+     */
+    private $opts;
+
+    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $value;
@@ -115,7 +120,28 @@ class Config
         return $this;
     }
 
-    public function  __toString(): string
+    /**
+     * @return mixed
+     */
+    public function getOpts()
+    {
+        return $this->opts;
+    }
+
+    /**
+     * @param mixed $opts
+     *
+     * @return Config
+     */
+    public function setOpts($opts)
+    {
+        $this->opts = $opts;
+
+        return $this;
+    }
+
+
+    public function __toString(): string
     {
         return $this->getValue();
     }
