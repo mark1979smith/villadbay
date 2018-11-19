@@ -9,6 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
@@ -40,13 +41,15 @@ class CreateType extends AbstractType
                 'required' => true,
                 'constraints' => [
                     new NotBlank(),
-                    new SlugIsUnique()
+                    new Length(['max' => 50]),
+                    new SlugIsUnique(),
                 ]
             ])
             ->add('value', TextType::class, [
                 'required' => true,
                 'constraints' => [
                     new NotBlank(),
+                    new Length(['max' => 255])
                 ]
             ])
             ->add('save', SubmitType::class, [
