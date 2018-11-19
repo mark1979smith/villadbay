@@ -29,8 +29,7 @@ RUN /usr/local/bin/php -r "copy('https://getcomposer.org/installer', 'composer-s
     /usr/local/bin/php -r "unlink('composer-installer.sig');" && \
     echo "ewogICAgImh0dHAtYmFzaWMiOiB7CiAgICAgICAgInJlcG8ucGFja2FnaXN0LmNvbSI6IHsKICAgICAgICAgICAgInVzZXJuYW1lIjogInNraXB0b24uaW8iLAogICAgICAgICAgICAicGFzc3dvcmQiOiAiYjcxNjMzZmI0MmRhMmQ5MzA5YmRmMWZmMDQ0ZThhMTQwYWJjNDcwYTViZDljZjE3M2QzM2E2NTc1NjA1IgogICAgICAgIH0KICAgIH0KfQ==" | base64 --decode > ~/.composer/auth.json && \
     /usr/local/bin/php composer.phar update mirrors && \
-    /usr/local/bin/php composer.phar clear-cache && \
-    /usr/local/bin/php composer.phar install -n
+    /usr/local/bin/php composer.phar install -vvv
 
 
 RUN GIT_CHANGES=$( \
