@@ -21,7 +21,7 @@
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 {{ slug }}
                                 <span>
-                                    <span class="badge badge-primary badge-pill">{{ item.getValue()|config_filter_var }}</span>
+                                    <span class="badge badge-primary badge-pill">{{ item.getValue()|config_filter_var_admin }}</span>
                                     <a href="{{ url('admin_config_edit', {slug: item.getSlug()}) }}"><span class="oi oi-pencil"></span></a>
                                     {% if is_granted('ROLE_SUPERADMIN') %}
                                         <a class="text-danger" href="{{ url('admin_config_delete', {slug: item.getSlug()}) }}"><span class="oi oi-trash"></span></a>

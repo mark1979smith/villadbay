@@ -36,6 +36,7 @@ class ConfigExtension  extends AbstractExtension
     {
         return [
             new \Twig_SimpleFilter('config_filter_var', [$this, 'configFilterValue']),
+            new \Twig_SimpleFilter('config_filter_var_admin', [$this, 'configFilterValueForAdmin']),
         ];
     }
 
@@ -45,6 +46,11 @@ class ConfigExtension  extends AbstractExtension
     }
 
     public function configFilterValue($string): string
+    {
+        return Data::getBeforeSubstring($string, ':');
+    }
+
+    public function configFilterValueForAdmin($string): string
     {
         return Data::getAfterSubstring($string, ':');
     }
