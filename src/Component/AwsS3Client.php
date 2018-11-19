@@ -9,6 +9,7 @@
 namespace App\Component;
 
 
+use App\Component\Helpers\Data;
 use Aws\S3\S3Client;
 
 class AwsS3Client
@@ -209,13 +210,13 @@ class AwsS3Client
                                 } else if (isset($headers->get('Metadata')['parent'])) {
                                     // This is the resized image
                                     $orderByAssetName[$key] = $headers->get('Metadata')['parent'];
-                                    if (strpos($asset['Key'], '--xs.')) {
+                                    if (Data::doesSubstringExist($asset['Key'], '--xs.')) {
                                         $orderByAssetType[$key] = 2;
-                                    } else if (strpos($asset['Key'], '--sm.')) {
+                                    } else if (Data::doesSubstringExist($asset['Key'], '--sm.')) {
                                         $orderByAssetType[$key] = 3;
-                                    } else if (strpos($asset['Key'], '--md.')) {
+                                    } else if (Data::doesSubstringExist($asset['Key'], '--md.')) {
                                         $orderByAssetType[$key] = 4;
-                                    } else if (strpos($asset['Key'], '--lg.')) {
+                                    } else if (Data::doesSubstringExist($asset['Key'], '--lg.')) {
                                         $orderByAssetType[$key] = 5;
                                     }
                                 } else {

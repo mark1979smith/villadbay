@@ -44,7 +44,7 @@ class Data
         return (strpos($string, $substring) !== false);
     }
 
-    public function getAfterSubstring($string, $substring): string
+    public static function getAfterSubstring($string, $substring): string
     {
         if (strpos($string, $substring) !== false) {
             return substr($string, strpos($string, $substring) + 1);
@@ -53,7 +53,7 @@ class Data
         return $string;
     }
 
-    public function getBeforeSubstring($string, $substring): string
+    public static function getBeforeSubstring($string, $substring): string
     {
         if (strpos($string, $substring) !== false) {
             return substr($string, 0, strpos($string, $substring));
