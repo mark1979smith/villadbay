@@ -34,4 +34,31 @@ class Data
 
         return $data;
     }
+
+    public static function doesSubstringExist($string, $substring): bool
+    {
+        if (!strlen($substring) && !strlen($substring)) {
+            throw new \LogicException('Both string and substring are required');
+        }
+
+        return (strpos($string, $substring) !== false);
+    }
+
+    public function getAfterSubstring($string, $substring): string
+    {
+        if (strpos($string, $substring) !== false) {
+            return substr($string, strpos($string, $substring) + 1);
+        }
+
+        return $string;
+    }
+
+    public function getBeforeSubstring($string, $substring): string
+    {
+        if (strpos($string, $substring) !== false) {
+            return substr($string, 0, strpos($string, $substring));
+        }
+
+        return $string;
+    }
 }
