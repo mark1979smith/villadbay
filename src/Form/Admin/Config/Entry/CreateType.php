@@ -50,10 +50,11 @@ class CreateType extends AbstractType
             ])
             ->add('opts', TextType::class, [
                 'required'    => false,
-                'help'        => 'Separate with commas, list values and labels with colon. The initial value will the first option',
+                'help'        => 'Separate with commas, list values and labels with colon. The initial value will the first option. For options with no value use an asterix instead.',
                 'constraints' => [
                     new OptsIsValidFormat(),
                 ],
+                'label' => 'Options'
             ])
             ->add('save', SubmitType::class, [
                 'label' => 'Create new entry',
