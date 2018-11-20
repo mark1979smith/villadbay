@@ -49,6 +49,10 @@ final class Version20181109140903 extends AbstractMigration implements Container
         $configGroup->setName(self::GROUP_NAME);
 
         $className = $this->getEntityManager()->getRepository(Config::class)->getClassName();
+
+        /**
+         * Nav Colour
+         */
         /** @var \App\Entity\Config $configEntry */
         $configEntry = new $className;
         $configEntry->setSlug('nav.colour');
@@ -69,6 +73,28 @@ final class Version20181109140903 extends AbstractMigration implements Container
         $this->getEntityManager()->persist($configEntry);
         $configGroup->addConfigEntry($configEntry);
 
+        /**
+         * Nav Expand
+         */
+        $configEntry = new $className;
+        $configEntry->setSlug('nav.expand');
+        $configEntry->setCreated(new \DateTimeImmutable());
+        $opts = [
+            'navbar-expand-sm: Show menu items only on device width 576px and above',
+            '*: Do not show menu items on all devices',
+            'navbar-expand-md:Show menu items on device width 768px and above',
+            'navbar-expand-lg:Show menu items on device width 992px and above',
+            'navbar-expand-xl:Show menu items only on device width 1200px and above',
+        ];
+        $configEntry->setOpts($opts);
+        $configEntry->setValue(current($opts));
+        $this->getEntityManager()->persist($configEntry);
+        $configGroup->addConfigEntry($configEntry);
+
+
+        /**
+         * Save Config Group
+         */
         $this->getEntityManager()->persist($configGroup);
 
         $this->getEntityManager()->flush();

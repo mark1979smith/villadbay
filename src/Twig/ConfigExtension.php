@@ -46,9 +46,15 @@ class ConfigExtension extends AbstractExtension
         return ($this->entries->offsetExists($slug) ? $this->entries->offsetGet($slug) : '');
     }
 
-    public function configFilterValue($string): string
+    public function configFilterValue($string): ?string
     {
-        return Data::getBeforeSubstring($string, ':');
+        $data = Data::getBeforeSubstring($string, ':');
+
+        if ($data == '*') {
+            return null;
+        }
+
+        return $data;
     }
 
     public function configFilterValueForAdmin($string): string
