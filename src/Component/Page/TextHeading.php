@@ -42,23 +42,23 @@ class TextHeading
 
     public function __toString(): string
     {
-        $cssClass = '';
+        $cssClass = [];
         if ($this->getSizeClass()->getValue()) {
-            $cssClass .= ' ' . $this->getSizeClass()->getValue();
+            $cssClass[] = $this->getSizeClass()->getValue();
         }
 
         if ($this->getColourClass()->getValue()) {
-            $cssClass .= ' ' . $this->getColourClass()->getValue();
+            $cssClass[] = $this->getColourClass()->getValue();
         }
 
         if ($this->getAlignClass()->getValue()) {
-            $cssClass .= ' ' . $this->getAlignClass()->getValue();
+            $cssClass[] = $this->getAlignClass()->getValue();
         }
 
         return sprintf(
             $this->getTemplate(),
             $this->getType()->getValue(),
-            $cssClass,
+            implode(' ', $cssClass),
             $this->getTextValue()->getValue(),
             $this->getType()->getValue()
         );
