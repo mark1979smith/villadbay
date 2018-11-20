@@ -13,6 +13,12 @@ class ParagraphTextSpec extends ObjectBehavior
         $this->shouldHaveType(ParagraphText::class);
     }
 
+    public function it_throws_when_custom_template_does_not_have_correct_placeholder_count()
+    {
+        $this->shouldThrow('\LogicException')
+            ->duringSetTemplate('<div class="%s"><div class="row"><div class="col"><p>%s</p></div></div></div>');
+    }
+
     function it_renders_correctly_by_default()
     {
         $this->setTextValue('Hello')

@@ -17,6 +17,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class TextLead
 {
+    use TemplateSetter;
+
     /** @var string  */
     private $template = '<div class="container"><div class="row"><div class="col"><p class="lead">%s</p></div></div></div>';
 
@@ -38,13 +40,6 @@ class TextLead
     public function getTemplate(): string
     {
         return $this->template;
-    }
-
-    public function setTemplate(string $template): self
-    {
-        $this->template = $template;
-
-        return $this;
     }
 
     public function getTextValue(): ?string

@@ -18,7 +18,7 @@ use App\Component\Helpers\ScreenSize;
  */
 class PanoramicImage
 {
-    use InlineStyleResponsive;
+    use InlineStyleResponsive, TemplateSetter;
 
     /** @var string */
     private $template = "<div class=\"container-fluid\"><div class=\"row\"><div class=\"col img-fluid\" id=\"pano\"></div></div></div>";
@@ -36,13 +36,6 @@ class PanoramicImage
     public function getTemplate(): string
     {
         return $this->template;
-    }
-
-    public function setTemplate(string $template): self
-    {
-        $this->template = $template;
-
-        return $this;
     }
 
     /**

@@ -13,6 +13,12 @@ class ListGroupSpec extends ObjectBehavior
         $this->shouldHaveType(ListGroup::class);
     }
 
+    public function it_throws_when_custom_template_does_not_have_correct_placeholder_count()
+    {
+        $this->shouldThrow('\LogicException')
+            ->duringSetTemplate('<div class="container"><div class="row"><div class="col"><ul class="%s">%s - %s</ul></div></div></div>');
+    }
+
     function it_renders_normal_list()
     {
         $this->setListItems(['list 1'])->__toString()

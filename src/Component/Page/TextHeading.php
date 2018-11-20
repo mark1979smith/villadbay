@@ -22,6 +22,8 @@ use App\Component\Page\TextHeading\AlignClass;
  */
 class TextHeading
 {
+    use TemplateSetter;
+
     /** @var string  */
     private $template = "<div class=\"container\"><div class=\"row\"><div class=\"col\"><%s class=\"%s\">%s</"."%s></div></div></div>";
 
@@ -70,18 +72,6 @@ class TextHeading
     public function getTemplate(): string
     {
         return $this->template;
-    }
-
-    /**
-     * @param string $template
-     *
-     * @return TextHeading
-     */
-    public function setTemplate(string $template): self
-    {
-        $this->template = $template;
-
-        return $this;
     }
 
     public function getSizeClass(): ?SizeClass
