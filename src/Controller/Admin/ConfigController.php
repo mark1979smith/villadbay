@@ -82,9 +82,12 @@ class ConfigController extends AbstractController
                 throw new \LogicException('Slug exists');
             }
 
+            $formConfigEntryOptions = array_map('trim', $form->getData()->getOpts());
+
             $entity = new Config();
             $entity->setSlug($form->getData()->getSlug());
-            $entity->setValue($form->getData()->getValue());
+            $entity->setValue(current($formConfigEntryOptions));
+            $entity->setOpts($formConfigEntryOptions);
             $entity->setConfigGroup($form->getData()->getConfigGroup());
             $entity->setCreated(new \DateTimeImmutable());
 
@@ -123,7 +126,7 @@ class ConfigController extends AbstractController
         /** @var Config $data */
         $data = $config->getLatestRevision($slug);
         $form = $this->createForm(\App\Form\Admin\Config\Entry\EditType::class, $data, [
-            'config_options' => $data->getOpts()
+            'config_options' => $data->getOpts(),
         ]);
 
         $form->handleRequest($request);

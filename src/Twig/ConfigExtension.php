@@ -13,7 +13,7 @@ use Twig\TwigFunction;
  *
  * @package App\Twig
  */
-class ConfigExtension  extends AbstractExtension
+class ConfigExtension extends AbstractExtension
 {
     /** @var \ArrayIterator */
     protected $entries;
@@ -25,6 +25,7 @@ class ConfigExtension  extends AbstractExtension
         $config = new Entry($entities);
         $this->entries = $config->getLatestRevision();
     }
+
     public function getFunctions()
     {
         return array(
