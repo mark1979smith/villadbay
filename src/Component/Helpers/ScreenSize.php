@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Component\Helpers;
 
 /**
@@ -57,7 +58,7 @@ class ScreenSize
     public function getResponsiveFilename(?string $originalFileName): string
     {
         if (is_null($originalFileName)) {
-            return (string) $originalFileName;
+            return (string)$originalFileName;
         }
 
         if (!$this->isOriginal()) {
@@ -72,14 +73,19 @@ class ScreenSize
         $string = '';
         switch (substr(self::$minWidth[$this->size], 0, 1)) {
             case '<':
-                $string .= 'max-width: '. substr(self::$minWidth[$this->size], 1) .'px';
+                $string .= 'max-width: ' . substr(self::$minWidth[$this->size], 1) . 'px';
                 break;
 
             case '>':
             default:
-                $string .= 'min-width: '. self::$minWidth[$this->size] .'px';
+                $string .= 'min-width: ' . self::$minWidth[$this->size] . 'px';
         }
 
         return $string;
+    }
+
+    public function getSize(): string
+    {
+        return $this->size;
     }
 }

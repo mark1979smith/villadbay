@@ -78,9 +78,9 @@ class PanoramicImage
         }
     }
 
-    private function getInlineHeight(ScreenSize $screenSize): string
+    public function getInlineHeight(ScreenSize $screenSize): string
     {
-        switch ($screenSize->__toString()) {
+        switch ($screenSize->getSize()) {
             case $screenSize::EXTRA_SMALL:
             default:
                 return '230';
