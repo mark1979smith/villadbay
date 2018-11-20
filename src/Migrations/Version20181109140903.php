@@ -5,10 +5,10 @@ namespace DoctrineMigrations;
 use App\Entity\Config;
 use App\Entity\ConfigGroup;
 use Doctrine\DBAL\Schema\Schema;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Migrations\AbstractMigration;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 /**
  * Auto-generated Migration: Please modify to your needs!
@@ -19,20 +19,22 @@ final class Version20181109140903 extends AbstractMigration implements Container
 
     const GROUP_NAME = 'Core';
 
-    public function up(Schema $schema) : void
+    public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql',
+            'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('CREATE TABLE config (id INT AUTO_INCREMENT NOT NULL, config_group_id INT NOT NULL, slug VARCHAR(50) NOT NULL, opts LONGTEXT NOT NULL COMMENT \'(DC2Type:simple_array)\', value VARCHAR(255) DEFAULT NULL, is_read_only TINYINT(1) NOT NULL, created DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\', INDEX IDX_D48A2F7C439C3799 (config_group_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
         $this->addSql('CREATE TABLE config_group (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(50) NOT NULL, description VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
         $this->addSql('ALTER TABLE config ADD CONSTRAINT FK_D48A2F7C439C3799 FOREIGN KEY (config_group_id) REFERENCES config_group (id)');
     }
 
-    public function down(Schema $schema) : void
+    public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql',
+            'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('ALTER TABLE config DROP FOREIGN KEY FK_D48A2F7C439C3799');
         $this->addSql('DROP TABLE config');
@@ -49,19 +51,24 @@ final class Version20181109140903 extends AbstractMigration implements Container
         $className = $this->getEntityManager()->getRepository(Config::class)->getClassName();
         /** @var \App\Entity\Config $configEntry */
         $configEntry = new $className;
-        $configEntry->setSlug('nav.class.core');
+        $configEntry->setSlug('nav.colour');
         $configEntry->setCreated(new \DateTimeImmutable());
-        $configEntry->setOpts(['navbar navbar-expand-sm navbar-dark:Dark','navbar navbar-expand-sm navbar-light:Light']);
-        $configEntry->setValue('navbar navbar-expand-sm navbar-dark');
+        $opts = [
+            'navbar-dark bg-primary:Blue',
+            'navbar-dark bg-secondary:Dark Grey',
+            'navbar-dark bg-success:Green',
+            'navbar-dark bg-danger:Red',
+            'navbar-light bg-warning:Yellow',
+            'navbar-light bg-info:Light Blue',
+            'navbar-light bg-light:Light Grey',
+            'navbar-dark bg-dark:Black',
+            'navbar-light bg-white:White',
+        ];
+        $configEntry->setOpts($opts);
+        $configEntry->setValue(current($opts));
         $this->getEntityManager()->persist($configEntry);
         $configGroup->addConfigEntry($configEntry);
-        $configEntry = new $className;
-        $configEntry->setSlug('nav.class.colour');
-        $configEntry->setCreated(new \DateTimeImmutable());
-        $configEntry->setOpts(['bg-primary:Blue','bg-secondary:Dark Grey','bg-success:Green','bg-danger:Red','bg-warning:Yellow','bg-info:Light Blue','bg-light:Light Grey','bg-dark:Black','bg-white:White']);
-        $configEntry->setValue('bg-primary');
-        $this->getEntityManager()->persist($configEntry);
-        $configGroup->addConfigEntry($configEntry);
+
         $this->getEntityManager()->persist($configGroup);
 
         $this->getEntityManager()->flush();
