@@ -1,6 +1,6 @@
 parameters:
     env(DOMAIN): 'www.villadbay.com'
-    env(REDIRECT_URL): 'https://%host%/login_check'
+    env(REDIRECT_URL): 'https://%env(DOMAIN)%/login_check'
 services:
     app.google_api:
         class: Google_Client
