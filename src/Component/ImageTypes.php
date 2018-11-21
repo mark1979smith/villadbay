@@ -9,7 +9,7 @@
 namespace App\Component;
 
 
-use App\Entity\Image\Type;
+use App\Component\Image\Type;
 
 trait ImageTypes
 {
@@ -120,6 +120,7 @@ trait ImageTypes
                 break;
         }
 
+        throw new \LogicException('Image Type "' . $type . '" cannot be used to generate settings');
     }
 
     protected function getImageTypeDirectory($type)
@@ -141,13 +142,7 @@ trait ImageTypes
         throw new \LogicException('Image Type "' . $type . '" cannot be mapped to a directory');
     }
 
-    /**
-     * @param array  $asset
-     * @param string $pathToMatch
-     *
-     * @return bool
-     */
-    private function filterByPath($asset, $pathToMatch)
+    private function filterByPath(array $asset, string $pathToMatch): bool
     {
         if (preg_match('/^\//', $pathToMatch)) {
             throw new \LogicException('Path cannot start with /');
@@ -163,5 +158,7 @@ trait ImageTypes
         if (strpos($asset['Key'], $pathToMatch) === 0 && $asset['Key'] !== $pathToMatch . '/') {
             return (preg_match('/\--(xs|sm|md|lg)\./', $asset['Key']) === 0);
         }
+
+        return false;
     }
 }

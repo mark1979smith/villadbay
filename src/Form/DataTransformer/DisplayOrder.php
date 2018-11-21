@@ -11,31 +11,26 @@ namespace App\Form\DataTransformer;
 
 use Symfony\Component\Form\DataTransformerInterface;
 
+/**
+ * Class DisplayOrder
+ *
+ * @package App\Form\DataTransformer
+ */
 class DisplayOrder implements DataTransformerInterface
 {
-    /**
-     * @param \App\Entity\Page\DisplayOrder $value
-     *
-     * @return string
-     */
-    public function transform($value)
+    public function transform($value): \App\Component\Page\DisplayOrder
     {
-        return (new \App\Entity\Page\DisplayOrder())->setDisplayOrder($value);
+        return (new \App\Component\Page\DisplayOrder())->setDisplayOrder($value);
 
     }
 
-    /**
-     * @param int|string|null $value
-     *
-     * @return string
-     */
-    public function reverseTransform($value)
+    public function reverseTransform($value): string
     {
         if (null === $value || is_string($value)) {
             return (string) $value;
         }
 
-        return $value->getDisplayOrder();
+        return (string) $value->getDisplayOrder();
 
     }
 }

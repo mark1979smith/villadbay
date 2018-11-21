@@ -9,21 +9,27 @@
 namespace App\Form\DataTransformer;
 
 
+use App\Component\CarouselSlides\Image;
 use Symfony\Component\Form\DataTransformerInterface;
 
+/**
+ * Class CarouselSlideImage
+ *
+ * @package App\Form\DataTransformer
+ */
 class CarouselSlideImage implements DataTransformerInterface
 {
-    public function transform($value)
+    public function transform($value): Image
     {
-        return (new \App\Entity\CarouselSlides\Image())->setValue($value);
+        return (new Image())->setValue($value);
     }
 
-    public function reverseTransform($value)
+    public function reverseTransform($value): string
     {
         if (null === $value || "" === $value) {
             return '';
         }
 
-        return $value->getValue();
+        return (string) $value->getValue();
     }
 }

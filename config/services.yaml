@@ -30,8 +30,8 @@ services:
         autowire: true
         tags: ['doctrine.repository_service']
 
-    App\Utils\AwsS3Client:
-        class: App\Utils\AwsS3Client
+    App\Component\AwsS3Client:
+        class: App\Component\AwsS3Client
         public: true
         arguments:
             $version: '%app.aws.s3.version%'
@@ -41,18 +41,18 @@ services:
             $cacheHandler: '@app.redis'
 
     app.aws.s3:
-        alias: App\Utils\AwsS3Client
+        alias: App\Component\AwsS3Client
         public: true
 
-    App\Utils\Redis:
-        class: App\Utils\Redis
+    App\Component\Redis:
+        class: App\Component\Redis
         public: true
         arguments:
             $redisHost: '%app.redis.host%'
             $redisPort: '%app.redis.port%'
 
     app.redis:
-        alias: App\Utils\Redis
+        alias: App\Component\Redis
         public: true
 
 

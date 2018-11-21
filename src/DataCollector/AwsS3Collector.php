@@ -9,7 +9,7 @@
 namespace App\DataCollector;
 
 
-use App\Utils\AwsS3Client;
+use App\Component\AwsS3Client;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;

@@ -8,23 +8,25 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\CarouselContainer;
+use App\Component\Page\BackgroundImage;
+use App\Component\Page\Carousel;
+use App\Component\Page\Form;
 use App\Entity\Page;
-use App\Entity\Page\DisplayOrder;
-use App\Entity\Page\ListGroup;
-use App\Entity\Page\PageRoute;
-use App\Entity\Page\PanoramicImage;
-use App\Entity\Page\ParagraphText;
-use App\Entity\Page\TextHeading\SizeClass;
-use App\Entity\Page\TextHeading\ColourClass;
-use App\Entity\Page\TextHeading\AlignClass;
-use App\Entity\Page\TextHeading\TextValue;
-use App\Entity\Page\TextHeading\Type;
-use App\Entity\Page\TextLead;
+use App\Component\Page\DisplayOrder;
+use App\Component\Page\ListGroup;
+use App\Component\Page\PageRoute;
+use App\Component\Page\PanoramicImage;
+use App\Component\Page\ParagraphText;
+use App\Component\Page\TextHeading\SizeClass;
+use App\Component\Page\TextHeading\ColourClass;
+use App\Component\Page\TextHeading\AlignClass;
+use App\Component\Page\TextHeading\TextValue;
+use App\Component\Page\TextHeading\Type;
+use App\Component\Page\TextLead;
 use App\Form\Admin\ApprovePageRevision;
 use App\Form\Admin\DeletePageRevision;
 use App\Form\Admin\PageType;
-use App\Utils\Helpers\ScreenSize;
+use App\Component\Helpers\ScreenSize;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -79,9 +81,9 @@ class PagesController extends Controller
             'paragraph_text'            => [new ParagraphText()],
             'list_group'                => [new ListGroup()],
             'panoramic_image'           => [new PanoramicImage()],
-            'background_image'          => [new Page\BackgroundImage()],
-            'form'                      => [new Page\Form()],
-            'image_carousel'            => [new Page\Carousel()],
+            'background_image'          => [new BackgroundImage()],
+            'form'                      => [new Form()],
+            'image_carousel'            => [new Carousel()],
             'display_order'             => [new DisplayOrder()],
         ], [
             'container_interface' => $container,
@@ -108,7 +110,9 @@ class PagesController extends Controller
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
 
-                $route = $form->getData()['page_route']->getPageRoute();
+                /** @var \App\Component\Page\PageRoute $pageRoute */
+                $pageRoute = $form->getData()['page_route'];
+                $route = $pageRoute->getPageRoute();
 
                 /** @var \App\Entity\Page $page */
                 $page = $this->getDoctrine()
@@ -165,7 +169,7 @@ class PagesController extends Controller
      */
     public function getLatestPage(Request $request)
     {
-        /** @var \App\Entity\Page $homePage */
+        /** @var \App\Entity\Page $page */
         $page = $this->getDoctrine()
             ->getRepository(Page::class)
             ->findOneByLatestPage($request->get('slug'));
@@ -247,6 +251,8 @@ class PagesController extends Controller
                 return $this->redirectToRoute('admin-pages-create');
             }
         }
+
+        return $this->redirectToRoute('admin-home');
     }
 
     /**
@@ -290,5 +296,7 @@ class PagesController extends Controller
 
             return $this->redirectToRoute('admin-pages-create');
         }
+
+        return $this->redirectToRoute('admin-home');
     }
 }

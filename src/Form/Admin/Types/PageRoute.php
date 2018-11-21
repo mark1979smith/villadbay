@@ -24,7 +24,7 @@ class PageRoute extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => \App\Entity\Page\PageRoute::class,
+            'data_class' => \App\Component\Page\PageRoute::class,
         ));
     }
 

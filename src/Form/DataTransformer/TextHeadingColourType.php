@@ -8,32 +8,27 @@
 
 namespace App\Form\DataTransformer;
 
-use App\Entity\Page\TextHeading;
+use App\Component\Page\TextHeading\ColourClass;
 use Symfony\Component\Form\DataTransformerInterface;
 
+/**
+ * Class TextHeadingColourType
+ *
+ * @package App\Form\DataTransformer
+ */
 class TextHeadingColourType implements DataTransformerInterface
 {
-    /**
-     * @param TextHeading\SizeClass|null $value
-     *
-     * @return string
-     */
-    public function transform($value)
+    public function transform($value): string
     {
         if (null === $value || "" === $value) {
             return '';
         }
 
-        return $value->getValue();
+        return (string) $value->getValue();
     }
 
-    /**
-     * @param string $value
-     *
-     * @return TextHeading\ColourClass
-     */
-    public function reverseTransform($value)
+    public function reverseTransform($value): ColourClass
     {
-        return (new TextHeading\ColourClass())->setValue($value);
+        return (new ColourClass())->setValue($value);
     }
 }

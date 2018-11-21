@@ -11,29 +11,24 @@ namespace App\Form\DataTransformer;
 
 use Symfony\Component\Form\DataTransformerInterface;
 
+/**
+ * Class ParagraphText
+ *
+ * @package App\Form\DataTransformer
+ */
 class ParagraphText implements DataTransformerInterface
 {
-    /**
-     * @param \App\Entity\Page\ParagraphText|string|null $value
-     *
-     * @return string
-     */
-    public function transform($value)
+    public function transform($value): string
     {
         if (null === $value || "" === $value) {
             return '';
         }
 
-        return $value->getTextValue();
+        return (string) $value->getTextValue();
     }
 
-    /**
-     * @param string $value
-     *
-     * @return \App\Entity\Page\ParagraphText
-     */
-    public function reverseTransform($value)
+    public function reverseTransform($value): \App\Component\Page\ParagraphText
     {
-        return (new \App\Entity\Page\ParagraphText())->setTextValue($value);
+        return (new \App\Component\Page\ParagraphText())->setTextValue($value);
     }
 }

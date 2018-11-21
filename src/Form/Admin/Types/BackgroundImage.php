@@ -24,7 +24,7 @@ class BackgroundImage extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => \App\Entity\Page\BackgroundImage::class,
+            'data_class' => \App\Component\Page\BackgroundImage::class,
         ));
     }
 

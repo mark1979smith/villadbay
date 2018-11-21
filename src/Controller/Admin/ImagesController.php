@@ -9,19 +9,15 @@
 namespace App\Controller\Admin;
 
 use App\Component\ImageTypes;
-use App\Entity\Image\Type;
+use App\Component\Image\Type;
 use App\Form\Admin\ImageTypesType;
-use Aws\S3\S3Client;
-use function GuzzleHttp\default_ca_bundle;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Imagick;
 
 /**
  * Class ImagesController
@@ -53,7 +49,6 @@ class ImagesController extends Controller
     /**
      * @Route("/create/{type}", name="admin-images-create", defaults={"type":""})
      * @param \Symfony\Component\HttpFoundation\Request                                    $request
-     * @param \Symfony\Component\DependencyInjection\ContainerInterface                    $container
      * @param \Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface $authorizationChecker
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
@@ -61,9 +56,12 @@ class ImagesController extends Controller
      */
     public function create(
         Request $request,
-        ContainerInterface $container,
         AuthorizationCheckerInterface $authorizationChecker
     ) {
+        if (false === $authorizationChecker->isGranted('ROLE_ADMIN')) {
+            throw new AccessDeniedException('Unable to access this page!');
+        }
+
         if ($request->get('type') === "") {
             $form = $this->createForm(ImageTypesType::class, new Type());
 
@@ -144,13 +142,17 @@ class ImagesController extends Controller
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function list()
+    public function list(AuthorizationCheckerInterface $authorizationChecker)
     {
+        if (false === $authorizationChecker->isGranted('ROLE_ADMIN')) {
+            throw new AccessDeniedException('Unable to access this page!');
+        }
+
         $twigData = [];
 
         $twigData['imageTypes'] = $this->getImageTypes();
 
-        /** @var \App\Utils\AwsS3Client $s3Service */
+        /** @var \App\Component\AwsS3Client $s3Service */
         $s3Service = $this->container->get('app.aws.s3');
 
         $awsListingData = [];
@@ -174,9 +176,13 @@ class ImagesController extends Controller
     /**
      * @Route("/delete/{key}", name="admin-images-delete", methods={"POST"})
      */
-    public function delete($key)
+    public function delete($key, AuthorizationCheckerInterface $authorizationChecker)
     {
-        /** @var \App\Utils\AwsS3Client $s3Service */
+        if (false === $authorizationChecker->isGranted('ROLE_ADMIN')) {
+            throw new AccessDeniedException('Unable to access this page!');
+        }
+
+        /** @var \App\Component\AwsS3Client $s3Service */
         $s3Service = $this->container->get('app.aws.s3');
         $s3Service->deleteImages(substr(base64_decode($key), 0, strrpos(base64_decode($key), '.')));
 
@@ -209,7 +215,7 @@ class ImagesController extends Controller
         $dirPrefix =  $this->getImageTypeDirectory($imageType);
         $settings = $this->getImageTypesSettings($imageType);
 
-        /** @var \App\Utils\AwsS3Client $s3Service */
+        /** @var \App\Component\AwsS3Client $s3Service */
         $s3Service = $this->container->get('app.aws.s3');
 
         $imagick = new \Imagick($file->getPathname());
@@ -240,7 +246,7 @@ class ImagesController extends Controller
             }
         }
 
-        /** @var \App\Utils\Redis $redisService */
+        /** @var \App\Component\Redis $redisService */
         $redisService = $this->container->get('app.redis');
         $redisService->invalidateTag($s3Service::CACHE_TAG_ASSET_LIST);
 

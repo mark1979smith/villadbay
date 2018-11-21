@@ -24,7 +24,7 @@ class TextLeading extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => \App\Entity\Page\TextLead::class,
+            'data_class' => \App\Component\Page\TextLead::class,
         ));
     }
 

@@ -17,27 +17,17 @@ use Symfony\Component\Form\DataTransformerInterface;
  */
 class PageType implements DataTransformerInterface
 {
-    /**
-     * @param \App\Entity\Page\PageType|null $value
-     *
-     * @return string
-     */
-    public function transform($value)
+    public function transform($value): string
     {
         if (null === $value || "" === $value) {
             return '';
         }
 
-        return $value->getPageType();
+        return (string) $value->getPageType();
     }
 
-    /**
-     * @param string $value
-     *
-     * @return \App\Entity\Page\PageType
-     */
-    public function reverseTransform($value)
+    public function reverseTransform($value): \App\Component\Page\PageType
     {
-        return (new \App\Entity\Page\PageType())->setPageType($value);
+        return (new \App\Component\Page\PageType())->setPageType($value);
     }
 }

@@ -24,7 +24,7 @@ class ParagraphText extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => \App\Entity\Page\ParagraphText::class,
+            'data_class' => \App\Component\Page\ParagraphText::class,
         ));
     }
 

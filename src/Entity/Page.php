@@ -9,8 +9,8 @@
 namespace App\Entity;
 
 
-use App\Entity\Page\TextHeading;
-use App\Utils\Helpers\Data;
+use App\Component\Page\TextHeading;
+use App\Component\Helpers\Data;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\Index;
@@ -117,7 +117,7 @@ class Page
             if (is_array($row)) {
                 foreach ($row as $k => $v) {
                     if (is_object($v)) {
-                        if ($v instanceof Page\TextHeading\TextValue) {
+                        if ($v instanceof TextHeading\TextValue) {
                             $data['text_heading'][$k] = serialize(
                                 (new TextHeading())
                                     ->setSizeClass(Data::convertToObject($data['text_heading_size_class'][$k]))

@@ -9,32 +9,28 @@
 namespace App\Form\DataTransformer;
 
 
+use App\Component\Page\Form;
 use Symfony\Component\Form\DataTransformerInterface;
 
+/**
+ * Class FormType
+ *
+ * @package App\Form\DataTransformer
+ */
 class FormType implements DataTransformerInterface
 {
-    /**
-     * @param string $value
-     *
-     * @return string
-     */
-    public function transform($value)
+    public function transform($value): Form
     {
-        return (new \App\Entity\Page\Form())->setFormType($value);
+        return (new Form())->setFormType($value);
 
     }
 
-    /**
-     * @param \App\Entity\Page\Form $value
-     *
-     * @return string
-     */
-    public function reverseTransform($value)
+    public function reverseTransform($value): string
     {
         if (null === $value || is_string($value)) {
             return (string) $value;
         }
 
-        return $value->getFormType();
+        return (string) $value->getFormType();
     }
 }

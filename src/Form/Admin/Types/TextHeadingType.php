@@ -24,7 +24,7 @@ class TextHeadingType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class'    => \App\Entity\Page\TextHeading\Type::class
+            'data_class'    => \App\Component\Page\TextHeading\Type::class
         ));
     }
 

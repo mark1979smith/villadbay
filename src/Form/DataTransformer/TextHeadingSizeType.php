@@ -8,32 +8,27 @@
 
 namespace App\Form\DataTransformer;
 
-use App\Entity\Page\TextHeading;
+use App\Component\Page\TextHeading\SizeClass;
 use Symfony\Component\Form\DataTransformerInterface;
 
+/**
+ * Class TextHeadingSizeType
+ *
+ * @package App\Form\DataTransformer
+ */
 class TextHeadingSizeType implements DataTransformerInterface
 {
-    /**
-     * @param TextHeading\SizeClass|null $value
-     *
-     * @return string
-     */
-    public function transform($value)
+    public function transform($value): string
     {
         if (null === $value || "" === $value) {
             return '';
         }
 
-        return $value->getValue();
+        return (string) $value->getValue();
     }
 
-    /**
-     * @param string $value
-     *
-     * @return TextHeading\SizeClass
-     */
-    public function reverseTransform($value)
+    public function reverseTransform($value): SizeClass
     {
-        return (new TextHeading\SizeClass())->setValue($value);
+        return (new SizeClass())->setValue($value);
     }
 }

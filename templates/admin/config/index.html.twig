@@ -1,0 +1,41 @@
+{% extends 'admin.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1 class="display-3">Configuration</h1>
+                <p class="lead text-danger">Caution must be exercised when modifying entries in here.</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4 order-1">
+                {{ nav_groups(existingConfigGroups) }}
+            </div>
+            <div class="col-sm-8 order-2" data-spy="scroll" data-target="#config-groups" data-offset="0">
+                {%  for group in existingConfigGroups  %}
+                    <h2 class="display-4" id="config-group-{{ group.getSlug() }}">{{ group.getName() }}</h2>
+                    <ul class="list-group">
+                        {% for slug, item in existingConfig %}
+                            {%  if item.getConfigGroup() is same as(group)  %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ slug }}
+                                <span>
+                                    <span class="badge badge-primary badge-pill">{{ item.getValue()|config_filter_var_admin }}</span>
+                                    <a href="{{ url('admin_config_edit', {slug: item.getSlug()}) }}"><span class="oi oi-pencil"></span></a>
+                                    {% if is_granted('ROLE_SUPERADMIN') %}
+                                        <a class="text-danger" href="{{ url('admin_config_delete', {slug: item.getSlug()}) }}"><span class="oi oi-trash"></span></a>
+                                    {% endif %}
+                                </span>
+                            </li>
+                            {% endif  %}
+                        {% endfor %}
+                    </ul>
+                    {% if is_granted('ROLE_SUPERADMIN') %}
+                        <p class="text-right"><small><a href="{{ url('admin_config_add', {'configGroupName': group.getName()|base64_encode }) }}"><span class="oi oi-plus"></span> Create new entry</a></small></p>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

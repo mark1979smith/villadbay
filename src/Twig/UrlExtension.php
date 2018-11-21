@@ -1,7 +1,7 @@
 <?php
 namespace App\Twig;
 
-use App\Utils\AwsS3Client;
+use App\Component\AwsS3Client;
 
 class UrlExtension extends \Twig_Extension implements \Twig_ExtensionInterface
 {

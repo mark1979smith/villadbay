@@ -25,7 +25,7 @@ class DisplayOrder extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
        $resolver->setDefaults(array(
-            'data_class' => \App\Entity\Page\DisplayOrder::class,
+            'data_class' => \App\Component\Page\DisplayOrder::class,
         ));
     }
 
