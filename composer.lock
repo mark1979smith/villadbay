@@ -2610,12 +2610,12 @@
             "source": {
                 "type": "git",
                 "url": "git@bitbucket.org:zfce/base-application.git",
-                "reference": "1189feba34f1e4c80eace545867f5cb12a23b152"
+                "reference": "31b15c50b6526fe97f0fdc557bf82eb667a72865"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://bitbucket.org/zfce/base-application/get/1189feba34f1e4c80eace545867f5cb12a23b152.zip",
-                "reference": "1189feba34f1e4c80eace545867f5cb12a23b152",
+                "url": "https://bitbucket.org/zfce/base-application/get/31b15c50b6526fe97f0fdc557bf82eb667a72865.zip",
+                "reference": "31b15c50b6526fe97f0fdc557bf82eb667a72865",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -2644,9 +2644,9 @@
             "description": "Base Application for projects",
             "homepage": "https://bitbucket.org/zfce/base-application",
             "support": {
-                "source": "https://bitbucket.org/zfce/base-application/src/1189feba34f1e4c80eace545867f5cb12a23b152/?at=master"
+                "source": "https://bitbucket.org/zfce/base-application/src/31b15c50b6526fe97f0fdc557bf82eb667a72865/?at=master"
             },
-            "time": "2018-11-15T08:37:27+00:00"
+            "time": "2018-11-21T18:12:35+00:00"
         },
         {
             "name": "symfony/asset",
