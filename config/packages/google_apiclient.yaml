@@ -1,10 +1,11 @@
-imports:
-    - { resource: params.php }
+parameters:
+    env(DOMAIN): 'www.villadbay.com'
+    env(REDIRECT_URL): 'https://%host%/login_check'
 services:
     app.google_api:
         class: Google_Client
         public: true
         calls:
             - [setAuthConfig, ['%app.google.auth%']]
-            - [setRedirectUri, ['https://%host%/login_check']]
+            - [setRedirectUri, ['%env(resolve:REDIRECT_URL)%']]
             - [addScope, [ !php/const \Google_Service_Oauth2::USERINFO_EMAIL  ] ]
