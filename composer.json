@@ -24,6 +24,7 @@
     },
     "require-dev": {
         "phpmd/phpmd": "2.6.0",
+        "phpspec/phpspec": "^5.1",
         "squizlabs/php_codesniffer": "3.3.0",
         "symfony/browser-kit": "^4.0",
         "symfony/debug-bundle": "^v4.0",
