@@ -15,7 +15,7 @@ WORKDIR /var/www
 
 COPY . /var/www
 
-RUN chown -R deployuser:deploygroup /var/www
+RUN chown -R deployuser:deploygroup /var/www && chmod +x /var/www/entrypoint.sh
 
 ENTRYPOINT /var/www/entrypoint.sh
 
