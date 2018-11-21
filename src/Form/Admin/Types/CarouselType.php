@@ -33,7 +33,7 @@ class CarouselType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => \App\Entity\Page\Carousel::class,
+            'data_class' => \App\Component\Page\Carousel::class,
         ));
     }
 

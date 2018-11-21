@@ -9,7 +9,7 @@
 namespace App\DataCollector;
 
 
-use App\Utils\Redis;
+use App\Component\Redis;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
@@ -17,7 +17,7 @@ use Symfony\Component\HttpKernel\DataCollector\DataCollectorInterface;
 
 class RedisCollector extends DataCollector implements DataCollectorInterface
 {
-    /** @var \App\Utils\Redis */
+    /** @var \App\Component\Redis */
     protected $service;
 
     public function __construct(Redis $service)

@@ -8,32 +8,27 @@
 
 namespace App\Form\DataTransformer;
 
-use App\Entity\Page\TextHeading;
+use App\Component\Page\TextHeading\Type;
 use Symfony\Component\Form\DataTransformerInterface;
 
+/**
+ * Class TextHeadingType
+ *
+ * @package App\Form\DataTransformer
+ */
 class TextHeadingType implements DataTransformerInterface
 {
-    /**
-     * @param TextHeading\Type|null $value
-     *
-     * @return string
-     */
-    public function transform($value)
+    public function transform($value): string
     {
         if (null === $value || "" === $value) {
             return '';
         }
 
-        return $value->getValue();
+        return (string) $value->getValue();
     }
 
-    /**
-     * @param string $value
-     *
-     * @return TextHeading\Type
-     */
-    public function reverseTransform($value)
+    public function reverseTransform($value): Type
     {
-        return (new TextHeading\Type())->setValue($value);
+        return (new Type())->setValue($value);
     }
 }

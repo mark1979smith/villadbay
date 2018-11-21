@@ -9,31 +9,27 @@
 namespace App\Form\DataTransformer;
 
 
+use App\Component\Page\TextLead;
 use Symfony\Component\Form\DataTransformerInterface;
 
+/**
+ * Class TextLeading
+ *
+ * @package App\Form\DataTransformer
+ */
 class TextLeading implements DataTransformerInterface
 {
-    /**
-     * @param \App\Entity\Page\TextLead|string|null $value
-     *
-     * @return string
-     */
-    public function transform($value)
+    public function transform($value): string
     {
         if (null === $value || "" === $value) {
             return '';
         }
 
-        return $value->getTextValue();
+        return (string) $value->getTextValue();
     }
 
-    /**
-     * @param string $value
-     *
-     * @return \App\Entity\Page\TextLead
-     */
-    public function reverseTransform($value)
+    public function reverseTransform($value): TextLead
     {
-        return (new \App\Entity\Page\TextLead())->setTextValue($value);
+        return (new TextLead())->setTextValue($value);
     }
 }

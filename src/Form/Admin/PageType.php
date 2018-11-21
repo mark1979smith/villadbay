@@ -323,7 +323,7 @@ class PageType extends AbstractType
 
     private function getBackgroundImages(ContainerInterface $container)
     {
-        /** @var \App\Utils\AwsS3Client $s3Service */
+        /** @var \App\Component\AwsS3Client $s3Service */
         $s3Service = $container->get('app.aws.s3');
         $serviceData = $s3Service->getImagesBasedOnConfig();
 
@@ -345,7 +345,7 @@ class PageType extends AbstractType
 
     private function getPanoramicImages(ContainerInterface $container)
     {
-        /** @var \App\Utils\AwsS3Client $s3Service */
+        /** @var \App\Component\AwsS3Client $s3Service */
         $s3Service = $container->get('app.aws.s3');
         $serviceData = $s3Service->getImagesBasedOnConfig();
 
