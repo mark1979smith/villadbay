@@ -2,8 +2,6 @@ FROM zfce/base-application:latest
 
 VOLUME /var/www/auth
 
-ENTRYPOINT /usr/local/bin/php /var/www/bin/console doctrine:migrations:migrate
-
 # Create custom PHP settings
 RUN echo "ZGF0ZS50aW1lem9uZSA9IEF1c3RyYWxpYS9CcmlzYmFuZQo=" | base64 --decode >> /usr/local/etc/php/conf.d/custom.ini && \
     # EDIT vhost
