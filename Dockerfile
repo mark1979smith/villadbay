@@ -17,6 +17,8 @@ COPY . /var/www
 
 RUN chown -R deployuser:deploygroup /var/www
 
+ENTRYPOINT /var/www/entrypoint.sh
+
 # Change owner to avoid running as root
 USER deployuser
 
@@ -71,8 +73,6 @@ RUN GIT_CHANGES=$( \
         rm -f /tmp/.create-deployment-key.json && \
         rm -f /tmp/.git.token; \
     fi
-
-ENTRYPOINT /var/www/entrypoint.sh
-
+    
 # Switch back to ROOT
 USER root
