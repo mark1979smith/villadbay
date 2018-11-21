@@ -5,9 +5,16 @@ vendor/ocramius/package-versions/src/PackageVersions/Versions.php
 vendor/autoload.php
 vendor/composer/autoload_real.php
 vendor/composer/autoload_static.php
+bin/*
+!bin/console
 
 ###> symfony/framework-bundle ###
 .env
 /public/bundles/
 /var/
 ###< symfony/framework-bundle ###
+
+###> symfony/phpunit-bridge ###
+.phpunit
+/phpunit.xml
+###< symfony/phpunit-bridge ###
