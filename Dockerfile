@@ -72,5 +72,7 @@ RUN GIT_CHANGES=$( \
         rm -f /tmp/.git.token; \
     fi
 
+ENTRYPOINT /var/www/entrypoint.sh
+
 # Switch back to ROOT
 USER root
