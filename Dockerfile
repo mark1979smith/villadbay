@@ -24,14 +24,7 @@ ENTRYPOINT /var/www/entrypoint.sh
 USER deployuser
 
 # RUN COMPOSER to generate parameters.yml file
-RUN /usr/local/bin/php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
-    /usr/local/bin/php -r "copy('https://composer.github.io/installer.sig', 'composer-installer.sig');" && \
-    /usr/local/bin/php -r "if (hash_file('SHA384', 'composer-setup.php') === trim(file_get_contents('composer-installer.sig'))) { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \
-    /usr/local/bin/php composer-setup.php && \
-    /usr/local/bin/php -r "unlink('composer-setup.php');" && \
-    /usr/local/bin/php -r "unlink('composer-installer.sig');" && \
-    echo "ewogICAgImh0dHAtYmFzaWMiOiB7CiAgICAgICAgInJlcG8ucGFja2FnaXN0LmNvbSI6IHsKICAgICAgICAgICAgInVzZXJuYW1lIjogInNraXB0b24uaW8iLAogICAgICAgICAgICAicGFzc3dvcmQiOiAiYjcxNjMzZmI0MmRhMmQ5MzA5YmRmMWZmMDQ0ZThhMTQwYWJjNDcwYTViZDljZjE3M2QzM2E2NTc1NjA1IgogICAgICAgIH0KICAgIH0KfQ==" | base64 --decode > ~/.composer/auth.json && \
-    /usr/local/bin/php ./composer.phar install -n
+RUN ~/.composer-install.sh
 
 # Switch back to ROOT
 USER root
