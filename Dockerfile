@@ -24,56 +24,7 @@ ENTRYPOINT /var/www/entrypoint.sh
 USER deployuser
 
 # RUN COMPOSER to generate parameters.yml file
-RUN /usr/local/bin/php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
-    /usr/local/bin/php -r "copy('https://composer.github.io/installer.sig', 'composer-installer.sig');" && \
-    /usr/local/bin/php -r "if (hash_file('SHA384', 'composer-setup.php') === trim(file_get_contents('composer-installer.sig'))) { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \
-    /usr/local/bin/php composer-setup.php && \
-    /usr/local/bin/php -r "unlink('composer-setup.php');" && \
-    /usr/local/bin/php -r "unlink('composer-installer.sig');" && \
-    echo "ewogICAgImh0dHAtYmFzaWMiOiB7CiAgICAgICAgInJlcG8ucGFja2FnaXN0LmNvbSI6IHsKICAgICAgICAgICAgInVzZXJuYW1lIjogInNraXB0b24uaW8iLAogICAgICAgICAgICAicGFzc3dvcmQiOiAiYjcxNjMzZmI0MmRhMmQ5MzA5YmRmMWZmMDQ0ZThhMTQwYWJjNDcwYTViZDljZjE3M2QzM2E2NTc1NjA1IgogICAgICAgIH0KICAgIH0KfQ==" | base64 --decode > ~/.composer/auth.json && \
-    /usr/local/bin/php composer.phar update mirrors && \
-    /usr/local/bin/php composer.phar install -vvv
+RUN ~/.composer-install.sh
 
-
-RUN GIT_CHANGES=$( \
-        git status -s \
-    ) && \
-     if [ ${#GIT_CHANGES} -gt 0 ]; then \
-        # We now commit updated files from composer
-        echo $GIT_CHANGES && \
-        ssh-keygen -t rsa -N "" -b 4096 -C "mark1979smith@googlemail.com" -f /home/deployuser/.ssh/id_rsa && \
-        eval "$(ssh-agent -s)" && \
-        ssh-add /home/deployuser/.ssh/id_rsa && \
-        ssh-keyscan ssh.github.com >> /home/deployuser/.ssh/known_hosts && \
-        # Create Deployment Key
-        printf "%s" '{"title": "Villa DBay Deploy Key (Write) ' > /tmp/.create-deployment-key.json && \
-        printf "%s" "$(echo `date`)" >> /tmp/.create-deployment-key.json && \
-        printf "%s" '", "key":"' >> /tmp/.create-deployment-key.json && \
-        printf "%s" "$(cat /home/deployuser/.ssh/id_rsa.pub | tee)" >> /tmp/.create-deployment-key.json && \
-        printf "%s"  '", "read_only": false}' >> /tmp/.create-deployment-key.json && \
-        # Send Deplooyment Key
-        CURRENT_DEPLOYMENT_KEY_URL=$( \
-            curl -X POST -H "$(cat /tmp/.git.token)" -d "$(cat /tmp/.create-deployment-key.json)" https://api.github.com/repos/mark1979smith/villadbay/keys | jq '.url' | sed s/\"//g \
-        ) && \
-        # Ensure we are up to date when debugging
-        git fetch && git pull && \
-        # Config Settings
-        git config user.email "hosting@marksmith.email" && \
-        git config user.name "Mark Smith" && \
-        git config push.default "simple" && \
-        # Change Remote from HTTP to SSH
-        git remote rm origin && \
-        git remote add origin git@ssh.github.com:mark1979smith/villadbay.git && \
-        # Add All Files, Commit then Push
-        git add -A && \
-        git commit -m "[AUTO] Updates to composer installation" && \
-        git push -u origin --all && \
-        # Remove Deployment Key
-        echo "Removing Deployment Key: $CURRENT_DEPLOYMENT_KEY_URL" && \
-        curl -X DELETE -H "$(cat /tmp/.git.token)" $CURRENT_DEPLOYMENT_KEY_URL && \
-        rm -f /tmp/.create-deployment-key.json && \
-        rm -f /tmp/.git.token; \
-    fi
-    
 # Switch back to ROOT
 USER root
