@@ -68,6 +68,9 @@
     "doctrine/reflection": {
         "version": "v1.0.0"
     },
+    "facebook/webdriver": {
+        "version": "1.6.0"
+    },
     "firebase/php-jwt": {
         "version": "v5.0.0"
     },
@@ -209,6 +212,9 @@
             "ref": "9f94d3ea453cd8a3b95db7f82592d7344fe3a76a"
         }
     },
+    "symfony/css-selector": {
+        "version": "v4.1.7"
+    },
     "symfony/debug": {
         "version": "v4.0.2"
     },
@@ -305,6 +311,9 @@
     "symfony/orm-pack": {
         "version": "v1.0.5"
     },
+    "symfony/panther": {
+        "version": "v0.2.0"
+    },
     "symfony/phpunit-bridge": {
         "version": "4.1",
         "recipe": {
@@ -358,6 +367,9 @@
     },
     "symfony/stopwatch": {
         "version": "v4.0.3"
+    },
+    "symfony/test-pack": {
+        "version": "v1.0.4"
     },
     "symfony/thanks": {
         "version": "v1.0.1"
