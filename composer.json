@@ -2,6 +2,7 @@
     "type": "project",
     "license": "proprietary",
     "require": {
+        "symfony/framework-bundle": "^4.0",
         "skipton-io/base-application": "dev-master"
     },
     "require-dev": {},
