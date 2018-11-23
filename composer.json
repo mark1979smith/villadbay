@@ -5,7 +5,9 @@
         "symfony/framework-bundle": "^4.0",
         "skipton-io/base-application": "dev-master"
     },
-    "require-dev": {},
+    "require-dev": {
+        "symfony/dotenv": "^4.0"
+    },
     "replace": {
         "symfony/polyfill-iconv": "*",
         "symfony/polyfill-php71": "*",
